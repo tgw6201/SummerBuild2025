@@ -1,93 +1,105 @@
-# 🥗 Calorie Chat
+# Calorie Chat
 
-**Calorie Chat** is a smart, AI-powered nutrition assistant designed to help users track their calories, log meals, and generate healthy recipes based on dietary preferences and personal goals. It combines the power of generative AI with intuitive user experience to make calorie counting and meal planning effortless.
-
----
-
-## 🚀 Features
-
-### 🔍 AI-Enhanced Capabilities
-- **GenAI Chatbot Calorie Counter** – Log and calculate meal calories with conversational ease.
-- **AI Recipe Suggestions** – Get recipes based on groceries, diet goals, and preferences.
-- **AI Verdicts** – Get nutritional feedback on custom recipes (e.g. Balanced, High Sugar).
-
-### 📊 Core Functionality
-- **Calorie Logging** – Seamless input of daily food intake with database-backed tracking.
-- **Calorie Goal & Diet Tracking** – Visual indicators and stats for streaks and progress.
-- **Manual Recipe Input** – Create and edit your own recipes with calorie estimation.
-
-### 📈 Analytics & History
-- **Weekly Progress Charts** – Visual breakdown of calorie intake vs. goals.
-- **Food History** – Track what you ate and when.
-- **Export to CSV** – Easily download your data via the web app.
+**Calorie Chat** is a smart, AI-powered nutrition assistant designed to help users track their calories, log meals, and generate healthy recipes based on dietary preferences and personal goals. It combines the power of generative AI with an intuitive user experience to make calorie counting and meal planning effortless.
 
 ---
 
-## 🧭 App Pages Overview
+## Features
 
-### 🏠 Landing Page
+### AI-Enhanced Capabilities
+- GenAI Chatbot Calorie Counter – Log and calculate meal calories with conversational ease.
+- AI Recipe Suggestions – Get recipes based on groceries, diet goals, and preferences.
+- AI Verdicts – Get nutritional feedback on custom recipes (e.g., Balanced, High Sugar).
+
+### Core Functionality
+- Calorie Logging – Seamless input of daily food intake with database-backed tracking.
+- Calorie Goal & Diet Tracking – Visual indicators and stats for streaks and progress.
+- Manual Recipe Input – Create and edit your own recipes with calorie estimation.
+
+### Analytics & History
+- Weekly Progress Charts – Visual breakdown of calorie intake vs. goals.
+- Food History – Track what you ate and when.
+- Export to CSV – Easily download your data via the web app.
+
+---
+
+## App Pages Overview
+
+### Landing Page
 - Navigation bar: Login | Sign Up
 - Email verification
 - “About Us” section
 - Background image with smiling people
 
-### 🔐 Authentication
-- **Login Page**
-- **Signup Page**
-- **Forget Password** *(coming soon)*
+### Authentication
+- Login Page
+- Signup Page
+- Forget Password *(coming soon)*
 
-### 🆕 Onboarding Page
+### Onboarding Page
 - Goal setting: Gender, Age, Weight, Height, Calorie Goal
 - Dietary Preferences & Allergies
 
-### 📊 Homepage – Dashboard
+### Dashboard
 - Calorie Goal + % Met
 - Healthy plate balance
 - Meal suggestions (Breakfast, Lunch, Dinner, Snacks)
 - Weekly bar chart: Calorie vs Goal
 - Favorite dishes (clickable)
-- “Create Recipe” / “Generate Recipe” buttons
+- "Create Recipe" / "Generate Recipe" buttons
 
-### 🍽 Recipe Pages
+### Recipe Pages
 - Manual Recipe Input / Edit Recipe
 - Name, Ingredients, Instructions
 - Estimated calories & AI Verdict
-- “Save Recipe and Eat” button
+- "Save Recipe and Eat" button
 
-### 🤖 AI Chatbot
+### AI Chatbot
 - Natural language interface for:
   - Suggesting recipes
   - Logging meals
   - Tracking calories
 - Chat history and suggested commands
 
-### 👤 User Profile
-- Avatar + Name
-- Profile details (Editable)
+### User Profile
+- Avatar and Name
+- Editable profile details
 - Export data as CSV
 - Bookmarked recipes
 
-### ⚙️ Settings Page
+### Settings Page
 - Change password, username, goal, and dietary settings
 
 ---
 
-## 📦 Tech Stack
+## Tech Stack
 
-- **Frontend:** React / Next.js *(optional based on framework used)*
+- **Frontend:** React / Vite (or optionally Next.js)
 - **Backend:** Node.js / Express
 - **Database:** PostgreSQL
 - **AI Integration:** OpenAI / Langchain / Custom NLP models
 
 ---
 
-## 📁 Project Structure (Proposed)
+## Project Structure
+
+calorie-chat/
 │
-├── client/ # Frontend code
-  └── package.json # Project metadata & dependencies
-├── server/ # Backend & API logic
-├── .env # Environment variables
-├── README.md # Project readme
+├── client/                  # Frontend code (React + Vite)
+│   ├── public/              # Static assets
+│   ├── src/                 # Source code (components, pages, etc.)
+│   └── package.json         # Frontend dependencies and scripts
+│
+├── server/                  # Backend code (Express API)
+│   ├── controllers/         # Request handlers
+│   ├── routes/              # API routes
+│   ├── models/              # Database models
+│   ├── db.js                # DB connection logic
+│   └── index.js             # Entry point for server
+│
+├── .env                     # Environment variables
+├── README.md                # Project documentation
+└── package.json             # (Optional) root-level metadata (if needed)
 
 ## Necessary installs
 1. npm install -g vite -> Client Side
