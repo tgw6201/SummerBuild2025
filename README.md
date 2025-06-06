@@ -102,15 +102,15 @@ calorie-chat/\
 └── package.json             # (Optional) root-level metadata (if needed)\
 
 ## Necessary installs
-1. npm install -g vite -> Client Side
-2. npm install react react-dom -> Client Side
-3. npm install express pg cors (Express, Postgresql, Cors) -> Sever side
-4. npm install -g nodemon
+1. npm install -g vite -> Client Side\
+2. npm install react react-dom -> Client Side\
+3. npm install express pg cors (Express, Postgresql, Cors) -> Sever side\
+4. npm install -g nodemon\
 
 ## Starting the client side
-Step 1: CD into the client directory
-Step 2: Run the command, "npm run dev"
+Step 1: CD into the client directory\
+Step 2: Run the command, "npm run dev"\
 
 ## Starting the server side
-Step 1: CD into the server directory
-Step 2: Run the command, "nodemon index"
+Step 1: CD into the server directory\
+Step 2: Run the command, "nodemon index"\
