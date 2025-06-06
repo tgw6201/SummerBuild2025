@@ -83,23 +83,23 @@
 
 ## Project Structure
 
-calorie-chat/
-│
-├── client/                  # Frontend code (React + Vite)
-│   ├── public/              # Static assets
-│   ├── src/                 # Source code (components, pages, etc.)
-│   └── package.json         # Frontend dependencies and scripts
-│
-├── server/                  # Backend code (Express API)
-│   ├── controllers/         # Request handlers
-│   ├── routes/              # API routes
-│   ├── models/              # Database models
-│   ├── db.js                # DB connection logic
-│   └── index.js             # Entry point for server
-│
-├── .env                     # Environment variables
-├── README.md                # Project documentation
-└── package.json             # (Optional) root-level metadata (if needed)
+calorie-chat/\
+│\
+├── client/                  # Frontend code (React + Vite)\
+│   ├── public/              # Static assets\
+│   ├── src/                 # Source code (components, pages, etc.)\
+│   └── package.json         # Frontend dependencies and scripts\
+│\
+├── server/                  # Backend code (Express API)\
+│   ├── controllers/         # Request handlers\
+│   ├── routes/              # API routes\
+│   ├── models/              # Database models\
+│   ├── db.js                # DB connection logic\
+│   └── index.js             # Entry point for server\
+│\
+├── .env                     # Environment variables\
+├── README.md                # Project documentation\
+└── package.json             # (Optional) root-level metadata (if needed)\
 
 ## Necessary installs
 1. npm install -g vite -> Client Side
