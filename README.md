@@ -106,6 +106,7 @@ calorie-chat/\
 2. npm install react react-dom -> Client Side
 3. npm install express pg cors (Express, Postgresql, Cors) -> Sever side
 4. npm install -g nodemon
+5. npm install
 
 ## Starting the client side
 Step 1: CD into the client directory\
