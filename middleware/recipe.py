@@ -10,7 +10,8 @@ import os
 
 # Load environment variables from .env file
 # Purpose: Securely load API keys from a .env file to avoid hardcoding sensitive data
-load_dotenv()
+# change to .json when implementing with front end.
+load_dotenv(dotenv_path=os.path.join(os.path.dirname(os.path.dirname(__file__)), "variables.env"))
 OPENAI_API_KEY = os.getenv("OPENAI_API_KEY")
 SPOONACULAR_API_KEY = os.getenv("SPOONACULAR_API_KEY")
 
