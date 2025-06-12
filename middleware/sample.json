@@ -24,7 +24,7 @@
       "unit": "tablespoons"
     },
     {
-      "food": "large eggs",
+      "food": "eggs",
       "quantity": 1,
       "unit": "count"
     },
@@ -39,7 +39,7 @@
       "unit": "teaspoon"
     },
     {
-      "food": "fresh blueberries",
+      "food": "blueberries",
       "quantity": 1,
       "unit": "cup"
     }
