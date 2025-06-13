@@ -107,7 +107,8 @@ calorie-chat/\
 3. npm install express pg cors (Express, Postgresql, Cors) -> Sever side
 4. npm install -g nodemon
 5. npm install
-
+6. npm install uuid (for generating session id for users)
+7. npm install cookie parser
 ## Starting the client side
 Step 1: CD into the client directory\
 Step 2: Run the command, "npm run dev"
