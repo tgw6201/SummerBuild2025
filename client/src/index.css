@@ -71,8 +71,7 @@ button:focus-visible {
 }
 
 .chat-container {
-  width: 100%;
-  max-width: 960px;
+  width: 400px;
   height: 80vh;
   display: flex;
   flex-direction: column;
@@ -84,13 +83,14 @@ button:focus-visible {
 }
 
 .chat-header {
-  padding: 1rem;
-  border-bottom: 1px solid #e5e5e5;
-  text-align: center;
+  padding: 0.5rem 0 0.5rem 0;   
+  margin-bottom: 0.5rem;
   font-size: 1.25rem;
   font-weight: 600;
-  margin-bottom: 1rem;
+  text-align: center;
   color: #ffffff;
+  border-bottom: 1px solid #e5e5e5;
+  line-height: 1.25;           
 }
 
 .chat-messages {
@@ -100,6 +100,10 @@ button:focus-visible {
   gap: 0.5rem;
   overflow-y: auto;
   margin-bottom: 1rem;
+  padding-right: 1rem;
+  padding-left: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: #444 #2a2a2a;
 }
 
 .message {
@@ -141,13 +145,40 @@ button:focus-visible {
 }
 
 .typing {
+  font-size: 1rem;
+  line-height: 1.5;
+  padding: 0.5em 1em;
+  background: #444;
+  color: #fff;
+  border-radius: 12px;
   display: inline-block;
-  overflow: hidden;
-  vertical-align: top;
+  margin-bottom: 0.25em;
   animation: blink 1s infinite steps(1);
 }
 
 @keyframes blink {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
+}
+
+/* Navigation Bar */
+.navbar {
+  display: flex;
+  gap: 1.5rem;
+  background: #222;
+  padding: 1rem 2rem;
+  border-radius: 12px;
+  margin-bottom: 1.5rem;
+  justify-content: center;
+}
+
+.navbar a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.navbar a:hover {
+  color: #4f86f7;
 }
