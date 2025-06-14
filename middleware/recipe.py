@@ -24,7 +24,7 @@ logger = logging.getLogger(__name__)
 # Load environment variables from .env file in project root
 # Purpose: Securely load API keys, accounting for recipe.py being in middleware/
 logger.debug("Loading .env file")
-env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), "variables.env")
+env_path = os.path.join(os.path.dirname(os.path.dirname(__file__)), ".env")
 if not os.path.exists(env_path):
     logger.error(f".env file not found at {env_path}")
     raise FileNotFoundError(f".env file not found at {env_path}")

@@ -1,0 +1,20 @@
+{
+  "user": {
+    "age": 30,
+    "food_preferences": {
+      "allergies": ["peanuts", "shellfish"],
+      "special_diet": "vegetarian"
+    },
+    "calorie_target": 2000
+  },
+  "ingredients": [
+    {"food": "whole wheat flour", "quantity": 1.5, "unit": "cups"},
+    {"food": "brown sugar", "quantity": 0.25, "unit": "cup"},
+    {"food": "olive oil", "quantity": 2.0, "unit": "tablespoons"},
+    {"food": "eggs", "quantity": 1.0, "unit": "count"},
+    {"food": "almond milk", "quantity": 0.75, "unit": "cup"},
+    {"food": "baking soda", "quantity": 1.0, "unit": "teaspoon"},
+    {"food": "blueberries", "quantity": 1.0, "unit": "cup"}
+  ],
+  "inputmessage": "Suggest a vegetarian recipe using these ingredients, avoiding peanuts and shellfish, within 2000 calories."
+}
