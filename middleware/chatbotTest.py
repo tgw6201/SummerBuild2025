@@ -18,8 +18,9 @@ logger = logging.getLogger(__name__)
 async def main():
     try:
         # Define file paths
-        project_root = os.path.dirname(os.path.dirname(__file__))
-        input_file = os.path.join(project_root, "messagesample.json")
+        middleware_dir = os.path.dirname(__file__)
+        project_root = os.path.dirname(middleware_dir)
+        input_file = os.path.join(middleware_dir, "messagesample.json")
         output_file = os.path.join(project_root, "messageoutput.json")
 
         # Read input JSON
