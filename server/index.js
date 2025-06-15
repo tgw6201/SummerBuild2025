@@ -43,7 +43,7 @@ app.post("/signup", async (req, res) => {
     try {
         const { userid, password, sessionid } = req.body;
         const newUser = await pool.query(
-            "INSERT INTO users (name, email) VALUES ($1, $2, $3) RETURNING *",
+            "INSERT INTO user_login_table (name, email) VALUES ($1, $2, $3) RETURNING *",
             [userid, password, sessionid]
         );
         res.json(newUser.rows[0]);
@@ -593,7 +593,8 @@ app.delete('/user-recipies/:id', async (req, res) => {
         console.error(err.message);
         res.status(500).send("Server Error");
     }
-});
+});  
+
 
 app.listen(5000,()=>{
     console.log("Server is running on port 5000")
