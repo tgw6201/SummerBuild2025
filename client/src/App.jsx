@@ -6,6 +6,7 @@ import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import Settings from './pages/Settings';
+import './index.css';
 
 function App() {
   return (
