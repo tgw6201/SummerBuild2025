@@ -23,13 +23,14 @@ export default function Chatbot() {
   }, []);
 
   /* Send Message Function */
-  const handleSend = async () => {
-    if (!input.trim() || isTyping) return;
+  const handleSend = async (msg) => {
+    const messageToSend = msg !== undefined ? msg : input;
+    if (!messageToSend.trim() || isTyping) return;
     
     const userMessage = { 
       id: Date.now(), 
       sender: 'user', 
-      text: input.trim()
+      text: messageToSend.trim()
     };
 
     setMessages(prev => [...prev, userMessage]);
@@ -69,6 +70,14 @@ export default function Chatbot() {
     }
   };
 
+  /* Suggested messages for user convenience */
+  const suggestions = [
+    "Suggest recipe",
+    "Log meal",
+    "Track Calories",
+    "Help"
+  ];
+
   return (
     <div className="chat-container">
       <h3 className="chat-header">CalorieBot</h3>
@@ -76,7 +85,13 @@ export default function Chatbot() {
       <div className="chat-messages">
         {messages.map((msg, idx) => (
           <div key={idx} className={`message ${msg.sender}`}>
-            <strong>{msg.sender}:</strong> {msg.text}
+            <strong>{msg.sender}:</strong> 
+            {msg.text.split('\n').map((line, i) => (
+              <React.Fragment key={i}>
+                {line}
+                {i < msg.text.split('\n').length - 1 && <br />}
+              </React.Fragment>
+            ))}
           </div>
         ))}
 
@@ -89,15 +104,31 @@ export default function Chatbot() {
         <div ref={messagesEndRef} />
       </div>
 
+      {/* Suggestion bubbles */}
+      <div className="chat-suggestions">
+        {suggestions.map((text) => (
+          <button
+            key={text}
+            className="suggestion-bubble"
+            type="button"
+            onClick={() => handleSend(text)}
+          >
+            {text}
+          </button>
+        ))}
+      </div>
+
       <div className="chat-input">
-        <input
-          type="text"
+        <textarea
           placeholder="Type your message..."
           value={input}
-          onChange={(e) => setInput(e.target.value)}
-          onKeyDown={(e) => e.key === 'Enter' && handleSend()}
+          ref={inputRef}
+          onChange={e => setInput(e.target.value)}
+          onKeyDown={handleKeyPress}
+          rows={2}
+          style={{ resize: 'none' }}
         />
-        <button onClick={handleSend}>Send</button>
+        <button onClick={() => handleSend()}>Send</button>
       </div>
     </div>
   );

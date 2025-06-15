@@ -132,7 +132,7 @@ button:focus-visible {
   gap: 0.5rem;
 }
 
-.chat-input input {
+.chat-input textarea {
   flex: 1;
   padding: 0.75rem;
   border-radius: 8px;
@@ -159,6 +159,39 @@ button:focus-visible {
 @keyframes blink {
   0%, 100% { opacity: 0; }
   50% { opacity: 1; }
+}
+
+.chat-suggestions {
+  display: flex;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+  justify-content: flex-start;
+  overflow-x: auto;
+  padding: 0.25rem 0;
+  scrollbar-width: none; /* Firefox */
+}
+.chat-suggestions::-webkit-scrollbar {
+  display: none; /* Chrome/Safari */
+}
+
+.suggestion-bubble {
+  background: #2a2a2a;
+  color: #bbb;
+  border: 1px solid #444;
+  border-radius: 16px;
+  padding: 0.25em 0.9em;
+  font-size: 0.95em;
+  cursor: pointer;
+  transition: background 0.2s, color 0.2s, border 0.2s;
+  white-space: nowrap;
+  box-shadow: none;
+  margin-top: 0;
+}
+
+.suggestion-bubble:hover {
+  background: #353a50;
+  color: #fff;
+  border: 1px solid #4f86f7;
 }
 
 /* Navigation Bar */
