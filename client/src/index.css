@@ -37,12 +37,17 @@ body {
 
 /* Navigation Bar */
 .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
   display: flex;
   gap: 1.5rem;
   background: #ffe9d4;
   padding: 1rem 2rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
+  border-radius: 0 0 12px 12px;
+  box-shadow: 0 4px 8px rgba(177, 144, 122, 0.1);
 }
 
 .navbar a {
@@ -53,5 +58,5 @@ body {
 }
 
 .navbar a:hover {
-  color: #4f86f7;
+  color: #c03513;
 }
