@@ -22,6 +22,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: #ffffff; 
+  padding-top: 80px;
 }
 
 
@@ -41,14 +42,14 @@ body {
   gap: 1.5rem;
   background: #ffe9d4;
   padding: 1rem 2rem;
-  border-radius: 12px;
   margin-bottom: 1.5rem;
-  justify-content: center;
+  justify-content: left;
   position: fixed;
   top: 0;
   left: 0;
   right: 0; /* or use width: 100% */
   z-index: 1000;
+  
 }
 
 .navbar a {

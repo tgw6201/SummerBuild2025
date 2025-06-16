@@ -13,10 +13,9 @@ function AppRoutes() {
 
   return (
     <>
-      {!hideNavbar && <Navbar />}
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/chatbot" element={<Chatbot />} />
+        <Route path="/" element={<Chatbot />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
