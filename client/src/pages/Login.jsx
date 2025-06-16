@@ -1,12 +1,18 @@
 import React from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import '../css/Login.css';
+import Chatbot from "./Chatbot";
 
 export default function Login() {
+
+  const navigate = useNavigate()
 
   const handleSubmit = (e) => {
     e.preventDefault();
     // you can add login logic here
-    console.log("Form submitted!");
+    // console.log("Form submitted!");
+    navigate("/chatbot")
   };
 
   return (
@@ -47,10 +53,9 @@ export default function Login() {
             Sign in
             </button>
             <p>
-                <a href="/signup" className="signup-link">Don't have an account yet? Sign up now!</a>
-                </p>
-
-      </form>
+              <Link to="/signup" className="signup-link">Don't have an account yet? Sign up!</Link>
+            </p>
+        </form>
     </main>
   );
 }
