@@ -6,7 +6,6 @@ import Profile from './pages/Profile';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
-import Navbar from './components/Navbar';
 import  './index.css';
 
 function App() {
