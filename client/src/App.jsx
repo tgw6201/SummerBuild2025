@@ -10,7 +10,7 @@ import  './index.css';
 
 function App() {
   const location = useLocation();
-  const hideNavbar = location.pathname === '/'; // hide on login page
+  const hideNavbar = ['/','/login','/signup'].includes(location.pathname);
 
   return (
     <>
