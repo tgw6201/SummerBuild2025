@@ -176,7 +176,11 @@ export default function Chatbot() {
             rows={2}
             style={{ resize: 'none' }}
           />
-          <button onClick={() => handleSend()}>Send</button>
+          <button onClick={() => handleSend()} className="send-button">
+  <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="20" height="20" fill="currentColor">
+    <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+  </svg>
+</button>
         </div>
       </div>
     </div>
