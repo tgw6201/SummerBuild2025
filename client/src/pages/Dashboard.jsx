@@ -3,8 +3,11 @@ import '../css/Dashboard.css';
 
 export default function Dashboard() {
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
   
 =======
+=======
+>>>>>>> Stashed changes
 
 >>>>>>> Stashed changes
   return (
@@ -13,7 +16,10 @@ export default function Dashboard() {
         <h1>Homepage – Dashboard</h1>
       </header>
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 
+=======
+>>>>>>> Stashed changes
 =======
 >>>>>>> Stashed changes
     </div>
