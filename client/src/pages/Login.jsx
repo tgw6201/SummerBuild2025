@@ -14,7 +14,7 @@ export default function Login() {
     e.preventDefault();
     // you can add login logic here
     // console.log("Form submitted!");
-    navigate("/chatbot")
+    navigate('/chatbot')
   };
 
   return (
