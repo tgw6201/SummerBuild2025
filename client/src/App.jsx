@@ -1,4 +1,4 @@
-import { useLocation, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
 import Chatbot from './pages/Chatbot';
 import Navbar from './components/Navbar';
 import Dashboard from './pages/Dashboard';
