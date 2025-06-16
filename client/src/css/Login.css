@@ -47,6 +47,15 @@ body {
     border-color: #c2550d;
 }
 
+.btn-primary:focus {
+    background-color: rgb(172, 64, 14);
+    border-color: #c2550d;
+    outline: 2px solid orange;     /* Change blue to orange */
+    outline-offset: 2px;           /* Optional: adds space between outline and button */
+    box-shadow: 0 0 0 4px rgba(255, 165, 0, 0.3); /* Optional: orange glow */
+}
+
+
 .form-control{
     border-radius: 15px;
     margin: 0.8em 0 0.5em;
