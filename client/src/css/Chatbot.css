@@ -1,6 +1,5 @@
-
-
 .app-container {
+  margin-top:  32px; /* space for header */;
   display: flex;
   gap: 20px;
   height: 90vh; /* fill most of viewport height */

@@ -1,11 +1,5 @@
 import React, { useState } from "react";
-
-const dietaryOptions = [
-  "None", "Vegetarian", "Vegan", "Pescatarian", "Halal", "Kosher", "Gluten-Free", "Keto", "Other"
-];
-const allergyOptions = [
-  "None", "Peanuts", "Tree Nuts", "Dairy", "Eggs", "Fish", "Shellfish", "Soy", "Wheat", "Sesame", "Other"
-];
+import '../css/Onboarding.css';
 
 export default function Onboarding() {
   const [form, setForm] = useState({
