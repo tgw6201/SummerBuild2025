@@ -4,6 +4,7 @@
   display: flex;
   gap: 20px;
   height: 90vh; /* fill most of viewport height */
+  width: 130vh;
   padding: 1rem;
   box-sizing: border-box;
 }
@@ -51,31 +52,32 @@
 }
 
 .chat-area {
+  flex-basis: 70%;
   flex-grow: 1;
   display: flex;
   flex-direction: column;
 }
 
 .chat-container {
-    flex: 1;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-    padding: 0 1.5rem 1.5rem 1.5rem;
-    background: #ff9634;
-    border-radius: 16px;
-    box-shadow: 0 10px 25px rgba(165, 64, 6, 0.3);
-    height: 100%;
+  width: 100%;
+  max-width: 90vw; /* 70% of the viewport width */
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  padding: 0 1.5rem 1.5rem 1.5rem;
+  background: #ff9634;
+  border-radius: 16px;
+  box-shadow: 0 10px 25px rgba(165, 64, 6, 0.3);
+  height: 100%;
   }
   
-  .chat-header {
-    padding: 0 0 0.7rem 0;   
-    margin-bottom: 0.5rem;
+  .chat-header {  
+    margin: 0.7rem 0 0.7rem 0; /* top | right | bottom | left */
+    padding-top: 0;        /* extra safety */
     font-size: 2.1rem;
     font-weight: 700;
     text-align: center;
-    color: #ffffff;
-    border-bottom: 3px solid #ffffff;         
+    color: #ffffff;  
   }
   
   .chat-messages {
@@ -154,10 +156,10 @@
     justify-content: flex-start;
     overflow-x: auto;
     padding: 0.25rem 0;
-    scrollbar-width: none; /* Firefox */
+    scrollbar-width: none; 
   }
   .chat-suggestions::-webkit-scrollbar {
-    display: none; /* Chrome/Safari */
+    display: none; 
   }
   
   .suggestion-bubble {
