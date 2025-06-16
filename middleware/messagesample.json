@@ -3,7 +3,7 @@
     "age": 30,
     "food_preferences": {
       "allergies": ["peanuts", "shellfish"],
-      "special_diet": "vegetarian"
+      "special_diet": "vegetarian, halal"
     },
     "calorie_target": 2000
   },
@@ -14,7 +14,14 @@
     {"food": "eggs", "quantity": 1.0, "unit": "count"},
     {"food": "almond milk", "quantity": 0.75, "unit": "cup"},
     {"food": "baking soda", "quantity": 1.0, "unit": "teaspoon"},
-    {"food": "blueberries", "quantity": 1.0, "unit": "cup"}
+    {"food": "blueberries", "quantity": 1.0, "unit": "cup"},
+    {"food": "pork", "quantity": 1.0, "unit": "cup"}
+  ],
+  "chat_history": [
+    {"id": 1},
+    {"user": "Suggest a suitable recipe for me"},
+    {"GeminiAI": ""},
+    {"Timestamp": ""}
   ],
   "inputmessage": "Suggest a vegetarian recipe using these ingredients, avoiding peanuts and shellfish, within 2000 calories."
 }

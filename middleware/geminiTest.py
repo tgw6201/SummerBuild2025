@@ -20,7 +20,7 @@ if not api_key:
 model = ChatGoogleGenerativeAI(
   model="gemini-2.0-flash",
   google_api_key=api_key,
-  client_options={"api_endpoint": "https://generativelanguage.googleapis.com/v1"},
+  #client_options={"api_endpoint": "https://generativelanguage.googleapis.com/v1"},
   temperature=0.7,
 )
 
@@ -34,15 +34,22 @@ try:
     user = input_data.get("user", {})
     ingredients = input_data.get("ingredients", [])
     input_message = input_data.get("inputmessage", "")
-    prompt = (
+    ##Likely issue here with prompt not being a list
+    prompt = [(
+      f"You are a culinary and nutritional assistant tasked with helping users create recipes, track calories, or improve communication based on their preferences and needs.\n"
+      f"User details:\n" 
+      f"User Age: {user.get('age', 'unknown')}-year-old, \n"
+      f"Must respect user's Dietary preference: {user.get('food_preferences', {}).get('special_diet', 'no diet')} diet, \n"
+      f"Must respect user's Allergies: {', '.join(user.get('food_preferences', {}).get('allergies', []))}, \n"
+      f"Caloric Target: {user.get('calorie_target', 'unknown')} kcal/day.\n"
+      f"Must only use the Available ingredients: {', '.join([f'{i['quantity']} {i['unit']} {i['food']}' for i in ingredients])}.\n"
+      f"Chat History:\n"
+      f"End of Chat History:\n"
+      f"My request:\n"
       f"{input_message}\n"
-      f"User details: {user.get('age', 'unknown')}-year-old, "
-      f"{user.get('food_preferences', {}).get('special_diet', 'no diet')} diet, "
-      f"allergies to {', '.join(user.get('food_preferences', {}).get('allergies', []))}, "
-      f"daily calorie target of {user.get('calorie_target', 'unknown')} kcal.\n"
-      f"Available ingredients: {', '.join([f'{i['quantity']} {i['unit']} {i['food']}' for i in ingredients])}.\n"
+      
       #f"Return the response in JSON format with 'name', 'ingredients', and 'instructions' if a recipe is requested."
-    )
+    )]
     #Invoking LLM
     ai_msg = model.invoke(prompt)
 except Exception as e:
