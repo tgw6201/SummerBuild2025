@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React from "react";
+import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import '../css/Login.css';
+import Chatbot from "./Chatbot";
 
 export default function Login() {
   const navigate = useNavigate();
@@ -10,12 +12,9 @@ export default function Login() {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-
-    if (email === 'name@example.com' && password === 'Password') {
-      navigate('/chatbot');
-    } else {
-      alert('Invalid credentials');
-    }
+    // you can add login logic here
+    // console.log("Form submitted!");
+    navigate("/chatbot")
   };
 
   return (
@@ -48,15 +47,20 @@ export default function Login() {
           <label htmlFor="floatingPassword">Password</label>
         </div>
 
-        <button className="btn btn-primary" type="submit">
-          Sign in
-        </button>
-        <p>
-          <a href="/signup" className="signup-link">
-            Don't have an account yet? Sign up now!
-          </a>
-        </p>
-      </form>
+      {/*
+        <div className="checkbox mb-3">
+          <label>
+            <input type="checkbox" value="remember-me" /> Remember me
+          </label>
+        </div>
+        */}
+            <button className="btn btn-primary" type="submit">
+            Sign in
+            </button>
+            <p>
+              <Link to="/signup" className="signup-link">Don't have an account yet? Sign up!</Link>
+            </p>
+        </form>
     </main>
   );
 }
