@@ -3,9 +3,23 @@ import '../css/Chatbot.css';
 
 export default function Chatbot() {
   /* State Management */
-  const [messages, setMessages] = useState([
-    { id: 1, sender: 'bot', text: 'Hi! How can I help you today?' }
+  const [conversations, setConversations] = useState([
+    {
+      id: 1,
+      title: "CalorieBot",
+      messages: [
+        { id: 1, sender: 'bot', text: 'Hi! How can I help you today?' }
+      ]
+    },
+    {
+      id: 2,
+      title: "RecipeBot",
+      messages: [
+        { id: 1, sender: 'bot', text: 'What recipe do you want?' }
+      ]
+    }
   ]);
+  const [activeConversationId, setActiveConversationId] = useState(1);
   const [input, setInput] = useState(''); // Current text in the input field
   const [isTyping, setIsTyping] = useState(false); // Boolean to show/hide typing indicator
 
@@ -13,36 +27,10 @@ export default function Chatbot() {
   const messagesEndRef = useRef(null);  // Points to bottom of messages (for auto-scroll)
   const inputRef = useRef(null); // Points to input field (for auto-focus)
 
-  const [searchTerm, setSearchTerm] = useState('');
-  const [selectedMessageId, setSelectedMessageId] = useState(null);
-
-  // We'll keep a history of all user and bot messages
-  const [history, setHistory] = useState(messages);
-
-  // Whenever messages change, update history too
-  useEffect(() => {
-    setHistory(messages);
-  }, [messages]);
-
-  // Filter history based on search input
-  const filteredHistory = history.filter(item =>
-    item.text.toLowerCase().includes(searchTerm.toLowerCase())
-  );
-
-  // Load a message from history into the input box (or scroll to it)
-  const loadMessage = (id) => {
-    setSelectedMessageId(id);
-    const msg = history.find(item => item.id === id);
-    if (msg && msg.sender === 'user') {
-      setInput(msg.text);
-      inputRef.current?.focus();
-    }
-  };
-
   /* Auto-scroll Effect */
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
-  }, [messages, isTyping]);
+  }, [conversations, activeConversationId, isTyping]);
 
   /* Auto-focus Effect */
   useEffect(() => {
@@ -54,13 +42,19 @@ export default function Chatbot() {
     const messageToSend = msg !== undefined ? msg : input;
     if (!messageToSend.trim() || isTyping) return;
     
-    const userMessage = { 
-      id: Date.now(), 
-      sender: 'user', 
-      text: messageToSend.trim()
-    };
-
-    setMessages(prev => [...prev, userMessage]);
+    setConversations(prev =>
+      prev.map(conv =>
+        conv.id === activeConversationId
+          ? {
+              ...conv,
+              messages: [
+                ...conv.messages,
+                { id: Date.now(), sender: 'user', text: messageToSend.trim() }
+              ]
+            }
+          : conv
+      )
+    );
     setInput('');
     setIsTyping(true);
 
@@ -77,17 +71,25 @@ export default function Chatbot() {
 
       const randomResponse = responses[Math.floor(Math.random() * responses.length)];
       
-      const botMessage = { 
-        id: Date.now() + 1,
-        sender: 'bot', 
-        text: randomResponse
-      };
-      
-      setMessages(prev => [...prev, botMessage]);
-        setIsTyping(false);
-        inputRef.current?.focus();
-      }, 1200);
+      setConversations(prev =>
+        prev.map(conv =>
+          conv.id === activeConversationId
+            ? {
+                ...conv,
+                messages: [
+                  ...conv.messages,
+                  { id: Date.now() + 1, sender: 'bot', text: randomResponse }
+                ]
+              }
+            : conv
+        )
+      );
+      setIsTyping(false);
+      inputRef.current?.focus();
+    }, 1200);
   };
+
+  const activeConversation = conversations.find(c => c.id === activeConversationId);
 
   /* Keyboard Handler */
   const handleKeyPress = (e) => {
@@ -108,21 +110,18 @@ export default function Chatbot() {
   return (
     <div className="app-container"> {/* top-level flex container */}
       <aside className="history-sidebar">
-        <input 
-          type="text" 
-          placeholder="Search history..." 
-          value={searchTerm}
-          onChange={e => setSearchTerm(e.target.value)}
-          className="search-bar"
-        />
+        <div style={{fontWeight: 600, margin: "0.5rem 0 1rem 0", fontSize: "1.1rem", textAlign: 'center'}}>Conversations</div>
         <ul className="history-list">
-          {filteredHistory.map(item => (
-            <li 
-              key={item.id} 
-              className={`history-item ${item.id === selectedMessageId ? 'active' : ''}`}
-              onClick={() => loadMessage(item.id)}
+          {conversations.map(conv => (
+            <li
+              key={conv.id}
+              className={`history-item${conv.id === activeConversationId ? ' active' : ''}`}
+              onClick={() => setActiveConversationId(conv.id)}
             >
-              {item.text.length > 30 ? item.text.slice(0, 30) + '...' : item.text}
+              <div className="history-title">{conv.title}</div>
+              <div className="history-preview">
+                {conv.messages[conv.messages.length - 1]?.text.slice(0, 30) || ''}
+              </div>
             </li>
           ))}
         </ul>
@@ -132,7 +131,7 @@ export default function Chatbot() {
         <h3 className="chat-header">RennyBot</h3>
 
         <div className="chat-messages">
-          {messages.map((msg, idx) => (
+          {(activeConversation?.messages || []).map((msg, idx) => (
             <div key={idx} className={`message ${msg.sender}`}>
               <strong>{msg.sender}:</strong> 
               {msg.text.split('\n').map((line, i) => (
