@@ -56,3 +56,13 @@ except Exception as e:
         logger.error(f"Error in chatbotTest: {str(e)}")
         raise
 print(ai_msg.content)
+data = {
+    "query": input_data.get("inputmessage",""),
+    "response": ai_msg.content
+}
+try:
+    with open("query_response.json", "w") as file:
+        json.dump(data, file, indent=2)
+    print("JSON file 'query_response.json' created successfully.")
+except Exception as e:
+    print(f"Error creating JSON file: {str(e)}")
