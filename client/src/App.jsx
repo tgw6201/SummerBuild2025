@@ -10,7 +10,7 @@ import  './index.css';
 
 function AppRoutes() {
   const location = useLocation();
-  const hideNavbar = location.pathname === '/';
+  const hideNavbar = ['/','/login','/signup'].includes(location.pathname);
 
   return (
     <>

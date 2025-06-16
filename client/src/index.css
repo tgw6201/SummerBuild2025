@@ -22,6 +22,7 @@ body {
   min-width: 320px;
   min-height: 100vh;
   background-color: #ffffff; 
+  padding-top: 90px;
 }
 
 
@@ -38,17 +39,21 @@ body {
 /* Navigation Bar */
 .navbar {
   display: flex;
-  gap: 1.5rem;
+  justify-content: space-between; /* key line */
+  align-items: center;
   background: #ffe9d4;
   padding: 1rem 2rem;
-  border-radius: 12px;
-  margin-bottom: 1.5rem;
-  justify-content: center;
   position: fixed;
   top: 0;
   left: 0;
-  right: 0; /* or use width: 100% */
+  right: 0;
   z-index: 1000;
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  gap: 1.5rem;
 }
 
 .navbar a {
