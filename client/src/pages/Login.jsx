@@ -1,8 +1,13 @@
 import React from "react";
 import '../css/Login.css';
-import { useNavigate } from 'react-router-dom';
 
 export default function Login() {
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    // you can add login logic here
+    console.log("Form submitted!");
+  };
 
   return (
     <main className="form-signin text-center">

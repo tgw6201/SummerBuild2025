@@ -1,5 +1,4 @@
 /*Entry point that renders the app*/
-
 import { StrictMode } from 'react';
 import { createRoot } from 'react-dom/client';
 import App from './App';
