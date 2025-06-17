@@ -17,7 +17,7 @@ export default function Signup() {
     setError('');
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async(e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
@@ -25,6 +25,27 @@ export default function Signup() {
     }
     /* Sign up logic here */
     // If successful:
+    try {
+      const response = await fetch("http://localhost:3000/signup", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ userid: form.email, password: form.password }),
+        credentials: "include"
+      });
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Sign up failed");
+        return;
+      }
+      const data = await response.json();
+      // Assuming the response contains user data or a success message
+      console.log("Sign up successful:", data);
+      // Navigate to onboarding page after successful sign up 
+    } catch (err) {
+      console.error("Sign up error:", err);
+      setError("Something went wrong. Please try again.");
+      return;
+    }
     navigate("/onboarding");
   };
 

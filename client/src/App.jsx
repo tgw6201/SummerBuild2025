@@ -6,11 +6,12 @@ import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Navbar from './components/Navbar';
+import Onboarding from './pages/Onboarding';
 import  './index.css';
 
 function AppRoutes() {
   const location = useLocation();
-  const hideNavbar = ['/','/login','/signup'].includes(location.pathname);
+  const hideNavbar = ['/','/login','/signup','/onboarding'].includes(location.pathname);
 
   return (
     <>
@@ -23,6 +24,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/settings" element={<Settings />} />
+        <Route path="/onboarding" element={<Onboarding />} />
       </Routes>
     </>
   );

@@ -1,12 +1,17 @@
 const express = require("express")
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const app = express()
 const pool = require("./db");
 const uuidv4 = require("uuid").v4;
+const app = express()
+
+const port = process.env.PORT || 3000;
 
 //Middleware
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // Update this to your frontend URL
+    credentials: true, // Allow cookies to be sent with requests
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -24,7 +29,11 @@ app.post("/login", async (req, res) => {
         }
         // Generate a new session ID
         const sessionid = uuidv4();
-        res.set("Set-Cookie", `sessionid=${sessionid}`);
+        res.cookie("sessionid", sessionid, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+        });
         // Update the user's session ID in the database
         await pool.query("UPDATE user_login_table SET sessionid = $1 WHERE userid = $2", [sessionid, userid]);
         // Return the user data along with the new session ID
@@ -41,9 +50,25 @@ app.post("/login", async (req, res) => {
 //Create a user
 app.post("/signup", async (req, res) => {
     try {
-        const { userid, password, sessionid } = req.body;
+        const { userid, password } = req.body;
+
+        // Check if the user already exists
+        const existingUser = await pool.query("SELECT * FROM user_login_table WHERE userid = $1", [userid]);
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        // Generate a new session ID
+        const sessionid = uuidv4();
+        res.cookie("sessionid", sessionid, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+        });
+        if (!userid || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
         const newUser = await pool.query(
-            "INSERT INTO user_login_table (name, email) VALUES ($1, $2, $3) RETURNING *",
+            "INSERT INTO user_login_table (userid, password, sessionid) VALUES ($1, $2, $3) RETURNING *",
             [userid, password, sessionid]
         );
         res.json(newUser.rows[0]);
@@ -595,7 +620,47 @@ app.delete('/user-recipies/:id', async (req, res) => {
     }
 });  
 
+app.post('/onboarding', async (req, res) => {
+    const sessionid = req.cookies.sessionid;
 
-app.listen(5000,()=>{
-    console.log("Server is running on port 5000")
+    console.log("Session ID:", sessionid);
+    if (!sessionid) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    // Get useremail from sessionid
+    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+    if (user.rows.length === 0) {
+        return res.status(404).json({ message: "invalid session id" });
+    }
+
+    const { phone, name, gender, weight, height, date_of_birth, allergies, dietary_preference, calorie_goal } = req.body;
+
+    try {
+        // Insert user details
+        await pool.query(
+            "INSERT INTO user_details (phone_number, name, gender, weight, height, date_of_birth, userid_fk) VALUES ($1, $2, $3, $4, $5, $6, $7)",[phone, name, gender, weight, height, date_of_birth, user.rows[0].userid]
+        );
+        // Insert dietary preferences
+        await pool.query(
+            "INSERT INTO user_dietary_preference (userid, allergies, dietary_preference, daily_calorie_goal) VALUES ($1, $2, $3, $4)",[user.rows[0].userid, allergies, dietary_preference, calorie_goal]
+        );
+        res.status(201).json({ message: "Onboarding completed successfully" });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+})
+
+app.post('/logout', (req, res) => {
+    res.clearCookie("sessionid", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+    }); 
+    res.status(200).json({ message: "Logged out successfully" });
+});
+
+
+app.listen(3000,()=>{
+    console.log("Server is running on port: ", port);
 });
