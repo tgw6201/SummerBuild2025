@@ -1,54 +1,139 @@
-body {
-    font-family: sans-serif;
-    padding: 2rem;
-    background: #f8f9fa;
-    color: #333;
-  }
-  
-  .dashboard-container header h1 {
-    font-size: 2rem;
-    margin-bottom: 1rem;
-  }
-  
-  .stats, .meal-cards {
-    display: flex;
-    gap: 1rem;
-    margin-bottom: 2rem;
-  }
-  
-  .card {
-    background: #fff;
-    border-radius: 12px;
-    padding: 1rem;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.1);
-    flex: 1;
-  }
-  
-  .meals h2, .progress h2 {
-    margin-bottom: 0.5rem;
-  }
-  
-  canvas {
-    width: 100%;
-    max-width: 600px;
-    height: 300px;
-  }
-  
-  .tools {
-    margin-top: 2rem;
-  }
-  
-  .tools button {
-    padding: 0.75rem 1.5rem;
-    margin-right: 1rem;
-    border: none;
-    background-color: #4e73df;
-    color: white;
-    border-radius: 8px;
-    cursor: pointer;
-  }
-  
-  .tools button:hover {
-    background-color: #2e59d9;
-  }
-  
+.dashboard-container {
+  font-family: inherit;
+  height: 100vh;        /* full viewport height */
+  width: 100vw;         /* full viewport width */
+  padding: 2rem;        
+  box-sizing: border-box;
+  background-color: rgb(255, 255, 255);
+  border-radius: 0;     
+  overflow: auto;       /* good for scrolling if content overflows */
+}
+
+.suggested-section {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+}
+
+.dashboard-header {
+  margin-bottom: 2rem;
+}
+
+.dashboard-main {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+}
+
+.left-column {
+  flex: 1;
+  min-width: 300px;
+}
+
+.meal-gallery {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.meal-card {
+  flex: 1 1 45%;
+  background: #f8f9fa;
+  border-radius: 8px;
+  overflow: hidden;
+  cursor: pointer;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+  transition: transform 0.2s ease;
+}
+
+.meal-card:hover {
+  transform: scale(1.03);
+}
+
+.meal-image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+}
+
+.meal-name {
+  padding: 0.5rem 1rem;
+  text-align: center;
+  font-weight: bold;
+}
+
+.right-column {
+  flex: 1;
+  min-width: 300px;
+  display: flex;
+  flex-direction: column;
+}
+
+.chart-container {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+  margin-bottom: 2rem;
+  height: 500px;          
+  position: relative;      
+}
+
+.favourite-dishes {
+  background: #fff;
+  padding: 1rem;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+.favourite-dishes-list {
+  display: flex;
+  gap: 1rem;
+}
+
+.favourite-dish-card {
+  flex: 1;
+  cursor: pointer;
+  background: #f1f1f1;
+  border-radius: 8px;
+  overflow: hidden;
+  text-align: center;
+  transition: transform 0.2s ease;
+}
+
+.favourite-dish-card:hover {
+  transform: scale(1.05);
+}
+
+.favourite-dish-image {
+  width: 100%;
+  height: auto;
+}
+
+.favourite-dish-name {
+  margin: 0;
+  padding: 0.5rem;
+}
+
+/* Chatbot Button */
+.chatbot-button-container {
+  text-align: center;
+  margin-top: 3rem;
+}
+
+.chatbot-button {
+  background: #007bff;
+  color: #fff;
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.chatbot-button:hover {
+  background: #0056b3;
+}
