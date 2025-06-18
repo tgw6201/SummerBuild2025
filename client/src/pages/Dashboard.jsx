@@ -25,26 +25,12 @@ useEffect(() => {
           backgroundColor: '#36A2EB',
         }],
       },
-options: {
-  responsive: true,
-  maintainAspectRatio: false, 
-  scales: {
-    y: {
-      beginAtZero: true,
-      max: 2500,
-      ticks: {
-        stepSize: 500,         
-        font: { size: 14 },
-        color: '#333'
+      options: {
+        scales: {
+          y: { beginAtZero: true, max: 2500},
+        },
+        plugins: { legend: { display: false } },
       },
-    },
-  },
-  plugins: {
-    legend: {
-      display: false           
-    }
-  }
-}
     });
 
     return () => {
@@ -79,7 +65,7 @@ options: {
           </div>
                     {/* Favourite Dishes */}
           <div className="favourite-dishes">
-            <h2>3 Favourite Dishes</h2>
+            <h2>Top 3 favourite dishes</h2>
             <div className="favourite-dishes-list">
               {[1, 2, 3].map(i => (
                 <div
