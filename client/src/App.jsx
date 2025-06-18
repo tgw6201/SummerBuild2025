@@ -1,39 +1,32 @@
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import Chatbot from './pages/Chatbot';
-import Dashboard from './pages/Dashboard';
-import Profile from './pages/Profile';
+/*Main app logic (routing between pages)*/
+
+
+import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import Chatbot from './pages/Chatbot'; 
+import Navbar from './components/Navbar';
 import Settings from './pages/Settings';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Onboarding from './pages/Onboarding';
-import Navbar from './components/Navbar';
+import Dashboard from './pages/Dashboard';
+import ChangePassword from './pages/ChangePassword';
 import  './index.css';
 
-function AppRoutes() {
-  const location = useLocation();
-  const hideNavbar = location.pathname === '/';
-
+function App() {
   return (
-    <>
-      {!hideNavbar && <Navbar />}
+    <Router>
+      <Navbar />
       <Routes>
-        <Route path="/" element={<Signup />} />
+        <Route path="/" element={<Chatbot />} /> {/* default page */}
+        <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />
         <Route path="/signup" element={<Signup />} />
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/dashboard" element={<Dashboard />} />
-        <Route path="/profile" element={<Profile />} />
-        <Route path="/settings" element={<Settings />} />
       </Routes>
-    </>
-  );
-}
-
-export default function App() {
-  return (
-    <Router>
-      <AppRoutes />
     </Router>
   );
 }
+
+export default App;

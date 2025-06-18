@@ -42,20 +42,14 @@ export default function Login() {
           <label htmlFor="floatingPassword">Password</label>
         </div>
 
-      {/*
-        <div className="checkbox mb-3">
-          <label>
-            <input type="checkbox" value="remember-me" /> Remember me
-          </label>
-        </div>
-        */}
-            <button className="btn btn-primary" type="submit">
-            Sign in
-            </button>
-            <p>
-              <Link to="/signup" className="signup-link">Don't have an account yet? Sign up!</Link>
-            </p>
-        </form>
+        <button className="btn btn-primary" type="submit">
+          Sign in
+        </button>
+
+        <p>
+          <Link to="/signup" className="signup-link">Don't have an account yet? Sign up!</Link>
+        </p>
+      </form>
     </main>
   );
 }

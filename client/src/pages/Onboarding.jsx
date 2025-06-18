@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import '../css/Onboarding.css';
 
 export default function Onboarding() {
@@ -14,6 +15,7 @@ export default function Onboarding() {
     calorie_goal: ""
   });
   const [error, setError] = useState("");
+  const navigate = useNavigate();
 
   const handleChange = e => {
     const { name, value, type } = e.target;
@@ -38,7 +40,7 @@ export default function Onboarding() {
       return;
     }
     alert("Onboarding complete!");
-    // You can navigate to dashboard or next step here
+    navigate("/chatbot");
   };
 
   return (
