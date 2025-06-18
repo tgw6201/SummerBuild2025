@@ -9,6 +9,7 @@ import Login from './pages/Login';
 import Signup from './pages/Signup';
 import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
+import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import  './index.css';
 
@@ -24,6 +25,7 @@ function App() {
         <Route path="/signup" element={<Signup />} />
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/dashboard" element={<Dashboard />} />
+        <Route path="/profile" element={<Profile />} />
       </Routes>
     </Router>
   );
