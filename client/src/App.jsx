@@ -11,6 +11,7 @@ import Onboarding from './pages/Onboarding';
 import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
+import RecipeInput from './pages/RecipeInput';
 import  './index.css';
 
 function App() {
@@ -26,6 +27,7 @@ function App() {
         <Route path="/chatbot" element={<Chatbot />} />
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
+        <Route path="/recipe-input" element={<RecipeInput />} />
       </Routes>
     </Router>
   );

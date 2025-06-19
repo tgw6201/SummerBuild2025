@@ -21,6 +21,7 @@ export default function Navbar() {
       <Link to="/">Chatbot</Link>
       <Link to="/dashboard">Dashboard</Link>
       <Link to="/profile">Profile</Link>
+      <Link to="/recipe-input">Input Recipe</Link>
       {/* Settings Dropdown */}
       <div
         className="dropdown"
