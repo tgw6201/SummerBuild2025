@@ -1,0 +1,4 @@
+{
+    "query": "suggest a recipe",
+    "response": "The provided ingredients list contains pork and eggs, which are not suitable for a vegetarian or halal diet.  Therefore, I cannot create a recipe using only those ingredients that meets the user's specifications.  To create a suitable recipe, I need a revised ingredient list that is vegetarian, halal, peanut-free, and shellfish-free.\n"
+}

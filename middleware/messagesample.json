@@ -16,12 +16,5 @@
     {"food": "baking soda", "quantity": 1.0, "unit": "teaspoon"},
     {"food": "blueberries", "quantity": 1.0, "unit": "cup"},
     {"food": "pork", "quantity": 1.0, "unit": "cup"}
-  ],
-  "chat_history": [
-    {"id": 1},
-    {"user": "Suggest a suitable recipe for me"},
-    {"GeminiAI": ""},
-    {"Timestamp": ""}
-  ],
-  "inputmessage": "Suggest a vegetarian recipe using these ingredients, avoiding peanuts and shellfish, within 2000 calories."
+  ]
 }

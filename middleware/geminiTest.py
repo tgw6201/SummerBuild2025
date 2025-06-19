@@ -4,7 +4,7 @@ from langchain_core.messages import HumanMessage
 import os
 import json
 from dotenv import load_dotenv
-import asyncio
+import requests
 
 # Setup logging
 logging.basicConfig(level=logging.DEBUG, handlers=[logging.FileHandler("chatbot.log"), logging.StreamHandler()])
@@ -24,6 +24,27 @@ model = ChatGoogleGenerativeAI(
   temperature=0.7,
 )
 
+#Get request for chat history
+#url = "/chatbot-history"
+
+#try:
+    # Make the GET request
+#    response = requests.get(url)
+    
+    # Check if the request was successful (status code 200)
+#    response.raise_for_status()
+    
+    # Parse the response (assuming JSON)
+#    chatHistory = response.json()
+    
+    # Print the response data
+    #print("Response data:", data)
+
+#except requests.RequestException as e:
+#    print(f"Error during GET request: {str(e)}")
+
+
+#Gemini invocation
 input_file = "messagesample.json"
 logger.debug(f"Reading input file: {input_file}")
 try:
@@ -43,13 +64,18 @@ try:
       f"Must respect user's Allergies: {', '.join(user.get('food_preferences', {}).get('allergies', []))}, \n"
       f"Caloric Target: {user.get('calorie_target', 'unknown')} kcal/day.\n"
       f"Must only use the Available ingredients: {', '.join([f'{i['quantity']} {i['unit']} {i['food']}' for i in ingredients])}.\n"
-      f"Chat History:\n"
-      f"End of Chat History:\n"
+      #f"Chat History (Higher ID implies more recent chat, User question followed by Response seperated by | ):\n"
+      #user question \n
+      #ai_response \n
+      #f"{for i in chatHistory}"
+      #f"End of Chat History:\n"
       f"My request:\n"
       f"{input_message}\n"
       
       #f"Return the response in JSON format with 'name', 'ingredients', and 'instructions' if a recipe is requested."
     )]
+    
+    
     #Invoking LLM
     ai_msg = model.invoke(prompt)
 except Exception as e:
