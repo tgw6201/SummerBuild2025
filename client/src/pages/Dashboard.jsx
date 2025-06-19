@@ -1,33 +1,49 @@
-import React, { useRef, useEffect } from 'react';
-import Chart from 'chart.js/auto';
-import '../css/Dashboard.css';  // Import the separate CSS file
+import React, { useRef, useEffect } from "react";
+import Chart from "chart.js/auto";
+import "../css/Dashboard.css"; // Import the separate CSS file
 
 const Dashboard = () => {
   const barRef = useRef(null);
 
   const suggestedMeals = [
-    { name: 'Breakfast', img: 'https://images.squarespace-cdn.com/content/v1/58939a42d2b857c51ea91c0d/1566319942248-0GYBX3V9DUH8CU66ZE6V/bloody+mary+obsessed+one+pan+healthy+and+simple+breakfast+recipe+4.jpg' },
-    { name: 'Lunch', img: 'https://www.wokandskillet.com/wp-content/uploads/2016/08/black-pepper-chicken-chop.jpg' },
-    { name: 'Dinner', img: 'https://images.immediate.co.uk/production/volatile/sites/30/2021/12/Dhal-poached-eggs-e700674.jpg' },
-    { name: 'Snacks', img: 'https://tastesbetterfromscratch.com/wp-content/uploads/2017/06/Fresh-Fruit-Bowl-1.jpg' },
+    {
+      name: "Breakfast",
+      img: "https://images.squarespace-cdn.com/content/v1/58939a42d2b857c51ea91c0d/1566319942248-0GYBX3V9DUH8CU66ZE6V/bloody+mary+obsessed+one+pan+healthy+and+simple+breakfast+recipe+4.jpg",
+    },
+    {
+      name: "Lunch",
+      img: "https://www.wokandskillet.com/wp-content/uploads/2016/08/black-pepper-chicken-chop.jpg",
+    },
+    {
+      name: "Dinner",
+      img: "https://images.immediate.co.uk/production/volatile/sites/30/2021/12/Dhal-poached-eggs-e700674.jpg",
+    },
+    {
+      name: "Snacks",
+      img: "https://tastesbetterfromscratch.com/wp-content/uploads/2017/06/Fresh-Fruit-Bowl-1.jpg",
+    },
   ];
 
-useEffect(() => {
+  useEffect(() => {
     if (!barRef.current) return;
 
     const barChart = new Chart(barRef.current, {
-      type: 'bar',
+      type: "bar",
       data: {
-        labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-        datasets: [{
-          label: 'Calories Consumed',
-          data: [1600, 1800, 2000, 1700, 1900, 2100, 1500],
-          backgroundColor: '#36A2EB',
-        }],
+        labels: ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"],
+        datasets: [
+          {
+            label: "Calories Consumed",
+            data: [1600, 1800, 2000, 1700, 1900, 2100, 1500],
+            backgroundColor: "#36A2EB",
+          },
+        ],
       },
       options: {
+        maintainAspectRatio: true, // Keep proper ratio
+        aspectRatio: 2, // Wider than tall (default is 2)
         scales: {
-          y: { beginAtZero: true, max: 2500},
+          y: { beginAtZero: true, max: 2500 },
         },
         plugins: { legend: { display: false } },
       },
@@ -42,43 +58,90 @@ useEffect(() => {
     <div className="dashboard-container">
       {/* Header */}
       <div className="dashboard-header">
-        <h1>Calorie Goal: 2000 kcal · 85% met today</h1>
+        <h1>Healthy food, healthy lifestyle!</h1>
+        <h3>Only the best recipes for made for you! </h3>
       </div>
 
       <div className="dashboard-main">
         {/* Left Side: Suggested Meals Gallery */}
         <div className="left-column">
-          <div className="suggested-section">
-            <h2>What shall we eat today?</h2>
-            <div className="meal-gallery">
-              {suggestedMeals.map(meal => (
-                <div
-                  key={meal.name}
-                  className="meal-card"
-                  onClick={() => alert(`Clicked on ${meal.name}`)}
-                >
-                  <img src={meal.img} alt={meal.name} className="meal-image" />
-                  <div className="meal-name">{meal.name}</div>
+          {/* Top 3 favourite dishes */}
+          <div className="favourite-dishes">
+            <h2>Top 3 favourite dishes</h2>
+            <div className="row">
+              {[1, 2, 3].map((i) => (
+                <div className="col-md-4 mb-4" key={i}>
+                  <div
+                    className="card h-100 box-shadow"
+                    onClick={() => alert(`Clicked Dish ${i}`)}
+                  >
+                    <img
+                      src="https://www.wokandskillet.com/wp-content/uploads/2016/08/black-pepper-chicken-chop.jpg"
+                      className="card-img-top"
+                      alt={`Dish ${i}`}
+                    />
+                    <div className="card-body">
+                      <p className="card-text">Dish {i}</p>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="btn-group">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                          >
+                            View
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        <small className="text-muted">Now</small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>
           </div>
-                    {/* Favourite Dishes */}
-          <div className="favourite-dishes">
-            <h2>Top 3 favourite dishes</h2>
-            <div className="favourite-dishes-list">
-              {[1, 2, 3].map(i => (
-                <div
-                  key={i}
-                  className="favourite-dish-card"
-                  onClick={() => alert(`Clicked Dish ${i}`)}
-                >
-                  <img
-                    src={`https://via.placeholder.com/150?text=Dish+${i}`}
-                    alt={`Dish ${i}`}
-                    className="favourite-dish-image"
-                  />
-                  <p className="favourite-dish-name">Dish {i}</p>
+
+          {/* What shall we eat today? */}
+          <div className="suggested-section">
+            <h2>What shall we eat today?</h2>
+            <div className="row">
+              {suggestedMeals.map((meal) => (
+                <div className="col-md-4 mb-4" key={meal.name}>
+                  <div
+                    className="card h-100 box-shadow"
+                    onClick={() => alert(`Clicked on ${meal.name}`)}
+                  >
+                    <img
+                      src={meal.img}
+                      className="card-img-top"
+                      alt={meal.name}
+                    />
+                    <div className="card-body">
+                      <p className="card-text">{meal.name}</p>
+                      <div className="d-flex justify-content-between align-items-center">
+                        <div className="btn-group">
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                          >
+                            View
+                          </button>
+                          <button
+                            type="button"
+                            className="btn btn-sm btn-outline-secondary"
+                          >
+                            Edit
+                          </button>
+                        </div>
+                        <small className="text-muted">Suggested</small>
+                      </div>
+                    </div>
+                  </div>
                 </div>
               ))}
             </div>

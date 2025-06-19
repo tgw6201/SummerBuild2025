@@ -21,14 +21,17 @@ export default function Onboarding() {
     const { name, value } = e.target;
 
     if (name === "gender") {
-        processedValue = value.toLowerCase(); // force lowercase
+      processedValue = value.toLowerCase(); // force lowercase
     }
     // Allow only positive integers for weight and height
-    if ((name === "weight" || name === "height" || name === "calorie_goal") && value !== "") {
+    if (
+      (name === "weight" || name === "height" || name === "calorie_goal") &&
+      value !== ""
+    ) {
       if (!/^\d+$/.test(value)) return; // Block non-numeric or negative input
     }
 
-    setFormData(prev => ({ ...prev, [name]: value }));
+    setFormData((prev) => ({ ...prev, [name]: value }));
   };
 
   const handleNext = () => {
@@ -70,7 +73,6 @@ export default function Onboarding() {
       }
 
       navigate("/dashboard");
-
     } catch (err) {
       console.error("Error submitting onboarding:", err);
       alert("Something went wrong.");
@@ -102,15 +104,15 @@ export default function Onboarding() {
             />
             {/* GENDER DROPDOWN: MALE / FEMALE ONLY */}
             <select
-            name="gender"
-            className="form-select form-select-sm"
-            value={formData.gender}
-            onChange={handleChange}
-            required
+              name="gender"
+              className="form-select form-select-sm"
+              value={formData.gender}
+              onChange={handleChange}
+              required
             >
-            <option value="">Select Gender</option>
-            <option value="male">Male</option>
-            <option value="female">Female</option>
+              <option value="">Select Gender</option>
+              <option value="male">Male</option>
+              <option value="female">Female</option>
             </select>
             <input
               type="text"
@@ -135,7 +137,9 @@ export default function Onboarding() {
               onChange={handleChange}
               required
             />
-            <button className="btn btn-dark" type="button" onClick={handleNext}>Next</button>
+            <button className="btn btn-dark" type="button" onClick={handleNext}>
+              Next
+            </button>
           </>
         )}
 
@@ -162,8 +166,12 @@ export default function Onboarding() {
               value={formData.calorie_goal}
               onChange={handleChange}
             />
-            <button className="btn btn-dark" type="button" onClick={handleBack}>Back</button>
-            <button className="btn btn-dark" type="submit">Submit</button>
+            <button className="btn btn-dark" type="button" onClick={handleBack}>
+              Back
+            </button>
+            <button className="btn btn-dark" type="submit">
+              Submit
+            </button>
           </>
         )}
       </form>
