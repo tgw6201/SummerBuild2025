@@ -1,6 +1,6 @@
 import React, { useRef, useEffect } from "react";
 import Chart from "chart.js/auto";
-import "../css/Dashboard.css"; // Import the separate CSS file
+import "../css/Dashboard.css";
 
 const Dashboard = () => {
   const barRef = useRef(null);
@@ -40,8 +40,8 @@ const Dashboard = () => {
         ],
       },
       options: {
-        maintainAspectRatio: true, // Keep proper ratio
-        aspectRatio: 2, // Wider than tall (default is 2)
+        maintainAspectRatio: true,
+        aspectRatio: 2,
         scales: {
           y: { beginAtZero: true, max: 2500 },
         },
@@ -56,23 +56,20 @@ const Dashboard = () => {
 
   return (
     <div className="dashboard-container">
-      {/* Header */}
       <div className="dashboard-header">
         <h1>Healthy food, healthy lifestyle!</h1>
         <h3>Only the best recipes for made for you! </h3>
       </div>
 
       <div className="dashboard-main">
-        {/* Left Side: Suggested Meals Gallery */}
         <div className="left-column">
-          {/* Top 3 favourite dishes */}
           <div className="favourite-dishes">
             <h2>Top 3 favourite dishes</h2>
             <div className="row">
               {[1, 2, 3].map((i) => (
-                <div className="col-md-4 mb-4" key={i}>
+                <div className="col-md-4" key={i}>
                   <div
-                    className="card h-100 box-shadow"
+                    className="card"
                     onClick={() => alert(`Clicked Dish ${i}`)}
                   >
                     <img
@@ -82,18 +79,12 @@ const Dashboard = () => {
                     />
                     <div className="card-body">
                       <p className="card-text">Dish {i}</p>
-                      <div className="d-flex justify-content-between align-items-center">
+                      <div className="card-footer">
                         <div className="btn-group">
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-outline-secondary"
-                          >
+                          <button type="button" className="btn btn-outline-secondary">
                             View
                           </button>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-outline-secondary"
-                          >
+                          <button type="button" className="btn btn-outline-secondary">
                             Edit
                           </button>
                         </div>
@@ -106,14 +97,13 @@ const Dashboard = () => {
             </div>
           </div>
 
-          {/* What shall we eat today? */}
           <div className="suggested-section">
             <h2>What shall we eat today?</h2>
             <div className="row">
               {suggestedMeals.map((meal) => (
-                <div className="col-md-4 mb-4" key={meal.name}>
+                <div className="col-md-4" key={meal.name}>
                   <div
-                    className="card h-100 box-shadow"
+                    className="card"
                     onClick={() => alert(`Clicked on ${meal.name}`)}
                   >
                     <img
@@ -123,18 +113,12 @@ const Dashboard = () => {
                     />
                     <div className="card-body">
                       <p className="card-text">{meal.name}</p>
-                      <div className="d-flex justify-content-between align-items-center">
+                      <div className="card-footer">
                         <div className="btn-group">
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-outline-secondary"
-                          >
+                          <button type="button" className="btn btn-outline-secondary">
                             View
                           </button>
-                          <button
-                            type="button"
-                            className="btn btn-sm btn-outline-secondary"
-                          >
+                          <button type="button" className="btn btn-outline-secondary">
                             Edit
                           </button>
                         </div>
@@ -148,9 +132,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        {/* Right Side: Bar Chart and Favourite Dishes */}
         <div className="right-column">
-          {/* Bar Chart */}
           <div className="chart-container">
             <h2>Calorie vs Goal (This Week)</h2>
             <canvas ref={barRef}></canvas>
@@ -158,7 +140,6 @@ const Dashboard = () => {
         </div>
       </div>
 
-      {/* Chatbot Button */}
       <div className="chatbot-button-container">
         <button className="chatbot-button">Generate Based on Diet</button>
       </div>
