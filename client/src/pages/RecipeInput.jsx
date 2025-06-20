@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import '../css/RecipeInput.css';
 
-const initialIngredient = { name: "", amount: "", unit: "", calories: "" };
+const initialIngredient = { name: "", amount: "", unit: ""};
 
 function calculateCalories(ingredients) {
   return ingredients.reduce((sum, ing) => sum + Number(ing.calories || 0), 0);
@@ -98,6 +98,10 @@ export default function RecipeInput({ onSave, onBack }) {
       />
 
       <div className="section-title">Ingredients</div>
+      <div className="mb-2 text-muted" style={{ fontSize: "0.9rem" }}>
+      Please enter each ingredient's name, amount, and measurement. 
+      <p> (e.g. "Chicken Breast, 200, grams" or "Rice, 1, cup") </p>
+      </div>
       {ingredients.map((ing, idx) => (
         <div className="ingredient-row" key={idx}>
           <input
@@ -117,13 +121,6 @@ export default function RecipeInput({ onSave, onBack }) {
             placeholder="Unit"
             value={ing.unit}
             onChange={e => handleIngredientChange(idx, "unit", e.target.value)}
-          />
-          <input
-            className="form-control"
-            placeholder="Calories"
-            type="number"
-            value={ing.calories}
-            onChange={e => handleIngredientChange(idx, "calories", e.target.value)}
           />
           {ingredients.length > 1 && (
             <button
