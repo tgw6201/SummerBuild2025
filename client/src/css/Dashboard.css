@@ -1,52 +1,72 @@
 .dashboard-container {
-  padding: 2rem;
+  padding: 0 2rem 2rem 2rem;
 }
 
 .dashboard-header {
-  text-align: center;
   margin-bottom: 2rem;
+  padding: 1rem;
+  background-color: #fffcf8;
+  border-radius: 1rem;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
-.dashboard-main {
+.dashboard-header h1 {
+  font-size: 2.5rem;
+  color: #ff7615;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.dashboard-header h3 {
+  font-size: 1.25rem;
+  color: #555;
+  font-weight: 400;
+}
+
+/* ROW 1: Top 3 dishes horizontal cards */
+.favourite-dishes {
+  margin-bottom: 3rem;
+}
+
+.horizontal-cards {
+  display: flex;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.horizontal-cards .card {
+  flex: 1 1 calc(33.333% - 1rem);
+}
+
+/* ROW 2: Flex row with left and right */
+.second-row {
   display: flex;
   gap: 2rem;
-  flex-wrap: wrap;
+  margin-bottom: 3rem;
 }
 
 .left-column {
   flex: 2;
-  min-width: 60%;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
 }
 
 .right-column {
   flex: 1;
-  min-width: 35%;
 }
 
-.favourite-dishes,
-.suggested-section {
-  margin-bottom: 3rem;
-}
-
-.row {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 1rem;
-}
-
-.col-md-4 {
-  flex: 1 1 calc(33.333% - 1rem);
-  box-sizing: border-box;
+.suggestions-row .card {
+  flex: 1 1 calc(25% - 1rem); /* 4 cards in a row with spacing */
 }
 
 .card {
-  height: 100%;
+  background: white;
   border-radius: 0.5rem;
   overflow: hidden;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
-  cursor: pointer;
   transition: transform 0.2s;
-  background: white;
+  cursor: pointer;
 }
 
 .card:hover {
@@ -63,9 +83,10 @@
   padding: 1rem;
 }
 
-.card-text {
-  font-size: 1rem;
-  margin-bottom: 0.5rem;
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
 }
 
 .btn-group {
@@ -83,8 +104,8 @@
 }
 
 .btn-outline-secondary {
-  background: white;
   color: #6c757d;
+  background: white;
 }
 
 .btn-outline-secondary:hover {
@@ -96,20 +117,22 @@
   color: #6c757d;
 }
 
+/* Chart section */
 .chart-container {
-  padding: 1rem;
   background: #fff;
+  padding: 1rem;
   border-radius: 0.5rem;
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
+/* ROW 3: Chatbot */
 .chatbot-button-container {
-  margin-top: 2rem;
   text-align: center;
+  margin-top: 2rem;
 }
 
 .chatbot-button {
-  background-color: #36A2EB;
+  background-color: #ff7615;
   color: white;
   padding: 0.75rem 1.5rem;
   font-size: 1rem;

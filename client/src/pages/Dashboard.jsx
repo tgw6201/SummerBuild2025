@@ -5,22 +5,53 @@ import "../css/Dashboard.css";
 const Dashboard = () => {
   const barRef = useRef(null);
 
+  const topDishes = [
+    {
+      name: "Corn baked chicken chop",
+      img: "https://www.wokandskillet.com/wp-content/uploads/2016/08/black-pepper-chicken-chop.jpg",
+      title: "Corn Baked Chicken Chop",
+      description:
+        "Juicy grilled chicken served with sweet corn and black pepper sauce.",
+    },
+    {
+      name: "Eggs and tomatoes",
+      img: "https://images.squarespace-cdn.com/content/v1/58939a42d2b857c51ea91c0d/1566319942248-0GYBX3V9DUH8CU66ZE6V/bloody+mary+obsessed+one+pan+healthy+and+simple+breakfast+recipe+4.jpg",
+      title: "Eggs & Tomatoes",
+      description: "A healthy and simple breakfast dish cooked in one pan.",
+    },
+    {
+      name: "Fruit bowl",
+      img: "https://tastesbetterfromscratch.com/wp-content/uploads/2017/06/Fresh-Fruit-Bowl-1.jpg",
+      title: "Fresh Fruit Bowl",
+      description: "A refreshing bowl of assorted fruits to boost your day.",
+    },
+  ];
+
   const suggestedMeals = [
     {
-      name: "Breakfast",
+      name: "Eggs and tomatoes",
       img: "https://images.squarespace-cdn.com/content/v1/58939a42d2b857c51ea91c0d/1566319942248-0GYBX3V9DUH8CU66ZE6V/bloody+mary+obsessed+one+pan+healthy+and+simple+breakfast+recipe+4.jpg",
+      title: "Eggs & Tomatoes",
+      description: "A healthy and simple breakfast dish cooked in one pan.",
     },
     {
-      name: "Lunch",
+      name: "Corn baked chicken chop",
       img: "https://www.wokandskillet.com/wp-content/uploads/2016/08/black-pepper-chicken-chop.jpg",
+      title: "Corn Baked Chicken Chop",
+      description:
+        "Juicy grilled chicken served with sweet corn and black pepper sauce.",
     },
     {
-      name: "Dinner",
+      name: "Curry explosion",
       img: "https://images.immediate.co.uk/production/volatile/sites/30/2021/12/Dhal-poached-eggs-e700674.jpg",
+      title: "Curry Explosion",
+      description: "Spiced dhal with poached eggs — full of flavor and energy.",
     },
     {
-      name: "Snacks",
+      name: "Fruit bowl",
       img: "https://tastesbetterfromscratch.com/wp-content/uploads/2017/06/Fresh-Fruit-Bowl-1.jpg",
+      title: "Fresh Fruit Bowl",
+      description: "A refreshing bowl of assorted fruits to boost your day.",
     },
   ];
 
@@ -35,7 +66,7 @@ const Dashboard = () => {
           {
             label: "Calories Consumed",
             data: [1600, 1800, 2000, 1700, 1900, 2100, 1500],
-            backgroundColor: "#36A2EB",
+            backgroundColor: "#f58636",
           },
         ],
       },
@@ -60,76 +91,53 @@ const Dashboard = () => {
         <h1>Healthy food, healthy lifestyle!</h1>
         <h3>Only the best recipes for made for you! </h3>
       </div>
-
-      <div className="dashboard-main">
-        <div className="left-column">
-          <div className="favourite-dishes">
-            <h2>Top 3 favourite dishes</h2>
-            <div className="row">
-              {[1, 2, 3].map((i) => (
-                <div className="col-md-4" key={i}>
-                  <div
-                    className="card"
-                    onClick={() => alert(`Clicked Dish ${i}`)}
-                  >
-                    <img
-                      src="https://www.wokandskillet.com/wp-content/uploads/2016/08/black-pepper-chicken-chop.jpg"
-                      className="card-img-top"
-                      alt={`Dish ${i}`}
-                    />
-                    <div className="card-body">
-                      <p className="card-text">Dish {i}</p>
-                      <div className="card-footer">
-                        <div className="btn-group">
-                          <button type="button" className="btn btn-outline-secondary">
-                            View
-                          </button>
-                          <button type="button" className="btn btn-outline-secondary">
-                            Edit
-                          </button>
-                        </div>
-                        <small className="text-muted">Now</small>
-                      </div>
-                    </div>
+      {/* Row 1: Top 3 favourite dishes */}
+      <div className="favourite-dishes">
+        <h2>Top 3 favourite dishes</h2>
+        <div className="row horizontal-cards">
+          {topDishes.map((dish) => (
+            <div
+              className="card"
+              key={dish.name}
+              onClick={() => alert(`Clicked ${dish.name}`)}
+            >
+              <img src={dish.img} className="card-img-top" alt={dish.name} />
+              <div className="card-body">
+                <h5 className="card-title">{dish.title}</h5>
+                <p className="card-text">{dish.description}</p>
+                <div className="card-footer">
+                  <div className="btn-group">
+                    <button className="btn btn-outline-secondary">View</button>
+                    <button className="btn btn-outline-secondary">Edit</button>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
+          ))}
+        </div>
+      </div>
 
-          <div className="suggested-section">
-            <h2>What shall we eat today?</h2>
-            <div className="row">
-              {suggestedMeals.map((meal) => (
-                <div className="col-md-4" key={meal.name}>
-                  <div
-                    className="card"
-                    onClick={() => alert(`Clicked on ${meal.name}`)}
-                  >
-                    <img
-                      src={meal.img}
-                      className="card-img-top"
-                      alt={meal.name}
-                    />
-                    <div className="card-body">
-                      <p className="card-text">{meal.name}</p>
-                      <div className="card-footer">
-                        <div className="btn-group">
-                          <button type="button" className="btn btn-outline-secondary">
-                            View
-                          </button>
-                          <button type="button" className="btn btn-outline-secondary">
-                            Edit
-                          </button>
-                        </div>
-                        <small className="text-muted">Suggested</small>
-                      </div>
-                    </div>
+      <div className="row second-row">
+        <h2>What shall we eat today?</h2>
+        <div className="row horizontal-cards suggestions-row">
+          {suggestedMeals.map((meal) => (
+            <div
+              className="card"
+              key={meal.name}
+              onClick={() => alert(`Clicked ${meal.name}`)}
+            >
+              <img src={meal.img} className="card-img-top" alt={meal.name} />
+              <div className="card-body">
+                <p className="card-text">{meal.name}</p>
+                <div className="card-footer">
+                  <div className="btn-group">
+                    <button className="btn btn-outline-secondary">View</button>
+                    <button className="btn btn-outline-secondary">Edit</button>
                   </div>
                 </div>
-              ))}
+              </div>
             </div>
-          </div>
+          ))}
         </div>
 
         <div className="right-column">
@@ -139,7 +147,6 @@ const Dashboard = () => {
           </div>
         </div>
       </div>
-
       <div className="chatbot-button-container">
         <button className="chatbot-button">Generate Based on Diet</button>
       </div>
