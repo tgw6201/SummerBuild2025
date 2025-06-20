@@ -1,3 +1,11 @@
 export default function Profile() {
-  return <div>Profile Page</div>;
+  return (
+    <div className="profile-container">
+      <header>
+        <h1>Profile Page</h1>
+      </header>
+      
+    </div>
+  );
+
 }
