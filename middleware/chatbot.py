@@ -50,22 +50,22 @@ def load_messagesample():
 def load_chat_history():
     #Load chat history from chat_history.json if it exists.
     try:
-        if os.path.exists("chat_history.json"):
+        if os.path.exists("recent_prompt.json"):
             with open("chat_history.json", "r", encoding="utf-8") as f:
                 history = json.load(f)
                 if isinstance(history, list) and all(isinstance(msg, dict) and "role" in msg and "content" in msg for msg in history):
-                    logger.debug("Loaded chat history from chat_history.json")
+                    logger.debug("Loaded chat history from recent_prompt.json")
                     return history
-        logger.debug("No valid chat_history.json found, starting with empty history")
+        logger.debug("No valid recent_prompt.json found, starting with empty history")
         return []
     except Exception as e:
         logger.error(f"Error loading chat history from JSON: {e}")
         return []
 
-def save_chat_history(chatbot_history):
-    #Save the chatbot history to chat_history.json.
+def save_chat_history(chatbot_history, filename:str):
+    #Save the chatbot history to [filename].json.
     try:
-        with open("chat_history.json", "w", encoding="utf-8") as f:
+        with open(f"{filename}.json", "w", encoding="utf-8") as f:
             json.dump(chatbot_history, f, indent=4, ensure_ascii=False)
         logger.debug("Chat history saved to chat_history.json")
     except Exception as e:
@@ -116,39 +116,60 @@ messagesample_data = load_messagesample()
 system_prompt = format_context(messagesample_data)
 
 def save_latest_response():
-    api_key = os.getenv("GOOGLE_API_KEY")
-    if not api_key:
-        raise ValueError("GOOGLE_API_KEY not found in .env")
-    
-    #Reading chat_history.json
-    input_file = "chat_history.json"
-    logger.debug(f"Reading input file: {input_file}")
     try:
-        with open(input_file, 'r') as f:
-            input_data = json.load(f)
-        logger.info("Generating response using chatbot")
-        #Constructing prompt
-        recipe = input_data.get("response","")
-        prompt = [(
-        f"Convert the following recipe into a json formatted string.\n"
-        f"The json have the following keys: the endname(which is another word for recipe name), ingredients, and instruction. "
-        f"Return only the json formatted string. You must not say anything else"
-        f"The recipe is {recipe}"
-        )]
-        ai_msg = model.invoke(prompt)
+        history = load_chat_history()
+        if not history:
+            logger.warning("No chat history found")
+            return json.dumps({"error": "No chat history available"}, indent=2)
+        
+        # Find the latest assistant response
+        latest_response = None
+        for msg in reversed(history):
+            if msg["role"] == "assistant":
+                latest_response = msg["content"]
+                break
+        if not latest_response:
+            logger.warning("No assistant response found in chat history")
+            return json.dumps({"error": "No assistant response found"}, indent=2)
+        
+        # Prompt Gemini to convert the response to JSON
+        json_prompt = (
+            f"Convert the following recipe into a JSON-formatted string with keys: Endname (recipe name), Ingredients (list of strings), and Instruction (string).\n"
+            f"Return ONLY the JSON string, enclosed in triple backticks:\n"
+            f"```\n"
+            f"{{\"Endname\": \"[Recipe Name]\", \"Ingredients\": \"[Ingredient 1,Ingredient 2\", ...], \"Instruction\": \"[Detailed steps]\"}}\n"
+            f"```\n"
+            f"Ensure the recipe respects the user preferences:\n"
+            f"If the input is not a valid recipe, return:\n"
+            f"```\n"
+            f"{{\"error\": \"Invalid recipe description\"}}\n"
+            f"```\n"
+            f"Recipe description: {latest_response}\n"
+            f"DO NOT include any text outside the triple backticks."
+        )
+        
+        response = model.generate_content(json_prompt)
+        json_string = response.text.strip()
+        #for debugging to see AI's response
+        #print(json_string)
+        # Extract JSON from triple backticks
+        if json_string.startswith("```json") and json_string.endswith("```"):
+            json_string = json_string[7:-3].strip()
+        elif json_string.startswith("```") and json_string.endswith("```"):
+            json_string = json_string[3:-3].strip()
+        
+        # Validate JSON
+        recipe_data = json.loads(json_string)
+        
+        # Save to recipe.json
+        with open("recipe.json", "w", encoding="utf-8") as f:
+            json.dump(recipe_data, f, indent=2, ensure_ascii=False)
+        logger.debug("Recipe saved to recipe.json")
+        
+        return json_string
     except Exception as e:
-        logger.error(f"Error in chatbotTest: {str(e)}")
-        raise
-    #saving Gemini response as .json
-    data = json.load(ai_msg.content)
-    try:
-        with open("recipe.json", "w") as file:
-            json.dump(data, file, indent=2)
-        print("JSON file 'recipe.json' created successfully.")
-        return "Successfully saved"
-    except Exception as e:
-        print(f"Error creating JSON file: {str(e)}")
-        return "Error saving"
+        logger.error(f"Error in save_latest_response: {e}")
+        return json.dumps({"error": str(e)}, indent=2)
 
     
 
@@ -174,13 +195,16 @@ def handle_user_query(user_input, chatbot_history):
         # Append assistant's response to chat history
         chatbot_history.append({"role": "assistant", "content": assistant_response})
         
+        
+        #Save the whole chat history to JSON
+        save_chat_history(chatbot_history, "chat_history")
+        
+        #Save the most recent chat history to JSON
         data = {
         "query": user_input,
         "response": assistant_response
         }
-
-        # Save the updated chat history to JSON
-        save_chat_history(data)
+        save_chat_history(data,"recent_prompt")
         
         return "", chatbot_history
     except Exception as e:
