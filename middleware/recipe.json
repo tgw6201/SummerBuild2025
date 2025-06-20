@@ -1,14 +1,5 @@
 {
-  "Endname": "Less Sweet Blueberry Muffins",
-  "Ingredients": [
-    "1.5 cups whole wheat flour",
-    "0.125 cup brown sugar (halved from the original recipe)",
-    "2.0 tablespoons olive oil",
-    "1.0 count eggs",
-    "0.75 cup almond milk",
-    "1.0 teaspoon baking soda",
-    "1.0 cup blueberries",
-    "1/2 teaspoon cinnamon (optional, for added flavor)"
-  ],
-  "Instruction": "1. Preheat oven to 375°F (190°C). Line a muffin tin with paper liners or grease it.\n2. In a large bowl, whisk together the whole wheat flour, brown sugar, baking soda, and cinnamon (if using).\n3. In a separate bowl, whisk together the egg, olive oil, and almond milk.\n4. Pour the wet ingredients into the dry ingredients and mix until just combined. Be careful not to overmix.\n5. Gently fold in the blueberries.\n6. Fill each muffin liner about 2/3 full.\n7. Bake for 20-25 minutes, or until a toothpick inserted into the center comes out clean.\n8. Let the muffins cool in the tin for a few minutes before transferring them to a wire rack to cool completely."
+  "Endname": "Vegetarian Chickpea and Spinach Curry",
+  "Ingredients": "1 tablespoon olive oil, 1 medium onion, chopped, 2 cloves garlic, minced, 1 inch ginger, grated, 1 teaspoon cumin powder, 1 teaspoon coriander powder, 1/2 teaspoon turmeric powder, 1/4 teaspoon cayenne pepper, 14.5 ounce can diced tomatoes, 15 ounce can chickpeas, 5 ounces spinach, 1/2 cup vegetable, Salt, Fresh parsley, Jasmine rice",
+  "Instruction": "1. Heat the olive oil in a large pot or Dutch oven over medium heat. Add the chopped onion and cook until softened, about 5 minutes. 2. Add the minced garlic and grated ginger to the pot and cook for another minute until fragrant. 3. Stir in the cumin powder, coriander powder, turmeric powder, and cayenne pepper. Cook for 30 seconds, stirring constantly, until fragrant. 4. Add the diced tomatoes and chickpeas to the pot. Season with salt to taste. Bring to a simmer, then reduce heat and cook for 15 minutes, stirring occasionally. 5. Stir in the spinach and cook until wilted, about 2 minutes. 6. Serve the curry over jasmine rice. Garnish with fresh parsley."
 }

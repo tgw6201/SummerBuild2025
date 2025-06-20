@@ -37,7 +37,7 @@ def load_messagesample():
                     "user" in data and
                     "ingredients" in data and
                     isinstance(data["user"], dict) and
-                    isinstance(data["ingredients"], list)
+                    isinstance(data["ingredients"], str)
                 ):
                     logger.debug("Loaded user context from messagesample.json")
                     return data
@@ -84,17 +84,15 @@ def format_context(messagesample_data):
             )
     
     user = messagesample_data.get("user", {})
-    ingredients = messagesample_data.get("ingredients", [])
+    ingredients = messagesample_data.get("ingredients", str)
     
     age = user.get("age", "unknown")
     food_prefs = user.get("food_preferences", {})
     allergies = food_prefs.get("allergies", [])
-    special_diet = food_prefs.get("special_diet", "none")
+    dietary_preference = food_prefs.get("dietary_preference", "none")
     calorie_target = user.get("calorie_target", "unspecified")
     
-    ingredients_str = ", ".join(
-        [f"{ing['quantity']} {ing['unit']} {ing['food']}" for ing in ingredients if ing.get("food") != "pork"]  # Exclude pork for halal
-    )
+    #ingredients_str = ", ".join([f"{ing['quantity']} {ing['unit']} {ing['food']}" for ing in ingredients ])
     
     return (
         f"You are a culinary and nutritional assistant tasked with helping users create recipes and track calories.\n"
@@ -104,11 +102,11 @@ def format_context(messagesample_data):
         f"Instructions: [Detailed steps]\n"
         f"User details:\n" 
         f"User Age: {user.get('age', 'unknown')}-year-old, \n"
-        f"You must respect user's Dietary preference: {user.get('food_preferences', {}).get('special_diet', 'no diet')} diet, \n"
+        f"You must respect user's Dietary preference: {user.get('food_preferences', {}).get('dietary_preference', 'no diet')} diet, \n"
         f"You must respect user's Allergies: {', '.join(user.get('food_preferences', {}).get('allergies', []))}, \n"
         f"The user's caloric Target: {user.get('calorie_target', 'unknown')} kcal/day.\n"
-        f"You can only use the following ingredients: {', '.join([f'{i['quantity']} {i['unit']} {i['food']}' for i in ingredients])}.\n"
-        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly"
+        f"You can only use the following ingredients unless explicitly stated by the user: {', '.join(i for i in ingredients)}.\n"
+        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly but you need to return the calories of the recipe per serving."
     )
 
 # Load messagesample.json at startup
@@ -134,7 +132,7 @@ def save_latest_response():
         
         # Prompt Gemini to convert the response to JSON
         json_prompt = (
-            f"Convert the following recipe into a JSON-formatted string with keys: Endname (recipe name), Ingredients (list of strings), and Instruction (string).\n"
+            f"Convert the following recipe into a JSON-formatted string with keys: Endname (recipe name), Ingredients (string), and Instruction (string).\n"
             f"Return ONLY the JSON string, enclosed in triple backticks:\n"
             f"```\n"
             f"{{\"Endname\": \"[Recipe Name]\", \"Ingredients\": \"[Ingredient 1,Ingredient 2\", ...], \"Instruction\": \"[Detailed steps]\"}}\n"

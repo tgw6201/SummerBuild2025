@@ -3,18 +3,10 @@
     "age": 30,
     "food_preferences": {
       "allergies": ["peanuts", "shellfish"],
-      "special_diet": "vegetarian, halal"
+      "dietary_preference": "vegetarian, halal"
     },
     "calorie_target": 2000
   },
-  "ingredients": [
-    {"food": "whole wheat flour", "quantity": 1.5, "unit": "cups"},
-    {"food": "brown sugar", "quantity": 0.25, "unit": "cup"},
-    {"food": "olive oil", "quantity": 2.0, "unit": "tablespoons"},
-    {"food": "eggs", "quantity": 1.0, "unit": "count"},
-    {"food": "almond milk", "quantity": 0.75, "unit": "cup"},
-    {"food": "baking soda", "quantity": 1.0, "unit": "teaspoon"},
-    {"food": "blueberries", "quantity": 1.0, "unit": "cup"},
-    {"food": "pork", "quantity": 1.0, "unit": "cup"}
-  ]
+  "ingredients":
+    "1 tablespoon olive oil, 1 medium onion, chopped, 2 cloves garlic, minced, 1 inch ginger, grated, 1 teaspoon cumin powder, 1 teaspoon coriander powder, 1/2 teaspoon turmeric powder, 1/4 teaspoon cayenne pepper, 14.5 ounce can diced tomatoes, 15 ounce can chickpeas, 5 ounces spinach, 1/2 cup vegetable, Salt, Fresh cilantro, basmati rice"
 }
