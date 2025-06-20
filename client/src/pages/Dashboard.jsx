@@ -88,8 +88,8 @@ const Dashboard = () => {
   return (
     <div className="dashboard-container">
       <div className="dashboard-header">
-        <h1>Healthy food, healthy lifestyle!</h1>
-        <h3>Only the best recipes for made for you! </h3>
+        <h1>Healthier food, healthier you!</h1>
+        <h3>Only the best recipes made for a better future! </h3>
       </div>
       {/* Row 1: Top 3 favourite dishes */}
       <div className="favourite-dishes">
