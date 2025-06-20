@@ -14,10 +14,12 @@ function getVerdict(totalCalories) {
   return "Very High Calories";
 }
 
-export default function EditRecipePage({ onSave, onBack }) {
+export default function RecipeInput({ onSave, onBack }) {
   const [name, setName] = useState("");
   const [ingredients, setIngredients] = useState([{ ...initialIngredient }]);
   const [instructions, setInstructions] = useState("");
+  const [image, setImage] = useState(null);
+  const [imagePreview, setImagePreview] = useState(null);
 
   const totalCalories = calculateCalories(ingredients);
   const verdict = getVerdict(totalCalories);
@@ -38,6 +40,18 @@ export default function EditRecipePage({ onSave, onBack }) {
     setIngredients(ings => ings.filter((_, i) => i !== idx));
   };
 
+  const handleImageChange = e => {
+    const file = e.target.files[0];
+    setImage(file);
+    if (file) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result);
+      reader.readAsDataURL(file);
+    } else {
+      setImagePreview(null);
+    }
+  };
+
   const handleSave = () => {
     if (onSave) {
       onSave({
@@ -46,6 +60,7 @@ export default function EditRecipePage({ onSave, onBack }) {
         instructions,
         totalCalories,
         verdict,
+        image, // File object
       });
     }
   };
@@ -53,6 +68,27 @@ export default function EditRecipePage({ onSave, onBack }) {
   return (
     <div className="recipe-input-container">
       <h2>Create New Recipe</h2>
+
+      {/* Profile-style square image upload */}
+      <div className="recipe-image-upload-wrapper">
+        <div className="recipe-image-square">
+          {imagePreview ? (
+            <img src={imagePreview} alt="Recipe" />
+          ) : (
+            <span style={{ color: "#bbb" }}>No Image</span>
+          )}
+          <label className="recipe-image-upload-label">
+            Upload
+            <input
+              type="file"
+              accept="image/*"
+              className="recipe-image-upload-input"
+              onChange={handleImageChange}
+            />
+          </label>
+        </div>
+      </div>
+
       <label className="form-label fw-bold">Recipe Name</label>
       <input
         type="text"
