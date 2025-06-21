@@ -20,6 +20,7 @@ export default function RecipeInput({ onSave, onBack }) {
   const [instructions, setInstructions] = useState("");
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
+  const [showModal, setShowModal] = useState(false); // Modal state
 
   const totalCalories = calculateCalories(ingredients);
   const verdict = getVerdict(totalCalories);
@@ -64,6 +65,10 @@ export default function RecipeInput({ onSave, onBack }) {
       });
     }
   };
+
+  // Modal handlers
+  const openModal = () => setShowModal(true);
+  const closeModal = () => setShowModal(false);
 
   return (
     <div className="recipe-input-container">
@@ -149,24 +154,37 @@ export default function RecipeInput({ onSave, onBack }) {
         rows={4}
       />
 
-      <div className="calorie-verdict-box">
-        <strong>Estimated Calories:</strong> {totalCalories} kcal<br />
-        <strong>Verdict:</strong> {verdict}
-      </div>
+      {/* Bootstrap Modal */}
+      {showModal && (
+        <div className="modal show" tabIndex="-1" style={{ display: "block", background: "rgba(0,0,0,0.3)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Estimated Calories & Verdict</h5>
+                <button type="button" className="btn-close" onClick={closeModal}></button>
+              </div>
+              <div className="modal-body">
+                <p><strong>Estimated Calories:</strong> {totalCalories} kcal</p>
+                <p><strong>Verdict:</strong> {verdict}</p>
+              </div>
+              <div className="modal-footer">
+                <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       <div className="recipe-btn-group">
-        <button
-          type="button"
-          className="btn btn-warning"
-          onClick={handleSave}
-        >
+        <button type="button" className="btn btn-info" onClick={openModal}>
+          Show Calories & Verdict
+        </button>
+        <button type="button" className="btn btn-warning" onClick={handleSave}>
           Save recipe and Eat
         </button>
-        <button
-          type="button"
-          className="btn btn-secondary"
-          onClick={onBack}
-        >
+        <button type="button" className="btn btn-secondary" onClick={onBack}>
           Back
         </button>
       </div>
