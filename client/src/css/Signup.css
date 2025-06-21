@@ -10,7 +10,7 @@
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
-  }
+}
 
 body {
     font-family: inherit;
@@ -66,15 +66,15 @@ body {
 .form-control:focus {
     box-shadow: 0 0 8px 2px rgb(230, 100, 14); 
     border-color: orange; 
-  }
+}
 
-  .signup-link {
+.signup-link {
     text-decoration: underline;
     color: inherit;
     transition: color 0.3s ease;
     cursor: pointer;
-  }
+}
   
-  .signup-link:hover {
+.signup-link:hover {
     color: orange;
-  }
+}
