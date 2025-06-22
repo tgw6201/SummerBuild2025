@@ -106,7 +106,7 @@ def format_context(messagesample_data):
         f"You must respect user's Allergies: {', '.join(user.get('food_preferences', {}).get('allergies', []))}, \n"
         f"The user's caloric Target: {user.get('calorie_target', 'unknown')} kcal/day.\n"
         f"You can only use the following ingredients unless explicitly stated by the user: {', '.join(i for i in ingredients)}.\n"
-        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly but you need to return the calories of the recipe per serving."
+        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly but you MUST return the calories of the recipe per serving and the serving size."
     )
 
 # Load messagesample.json at startup
