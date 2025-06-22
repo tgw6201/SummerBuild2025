@@ -1,179 +1,188 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import '../css/Onboarding.css';
 
 export default function Onboarding() {
-  const navigate = useNavigate();
-  const [step, setStep] = useState(1);
-
-  const [formData, setFormData] = useState({
+  const [form, setForm] = useState({
     phone: "",
     name: "",
     gender: "",
     weight: "",
     height: "",
-    date_of_birth: "",
+    dob: "",
     allergies: "",
     dietary_preference: "",
-    calorie_goal: "",
+    calorie_goal: ""
   });
+  const [error, setError] = useState("");
+  const navigate = useNavigate();
 
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-
-    if (name === "gender") {
-      processedValue = value.toLowerCase(); // force lowercase
-    }
-    // Allow only positive integers for weight and height
-    if (
-      (name === "weight" || name === "height" || name === "calorie_goal") &&
-      value !== ""
-    ) {
-      if (!/^\d+$/.test(value)) return; // Block non-numeric or negative input
-    }
-
-    setFormData((prev) => ({ ...prev, [name]: value }));
-  };
-
-  const handleNext = () => {
-    const { gender, weight, height } = formData;
-
-    // Gender validation: allow only 'male' or 'female' (case-insensitive)
-    const genderValid = ["male", "female"].includes(gender.toLowerCase());
-
-    if (!genderValid) {
-      alert("Gender must be 'male' or 'female'");
-      return;
-    }
-
-    if (parseInt(weight) <= 0 || parseInt(height) <= 0) {
-      alert("Weight and Height must be positive numbers");
-      return;
-    }
-
-    setStep(2);
-  };
-
-  const handleBack = () => setStep(1);
-
-  const handleSubmit = async (e) => {
-    e.preventDefault();
-
-    try {
-      const response = await fetch("http://localhost:3000/onboarding", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(formData),
-        credentials: "include", // Include cookies for session management
-      });
-
-      if (!response.ok) {
-        const error = await response.json();
-        alert(error.message || "Submission failed");
-        return;
+  const handleChange = e => {
+    const { name, value, type } = e.target;
+    if (type === "checkbox") {
+      let newAllergies = [...form.allergies];
+      if (e.target.checked) {
+        newAllergies.push(value);
+      } else {
+        newAllergies = newAllergies.filter(a => a !== value);
       }
-
-      navigate("/dashboard");
-    } catch (err) {
-      console.error("Error submitting onboarding:", err);
-      alert("Something went wrong.");
+      setForm({ ...form, allergies: newAllergies });
+    } else {
+      setForm({ ...form, [name]: value });
     }
+    setError("");
+  };
+
+  const handleSubmit = e => {
+    e.preventDefault();
+    if (!form.phone || !form.name || !form.gender || !form.weight || !form.height || !form.dob || !form.dietary_preference || !form.calorie_goal) {
+      setError("Please fill in all required fields.");
+      return;
+    }
+    alert("Onboarding complete!");
+    navigate("/chatbot");
   };
 
   return (
-    <main className="onboarding-form">
-      <form onSubmit={handleSubmit}>
-        <h2>Onboarding</h2>
+    <main className="form-signin text-center">
+      <form onSubmit={handleSubmit} autoComplete="off">
+        <h1 className="title">Welcome to RennyBot!</h1>
+        <h2 className="h4 mb-3 fw-normal">Let's set up your profile</h2>
 
-        {step === 1 && (
-          <>
-            <input
-              type="text"
-              name="phone"
-              placeholder="Phone Number"
-              value={formData.phone}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="name"
-              placeholder="Full Name"
-              value={formData.name}
-              onChange={handleChange}
-              required
-            />
-            {/* GENDER DROPDOWN: MALE / FEMALE ONLY */}
-            <select
-              name="gender"
-              className="form-select form-select-sm"
-              value={formData.gender}
-              onChange={handleChange}
-              required
-            >
-              <option value="">Select Gender</option>
-              <option value="male">Male</option>
-              <option value="female">Female</option>
-            </select>
-            <input
-              type="text"
-              name="weight"
-              placeholder="Weight (kg)"
-              value={formData.weight}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="text"
-              name="height"
-              placeholder="Height (cm)"
-              value={formData.height}
-              onChange={handleChange}
-              required
-            />
-            <input
-              type="date"
-              name="date_of_birth"
-              value={formData.date_of_birth}
-              onChange={handleChange}
-              required
-            />
-            <button className="btn btn-dark" type="button" onClick={handleNext}>
-              Next
-            </button>
-          </>
-        )}
+        <div className="form-floating">
+          <input
+            type="tel"
+            className="form-control"
+            id="floatingPhone"
+            name="phone"
+            placeholder="Phone Number"
+            value={form.phone}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="floatingPhone">Phone Number</label>
+        </div>
 
-        {step === 2 && (
-          <>
+        <div className="form-floating">
+          <input
+            type="text"
+            className="form-control"
+            id="floatingName"
+            name="name"
+            placeholder="Name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="floatingName">Name</label>
+        </div>
+
+        <div className="form-floating">
+          <select
+            className="form-control"
+            id="floatingGender"
+            name="gender"
+            value={form.gender}
+            onChange={handleChange}
+            required
+          >
+            <option value="">Select Gender</option>
+            <option value="Female">Female</option>
+            <option value="Male">Male</option>
+          </select>
+          <label htmlFor="floatingGender">Gender</label>
+        </div>
+
+        <div className="form-floating">
+          <input
+            type="number"
+            className="form-control"
+            id="floatingWeight"
+            name="weight"
+            placeholder="Weight (kg)"
+            value={form.weight}
+            onChange={handleChange}
+            min="1"
+            required
+          />
+          <label htmlFor="floatingWeight">Weight (kg)</label>
+        </div>
+
+        <div className="form-floating">
+          <input
+            type="number"
+            className="form-control"
+            id="floatingHeight"
+            name="height"
+            placeholder="Height (cm)"
+            value={form.height}
+            onChange={handleChange}
+            min="1"
+            required
+          />
+          <label htmlFor="floatingHeight">Height (cm)</label>
+        </div>
+
+        <div className="form-floating">
+          <input
+            type="date"
+            className="form-control"
+            id="floatingDOB"
+            name="dob"
+            placeholder="Date of Birth"
+            value={form.dob}
+            onChange={handleChange}
+            required
+          />
+          <label htmlFor="floatingDOB">Date of Birth</label>
+        </div>
+
+        <div className="form-floating">
             <input
-              type="text"
-              name="allergies"
-              placeholder="Allergies (comma separated)"
-              value={formData.allergies}
-              onChange={handleChange}
+                type="text"
+                className="form-control"
+                id="floatingDiet"
+                name="dietary_preference"
+                placeholder="Dietary Preference"
+                value={form.dietary_preference}
+                onChange={handleChange}
+                required
             />
+            <label htmlFor="floatingDiet">Dietary Preference</label>
+        </div>
+
+        <div className="form-floating">
             <input
-              type="text"
-              name="dietary_preference"
-              placeholder="Dietary Preference (e.g. Vegan)"
-              value={formData.dietary_preference}
-              onChange={handleChange}
+                type="text"
+                className="form-control"
+                name="allergies"
+                placeholder="Allergies (comma separated)"
+                value={form.allergies}
+                onChange={handleChange}
             />
-            <input
-              type="text"
-              name="calorie_goal"
-              placeholder="Daily Calorie Goal"
-              value={formData.calorie_goal}
-              onChange={handleChange}
-            />
-            <button className="btn btn-dark" type="button" onClick={handleBack}>
-              Back
-            </button>
-            <button className="btn btn-dark" type="submit">
-              Submit
-            </button>
-          </>
-        )}
+            <label>Allergies (comma separated)</label>
+        </div>
+
+        <div className="form-floating">
+          <input
+            type="number"
+            className="form-control"
+            id="floatingCalorieGoal"
+            name="calorie_goal"
+            placeholder="Daily Calorie Goal"
+            value={form.calorie_goal}
+            onChange={handleChange}
+            min="1"
+            required
+          />
+          <label htmlFor="floatingCalorieGoal">Daily Calorie Goal</label>
+        </div>
+
+        {error && <div className="error-msg">{error}</div>}
+
+        <button className="btn btn-primary w-100 py-2" type="submit">
+          Finish Onboarding
+        </button>
       </form>
     </main>
   );
