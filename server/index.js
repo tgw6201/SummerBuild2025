@@ -122,59 +122,131 @@ app.post('/profile', async(req, res) => {
 
 // Update user dietary preferences
 app.put('/profile', async (req, res) => {
-    const sessionid = req.cookies.sessionid;
-    if (!sessionid) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-    // Get useremail from sessionid
-    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
-    if (user.rows.length === 0) {
-        return res.status(404).json({ message: "invalid session id" });
+  const sessionid = req.cookies.sessionid;
+  if (!sessionid) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const user = await pool.query(
+    "SELECT userid FROM user_login_table WHERE sessionid = $1",
+    [sessionid]
+  );
+  if (user.rows.length === 0) {
+    return res.status(404).json({ message: "Invalid session id" });
+  }
+
+  const {
+    name,
+    phone_number,
+    gender,
+    weight,
+    height,
+    date_of_birth,
+    daily_calorie_goal,
+    dietary_preference,
+    profile_image,
+    allergies
+  } = req.body;
+
+  // Convert image data to Buffer if it exists
+  let imageBuffer = null;
+  if (profile_image && profile_image.data) {
+    imageBuffer = Buffer.from(profile_image.data);
+  }
+
+  try {
+    const updateUserDetailResult = await pool.query(
+      `UPDATE user_details 
+       SET phone_number = $1, name = $2, gender = $3, weight = $4, 
+           height = $5, date_of_birth = $6, profile_image = $7 
+       WHERE userid_fk = $8 
+       RETURNING *`,
+      [
+        phone_number,
+        name,
+        gender,
+        weight,
+        height,
+        date_of_birth,
+        imageBuffer,
+        user.rows[0].userid
+      ]
+    );
+
+    const updateDietaryPreference = await pool.query(
+      `UPDATE user_dietary_preference 
+       SET dietary_preference = $1, daily_calorie_goal = $2, allergies = $3 
+       WHERE userid = $4 
+       RETURNING *`,
+      [
+        dietary_preference,
+        daily_calorie_goal,
+        allergies,
+        user.rows[0].userid
+      ]
+    );
+
+    if (updateUserDetailResult.rows.length === 0 || updateDietaryPreference.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const {phoneNumber, name, gender, weight, height, date_of_birth} = req.body;
-    try{
-        const result = await pool.query(
-            "UPDATE user_details SET phone_number = $1, name = $2, gender = $3, weight = $4, height = $5, date_of_birth = $6 WHERE userid_fk = $7 RETURNING *",[phoneNumber,name,gender,weight,height,date_of_birth,user.rows[0].userid]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: "User dietary preferences not found" });
-        }
-    }
-    catch (err) {
-        console.error(err.message);
-        return res.status(500).send("Server Error");
-    }
     res.status(201).json({ message: "User dietary preferences updated successfully" });
+
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    res.status(500).send("Server Error");
+  }
 });
+
 
 //Get user dietary preferences
-app.get('/profile', async(req, res) => {
-    const sessionid = req.cookies.sessionid;
-    if (!sessionid) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-    // Get useremail from sessionid
-    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
-    if (user.rows.length === 0) {
-        return res.status(404).json({ message: "invalid session id" });
+app.get('/profile', async (req, res) => {
+  const sessionid = req.cookies.sessionid;
+  if (!sessionid) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+  if (user.rows.length === 0) {
+    return res.status(404).json({ message: "Invalid session ID" });
+  }
+
+  pool.query(
+    `SELECT * 
+     FROM user_details ud
+     JOIN user_dietary_preference udp ON ud.userid_fk = udp.userid
+     WHERE ud.userid_fk = $1`,
+    [user.rows[0].userid]
+  )
+    .then(result => {
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const userData = result.rows[0];
+
+      if (userData.profile_image) {
+        const contentType = userData.profile_image_type || 'image/png';
+        const byteArray = [...userData.profile_image]; // Convert Buffer to array
+        userData.profile_image = {
+            data: byteArray,
+            contentType: contentType
+        };
+        } else {
+        userData.profile_image = {
+            data: [],
+            contentType: ''
+        };
     }
 
-    pool.query("SELECT * FROM user_details ud, user_dietary_preference udp WHERE ud.userid_fk = $1 AND ud.userid_fk = udp.userid", [user.rows[0].userid])
-        .then(result => {
-            if (result.rows.length === 0) {
-                return res.status(404).json({ message: "User not found" });
-            }
-
-            // Return the user details
-            // Take note that date of birth might display differently based on timezone differences (inform me if need to adjust)
-            res.json(result.rows[0]);
-        })
-        .catch(err => {
-            console.error(err.message);
-            res.status(500).send("Server Error");
-        });
+      res.json(userData);
+    })
+    .catch(err => {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    });
 });
+
 
 // Create dietary preferences
 app.post('/dietary-preferences', async (req, res) => {
