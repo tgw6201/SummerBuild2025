@@ -33,6 +33,7 @@ function AppRoutes() {
         <Route path="/profile" element={<Profile />} />
         <Route path="/recipe-input" element={<RecipeInput />} />
         <Route path="/recipe-list" element={<RecipeList />} />
+        <Route path="/recipe-input/:mid" element={<RecipeInput />} />
       </Routes>
     </>
   );

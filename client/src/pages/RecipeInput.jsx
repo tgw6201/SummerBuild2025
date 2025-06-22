@@ -1,7 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from 'react-router-dom';
 import '../css/RecipeInput.css';
 
-const initialIngredient = { name: "", amount: "", unit: ""};
+const initialIngredient = { text: "" };
 
 function calculateCalories(ingredients) {
   return ingredients.reduce((sum, ing) => sum + Number(ing.calories || 0), 0);
@@ -15,12 +16,41 @@ function getVerdict(totalCalories) {
 }
 
 export default function RecipeInput({ onSave, onBack }) {
+  const { mid } = useParams();
+  const navigate = useNavigate();
+
   const [name, setName] = useState("");
   const [ingredients, setIngredients] = useState([{ ...initialIngredient }]);
   const [instructions, setInstructions] = useState("");
-  const [image, setImage] = useState(null);
-  const [imagePreview, setImagePreview] = useState(null);
-  const [showModal, setShowModal] = useState(false); // Modal state
+  const [showModal, setShowModal] = useState(false);
+
+  //Load existing recipe if editing
+  useEffect(() => {
+    if (mid) {
+      fetch(`http://localhost:3000/user-recipes/${mid}`, {
+        credentials: 'include'
+      })
+        .then(res => {
+          if (!res.ok) throw new Error("Failed to fetch recipe");
+          return res.json();
+        })
+        .then(data => {
+          setName(data.mname || "");
+          setInstructions(data.recipe_instruction || "");
+
+          console.log("Raw ingredients:", data.recipe_ingredients);
+          const parsedIngredients = data.recipe_ingredients
+            ?.split(',')
+            .map(item => ({ text: item.trim() })) || [];
+
+          setIngredients(parsedIngredients.length ? parsedIngredients : [{ ...initialIngredient }]);
+        })
+        .catch(err => {
+          alert("Error loading recipe: " + err.message);
+        });
+    }
+  }, [mid]);
+
 
   const totalCalories = calculateCalories(ingredients);
   const verdict = getVerdict(totalCalories);
@@ -41,58 +71,61 @@ export default function RecipeInput({ onSave, onBack }) {
     setIngredients(ings => ings.filter((_, i) => i !== idx));
   };
 
-  const handleImageChange = e => {
-    const file = e.target.files[0];
-    setImage(file);
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result);
-      reader.readAsDataURL(file);
-    } else {
-      setImagePreview(null);
+  const handleSave = async () => {
+    if (!name.trim() || ingredients.length === 0 || !instructions.trim()) {
+      alert("Please fill in all the fields.");
+      return;
     }
-  };
 
-  const handleSave = () => {
-    if (onSave) {
-      onSave({
-        name,
-        ingredients,
-        instructions,
-        totalCalories,
-        verdict,
-        image, // File object
+    const formattedIngredients = ingredients
+      .map(ing => ing.text.trim())
+      .filter(str => str.length > 0)
+      .join(', ');
+
+    const recipeToSend = {
+      mname: name.trim(),
+      recipe_ingredients: formattedIngredients,
+      recipe_instruction: instructions.trim(),
+    };
+
+    console.log("Sending recipe:", recipeToSend);
+
+    try {
+      const url = mid
+        ? `http://localhost:3000/user-recipes/${mid}`
+        : 'http://localhost:3000/user-recipes';
+
+      const method = mid ? 'PUT' : 'POST';
+
+      const response = await fetch(url, {
+        method,
+        credentials: 'include',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(recipeToSend),
       });
+
+      if (response.ok) {
+        alert('Recipe saved successfully!');
+        if (onSave) onSave(recipeToSend);
+        navigate('/Chatbot'); // Redirect to chatbot after saving
+      } else {
+        const err = await response.json();
+        alert(`Failed to save: ${err.message || 'Unknown error'}`);
+      }
+    } catch (error) {
+      console.error("Error saving recipe:", error);
+      alert("Network error. Please try again.");
     }
   };
 
-  // Modal handlers
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
 
   return (
     <div className="recipe-input-container">
-      <h2>Create New Recipe</h2>
-
-      {/* Profile-style square image upload */}
-      <div className="recipe-image-upload-wrapper">
-        <div className="recipe-image-square">
-          {imagePreview ? (
-            <img src={imagePreview} alt="Recipe" />
-          ) : (
-            <span style={{ color: "#bbb" }}>No Image</span>
-          )}
-          <label className="recipe-image-upload-label">
-            Upload
-            <input
-              type="file"
-              accept="image/*"
-              className="recipe-image-upload-input"
-              onChange={handleImageChange}
-            />
-          </label>
-        </div>
-      </div>
+      <h2>{mid ? "Edit Recipe" : "Create New Recipe"}</h2>
 
       <label className="form-label fw-bold">Recipe Name</label>
       <input
@@ -104,40 +137,37 @@ export default function RecipeInput({ onSave, onBack }) {
 
       <div className="section-title">Ingredients</div>
       <div className="mb-2 text-muted" style={{ fontSize: "0.9rem" }}>
-      Please enter each ingredient's name, amount, and measurement. 
-      <p> (e.g. "Chicken Breast, 200, grams" or "Rice, 1, cup") </p>
+        Please enter each ingredient's name, amount, and measurement.
+        <p>(e.g. "Chicken Breast, 200, grams" or "Rice, 1, cup")</p>
       </div>
+
       {ingredients.map((ing, idx) => (
-        <div className="ingredient-row" key={idx}>
-          <input
-            className="form-control"
-            placeholder="Name"
-            value={ing.name}
-            onChange={e => handleIngredientChange(idx, "name", e.target.value)}
-          />
-          <input
-            className="form-control"
-            placeholder="Amount"
-            value={ing.amount}
-            onChange={e => handleIngredientChange(idx, "amount", e.target.value)}
-          />
-          <input
-            className="form-control"
-            placeholder="Unit"
-            value={ing.unit}
-            onChange={e => handleIngredientChange(idx, "unit", e.target.value)}
-          />
-          {ingredients.length > 1 && (
-            <button
-              type="button"
-              className="btn btn-outline-danger btn-sm"
-              onClick={() => removeIngredient(idx)}
-            >
-              &times;
-            </button>
-          )}
-        </div>
-      ))}
+      <div className="ingredient-row" key={idx}>
+        <input
+          className="form-control"
+          placeholder='e.g. Chicken Breast 200 grams'
+          value={ing.text || ""}
+          onChange={e =>
+            setIngredients(ings =>
+              ings.map((item, i) =>
+                i === idx ? { ...item, text: e.target.value } : item
+              )
+            )
+          }
+        />
+        {ingredients.length > 1 && (
+          <button
+            type="button"
+            className="btn btn-outline-danger btn-sm"
+            onClick={() => removeIngredient(idx)}
+          >
+            &times;
+          </button>
+        )}
+      </div>
+    ))}
+
+
       <button
         type="button"
         className="btn btn-outline-primary add-ingredient-btn"
@@ -154,7 +184,6 @@ export default function RecipeInput({ onSave, onBack }) {
         rows={4}
       />
 
-      {/* Bootstrap Modal */}
       {showModal && (
         <div className="modal show" tabIndex="-1" style={{ display: "block", background: "rgba(0,0,0,0.3)" }}>
           <div className="modal-dialog">
@@ -184,7 +213,7 @@ export default function RecipeInput({ onSave, onBack }) {
         <button type="button" className="btn btn-warning" onClick={handleSave}>
           Save recipe and Eat
         </button>
-        <button type="button" className="btn btn-secondary" onClick={onBack}>
+        <button type="button" className="btn btn-secondary" onClick={onBack || (() => navigate('/chatbot'))}>
           Back
         </button>
       </div>
