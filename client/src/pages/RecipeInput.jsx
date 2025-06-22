@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import '../css/RecipeInput.css';
 
 const initialIngredient = { name: "", amount: "", unit: ""};
@@ -21,6 +22,8 @@ export default function RecipeInput({ onSave, onBack }) {
   const [image, setImage] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [showModal, setShowModal] = useState(false); // Modal state
+  const [showEatModal, setShowEatModal] = useState(false);
+  const navigate = useNavigate();
 
   const totalCalories = calculateCalories(ingredients);
   const verdict = getVerdict(totalCalories);
@@ -177,14 +180,52 @@ export default function RecipeInput({ onSave, onBack }) {
         </div>
       )}
 
+      {showEatModal && (
+        <div className="modal show" tabIndex="-1" style={{ display: "block", background: "rgba(0,0,0,0.3)" }}>
+          <div className="modal-dialog">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">Save & Log Calories</h5>
+                <button type="button" className="btn-close" onClick={() => setShowEatModal(false)}></button>
+              </div>
+              <div className="modal-body">
+                <p>
+                  Are you sure you want to save this recipe and log <strong>{totalCalories} kcal</strong>?
+                </p>
+              </div>
+              <div className="modal-footer">
+                <button
+                  type="button"
+                  className="btn btn-secondary"
+                  onClick={() => setShowEatModal(false)}
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  className="btn btn-warning"
+                  onClick={() => {
+                    setShowEatModal(false);
+                    handleSave();
+                    navigate("/profile"); // Redirect to profile page after saving
+                  }}
+                >
+                  Confirm Eating
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
+
       <div className="recipe-btn-group">
         <button type="button" className="btn btn-info" onClick={openModal}>
           Show Calories & Verdict
         </button>
-        <button type="button" className="btn btn-warning" onClick={handleSave}>
+        <button type="button" className="btn btn-warning" onClick={() => setShowEatModal(true)}>
           Save recipe and Eat
         </button>
-        <button type="button" className="btn btn-secondary" onClick={onBack}>
+        <button type="button" className="btn btn-secondary" onClick={() => navigate("/profile")}>
           Back
         </button>
       </div>
