@@ -160,7 +160,7 @@ app.get('/profile', async(req, res) => {
         return res.status(404).json({ message: "invalid session id" });
     }
 
-    pool.query("SELECT * FROM user_details WHERE userid_fk = $1", [user.rows[0].userid])
+    pool.query("SELECT * FROM user_details ud, user_dietary_preference udp WHERE ud.userid_fk = $1 AND ud.userid_fk = udp.userid", [user.rows[0].userid])
         .then(result => {
             if (result.rows.length === 0) {
                 return res.status(404).json({ message: "User not found" });
@@ -650,6 +650,7 @@ app.post('/onboarding', async (req, res) => {
         res.status(500).send("Server Error");
     }
 })
+
 
 app.post('/logout', (req, res) => {
     res.clearCookie("sessionid", {

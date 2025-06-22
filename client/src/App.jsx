@@ -11,6 +11,7 @@ import Dashboard from './pages/Dashboard';
 import Profile from './pages/Profile';
 import ChangePassword from './pages/ChangePassword';
 import RecipeInput from './pages/RecipeInput';
+import RecipeList from './pages/RecipeList';
 import './index.css';
 
 // This must be used *inside* Router
@@ -31,6 +32,7 @@ function AppRoutes() {
         <Route path="/dashboard" element={<Dashboard />} />
         <Route path="/profile" element={<Profile />} />
         <Route path="/recipe-input" element={<RecipeInput />} />
+        <Route path="/recipe-list" element={<RecipeList />} />
       </Routes>
     </>
   );
