@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
+import '../css/RecipeList.css';
 
 export default function RecipeList() {
     const [recipes, setRecipes] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
+    const [expandedRows, setExpandedRows] = useState({});
 
     useEffect(() => {
         fetchRecipes();
@@ -92,6 +94,17 @@ export default function RecipeList() {
         }
     };
 
+    // Helper to toggle expanded state
+    const toggleExpand = (mid, field) => {
+        setExpandedRows(prev => ({
+            ...prev,
+            [mid]: {
+                ...prev[mid],
+                [field]: !prev[mid]?.[field]
+            }
+        }));
+    };
+
     const navigate = useNavigate();
 
     const handleEdit = (recipe) => {
@@ -103,58 +116,126 @@ export default function RecipeList() {
 
     return (
         <div className="recipe-list-container">
-            <h2>All Recipes</h2>
-            {recipes.length === 0 ? (
-                <p>No recipes found.</p>
-            ) : (
-                <table className="table table-striped">
-                    <thead>
-                        <tr>
-                            <th>Name</th>
-                            <th>Ingredients</th>
-                            <th>Instructions</th>
-                            <th>Calories</th>
-                            <th>Actions</th>
-                        </tr>
-                    </thead>
-                        <tbody>
-                            {recipes.map((recipe) => (
-                                <tr key={recipe.mid}>
-                                    <td>{recipe.mname}</td>
-                                    <td>{recipe.recipe_ingredients}</td>
-                                    <td>{recipe.recipe_instruction}</td>
-                                    <td>{recipe.calories}</td>
-                                    <td>
-                                        <button
-                                            className="btn btn-secondary me-2"
-                                            onClick={() => handleEdit(recipe)}
-                                        >
-                                            Edit
-                                        </button>
-                                        <button
-                                            className="btn btn-sm btn-danger me-2"
-                                            onClick={() => handleDelete(recipe)}
-                                        >
-                                            Delete
-                                        </button>
-                                        <button
-                                            className="btn btn-sm btn-warning me-2"
-                                            onClick={() => handleFavorite(recipe)}
-                                        >
-                                            Favorite
-                                        </button>
-                                        <button
-                                            className="btn btn-sm btn-success"
-                                            onClick={() => handleConsumed(recipe)}
-                                        >
-                                            Consumed
-                                        </button>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                </table>
-            )}
+            <div className="card shadow recipe-list-card">
+                <div className="card-body">
+                    <h2 className="mb-4 text-warning">All Recipes</h2>
+                    {recipes.length === 0 ? (
+                        <p className="text-muted">No recipes found.</p>
+                    ) : (
+                        <div className="table-responsive">
+                            <table className="table table-hover align-middle">
+                                <thead className="table-light">
+                                    <tr>
+                                        <th>Name</th>
+                                        <th>Ingredients</th>
+                                        <th>Instructions</th>
+                                        <th>Calories</th>
+                                        <th>Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {recipes.map((recipe) => (
+                                        <tr key={recipe.mid}>
+                                            <td className="fw-bold">{recipe.mname}</td>
+                                            {/* INGREDIENTS CELL WITH VIEW MORE/LESS */}
+                                            <td style={{ maxWidth: 180, whiteSpace: 'pre-line' }}>
+                                                {recipe.recipe_ingredients.length > 80 && !expandedRows[recipe.mid]?.ingredients
+                                                    ? (
+                                                        <>
+                                                            {recipe.recipe_ingredients.slice(0, 80)}...
+                                                            <button
+                                                                className="btn btn-link btn-sm p-0 ms-1"
+                                                                style={{ color: "#e66a17" }}
+                                                                onClick={() => toggleExpand(recipe.mid, 'ingredients')}
+                                                            >
+                                                                View More
+                                                            </button>
+                                                        </>
+                                                    )
+                                                    : (
+                                                        <>
+                                                            {recipe.recipe_ingredients}
+                                                            {recipe.recipe_ingredients.length > 80 && (
+                                                                <button
+                                                                    className="btn btn-link btn-sm p-0 ms-1"
+                                                                    style={{ color: "#e66a17" }}
+                                                                    onClick={() => toggleExpand(recipe.mid, 'ingredients')}
+                                                                >
+                                                                    View Less
+                                                                </button>
+                                                            )}
+                                                        </>
+                                                    )
+                                                }
+                                            </td>
+                                            {/* INSTRUCTIONS CELL WITH VIEW MORE/LESS */}
+                                            <td style={{ maxWidth: 220, whiteSpace: 'pre-line' }}>
+                                                {recipe.recipe_instruction.length > 80 && !expandedRows[recipe.mid]?.instructions
+                                                    ? (
+                                                        <>
+                                                            {recipe.recipe_instruction.slice(0, 80)}...
+                                                            <button
+                                                                className="btn btn-link btn-sm p-0 ms-1"
+                                                                style={{ color: "#e66a17" }}
+                                                                onClick={() => toggleExpand(recipe.mid, 'instructions')}
+                                                            >
+                                                                View More
+                                                            </button>
+                                                        </>
+                                                    )
+                                                    : (
+                                                        <>
+                                                            {recipe.recipe_instruction}
+                                                            {recipe.recipe_instruction.length > 80 && (
+                                                                <button
+                                                                    className="btn btn-link btn-sm p-0 ms-1"
+                                                                    style={{ color: "#e66a17" }}
+                                                                    onClick={() => toggleExpand(recipe.mid, 'instructions')}
+                                                                >
+                                                                    View Less
+                                                                </button>
+                                                            )}
+                                                        </>
+                                                    )
+                                                }
+                                            </td>
+                                            <td>{recipe.calories}</td>
+                                            <td>
+                                                <div className="actions-cell">
+                                                    <button
+                                                        className="btn btn-secondary btn-sm me-2"
+                                                        onClick={() => handleEdit(recipe)}
+                                                    >
+                                                        Edit
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-danger btn-sm me-2"
+                                                        onClick={() => handleDelete(recipe.mid)}
+                                                    >
+                                                        Delete
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-warning btn-sm me-2"
+                                                        onClick={() => handleFavorite(recipe)}
+                                                    >
+                                                        Favorite
+                                                    </button>
+                                                    <button
+                                                        className="btn btn-success btn-sm"
+                                                        onClick={() => handleConsumed(recipe)}
+                                                    >
+                                                        Consumed
+                                                    </button>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    ))}
+                                </tbody>
+                            </table>
+                        </div>
+                    )}
+                </div>
+            </div>
         </div>
     );
 }
