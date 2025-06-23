@@ -169,7 +169,7 @@ export default function RecipeList() {
                                                 }
                                             </td>
                                             {/* INSTRUCTIONS CELL WITH VIEW MORE/LESS */}
-                                            <td style={{ maxWidth: 220, whiteSpace: 'pre-line' }}>
+                                            <td style={{ maxWidth: 350, whiteSpace: 'pre-line' }}>
                                                 {recipe.recipe_instruction.length > 80 && !expandedRows[recipe.mid]?.instructions
                                                     ? (
                                                         <>
