@@ -23,6 +23,9 @@ export default function RecipeInput({ onSave, onBack }) {
   const [ingredients, setIngredients] = useState([{ ...initialIngredient }]);
   const [instructions, setInstructions] = useState("");
   const [showModal, setShowModal] = useState(false);
+  const [manualCalories, setManualCalories] = useState("");
+  const [autoCalculateCalories, setAutoCalculateCalories] = useState(true);
+
 
   //Load existing recipe if editing
   useEffect(() => {
@@ -52,8 +55,12 @@ export default function RecipeInput({ onSave, onBack }) {
   }, [mid]);
 
 
-  const totalCalories = calculateCalories(ingredients);
+  const totalCalories = autoCalculateCalories
+  ? calculateCalories(ingredients)
+  : Number(manualCalories || 0);
+
   const verdict = getVerdict(totalCalories);
+  
 
   const handleIngredientChange = (idx, field, value) => {
     setIngredients(ings =>
@@ -86,6 +93,7 @@ export default function RecipeInput({ onSave, onBack }) {
       mname: name.trim(),
       recipe_ingredients: formattedIngredients,
       recipe_instruction: instructions.trim(),
+      calories: totalCalories,
     };
 
     console.log("Sending recipe:", recipeToSend);
@@ -175,6 +183,32 @@ export default function RecipeInput({ onSave, onBack }) {
       >
         + Add Ingredient
       </button>
+
+      <div className="form-check mb-2">
+        <input
+          className="form-check-input"
+          type="checkbox"
+          id="autoCalcCalories"
+          checked={autoCalculateCalories}
+          onChange={() => setAutoCalculateCalories(prev => !prev)}
+        />
+        <label className="form-check-label" htmlFor="autoCalcCalories">
+          Automatically calculate calories
+        </label>
+      </div>
+
+      <div className="mb-3">
+        <label className="form-label fw-bold">Total Calories</label>
+        <input
+          type="number"
+          className="form-control"
+          value={totalCalories}
+          disabled={autoCalculateCalories}
+          onChange={(e) => setManualCalories(e.target.value)}
+          placeholder="Enter total calories"
+        />
+      </div>
+
 
       <label className="form-label fw-bold">Instructions</label>
       <textarea
