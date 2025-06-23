@@ -118,7 +118,14 @@ export default function RecipeList() {
         <div className="recipe-list-container">
             <div className="card shadow recipe-list-card">
                 <div className="card-body">
-                    <h2 className="mb-4 text-warning">All Recipes</h2>
+                    {/* Header */}
+                    <div className="d-flex flex-column align-items-center mb-4">
+                        <h2 className="mb-0 text-warning">All Recipes</h2>
+                        <div className="text-muted" style={{ fontSize: '1.1em' }}>
+                            Browse and manage your saved recipes
+                        </div>
+                    </div>
+                    <hr />
                     {recipes.length === 0 ? (
                         <p className="text-muted">No recipes found.</p>
                     ) : (
@@ -137,7 +144,6 @@ export default function RecipeList() {
                                     {recipes.map((recipe) => (
                                         <tr key={recipe.mid}>
                                             <td className="fw-bold">{recipe.mname}</td>
-                                            {/* INGREDIENTS CELL WITH VIEW MORE/LESS */}
                                             <td style={{ maxWidth: 180, whiteSpace: 'pre-line' }}>
                                                 {recipe.recipe_ingredients.length > 80 && !expandedRows[recipe.mid]?.ingredients
                                                     ? (
@@ -168,7 +174,6 @@ export default function RecipeList() {
                                                     )
                                                 }
                                             </td>
-                                            {/* INSTRUCTIONS CELL WITH VIEW MORE/LESS */}
                                             <td style={{ maxWidth: 350, whiteSpace: 'pre-line' }}>
                                                 {recipe.recipe_instruction.length > 80 && !expandedRows[recipe.mid]?.instructions
                                                     ? (
@@ -203,25 +208,25 @@ export default function RecipeList() {
                                             <td>
                                                 <div className="actions-cell">
                                                     <button
-                                                        className="btn btn-secondary btn-sm me-2"
+                                                        className="btn btn-secondary btn-sm me-2 rounded-pill"
                                                         onClick={() => handleEdit(recipe)}
                                                     >
                                                         Edit
                                                     </button>
                                                     <button
-                                                        className="btn btn-danger btn-sm me-2"
+                                                        className="btn btn-danger btn-sm me-2 rounded-pill"
                                                         onClick={() => handleDelete(recipe.mid)}
                                                     >
                                                         Delete
                                                     </button>
                                                     <button
-                                                        className="btn btn-warning btn-sm me-2"
+                                                        className="btn btn-warning btn-sm me-2 rounded-pill"
                                                         onClick={() => handleFavorite(recipe)}
                                                     >
                                                         Favorite
                                                     </button>
                                                     <button
-                                                        className="btn btn-success btn-sm"
+                                                        className="btn btn-success btn-sm rounded-pill"
                                                         onClick={() => handleConsumed(recipe)}
                                                     >
                                                         Consumed
