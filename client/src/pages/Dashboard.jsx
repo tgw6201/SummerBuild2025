@@ -73,15 +73,32 @@ const Dashboard = () => {
             data: [1600, 1800, 2000, 1700, 1900, 2100, 1500],
             backgroundColor: "#f58636",
           },
+          {
+            label: "Remaining Calorie Goal",
+            data: [400, 200, 0, 300, 100, 0, 500].map((v) => Math.max(0, v)),
+            backgroundColor: "#ffd15b",
+          },
         ],
       },
       options: {
         maintainAspectRatio: true,
         aspectRatio: 2,
-        scales: {
-          y: { beginAtZero: true, max: 2500 },
+        responsive: true,
+        plugins: {
+          legend: {
+            display: true,
+          },
         },
-        plugins: { legend: { display: false } },
+        scales: {
+          x: {
+            stacked: true,
+          },
+          y: {
+            beginAtZero: true,
+            stacked: true,
+            max: 2500,
+          },
+        },
       },
     });
 
@@ -114,6 +131,14 @@ const Dashboard = () => {
                   <button className="btn">View</button>
                   <button className="btn btn-outline">Edit</button>
                 </div>
+                <div className="btn-group right-group">
+                  <button
+                    className="btn"
+                    onClick={() => handleAdd(meal.calories)}
+                  >
+                    Add
+                  </button>
+                </div>
               </div>
             </div>
           ))}
@@ -140,13 +165,7 @@ const Dashboard = () => {
                     <p className="card-calories">{meal.calories} kcal</p>
                   </div>
                   <div className="card-footer">
-                    <div className="btn-group">
-                      <button
-                        className="btn"
-                        onClick={() => handleAdd(meal.calories)}
-                      >
-                        Add
-                      </button>
+                    <div className="btn-group" style={{ marginLeft: "auto" }}>
                       <button
                         className="btn btn-outline"
                         onClick={() => handleRemove(meal.calories)}
@@ -182,6 +201,14 @@ const Dashboard = () => {
                     <div className="btn-group">
                       <button className="btn">View</button>
                       <button className="btn btn-outline">Edit</button>
+                    </div>
+                    <div className="btn-group right-group">
+                      <button
+                        className="btn"
+                        onClick={() => handleAdd(meal.calories)}
+                      >
+                        Add
+                      </button>
                     </div>
                   </div>
                 </div>

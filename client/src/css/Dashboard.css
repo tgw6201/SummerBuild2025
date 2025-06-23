@@ -98,11 +98,6 @@
   gap: 0.5rem;
 }
 
-.left-group {
-  display: flex;
-  gap: 0.5rem;
-}
-
 .btn {
   background-color: #ff7615;
   color: white;
