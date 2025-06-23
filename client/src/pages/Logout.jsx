@@ -31,15 +31,19 @@ function LogoutButton() {
   };
 
   return (
-    <button 
-      onClick={handleLogout} 
+    <button
+      onClick={handleLogout}
       disabled={loading}
+      className="btn btn-danger px-4 py-2 rounded-pill d-flex align-items-center gap-2"
       style={{
-        opacity: loading ? 0.6 : 1,
-        cursor: loading ? "not-allowed" : "pointer",
-        transition: "opacity 0.3s ease",
+        fontWeight: 600,
+        fontSize: "1.1rem",
+        minWidth: 150,
+        opacity: loading ? 0.7 : 1,
+        transition: "opacity 0.3s"
       }}
     >
+      <i className="bi bi-box-arrow-right"></i>
       {loading ? "Logging out..." : "Logout"}
     </button>
   );
