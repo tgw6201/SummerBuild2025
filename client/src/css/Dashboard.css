@@ -125,22 +125,3 @@
   box-shadow: 0 0.125rem 0.25rem rgba(0, 0, 0, 0.075);
 }
 
-/* ROW 3: Chatbot */
-.chatbot-button-container {
-  text-align: center;
-  margin-top: 2rem;
-}
-
-.chatbot-button {
-  background-color: #ff7615;
-  color: white;
-  padding: 0.75rem 1.5rem;
-  font-size: 1rem;
-  border: none;
-  border-radius: 0.5rem;
-  cursor: pointer;
-}
-
-.chatbot-button:hover {
-  background-color: #2c8ccf;
-}

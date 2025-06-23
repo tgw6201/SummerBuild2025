@@ -146,9 +146,27 @@ const Dashboard = () => {
             <canvas ref={barRef}></canvas>
           </div>
         </div>
-      </div>
-      <div className="chatbot-button-container">
-        <button className="chatbot-button">Generate Based on Diet</button>
+
+        <div className="row horizontal-cards suggestions-row">
+          {suggestedMeals.map((meal) => (
+            <div
+              className="card"
+              key={meal.name}
+              onClick={() => alert(`Clicked ${meal.name}`)}
+            >
+              <img src={meal.img} className="card-img-top" alt={meal.name} />
+              <div className="card-body">
+                <p className="card-text">{meal.name}</p>
+                <div className="card-footer">
+                  <div className="btn-group">
+                    <button className="btn btn-outline-secondary">View</button>
+                    <button className="btn btn-outline-secondary">Edit</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
     </div>
   );
