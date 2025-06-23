@@ -2,18 +2,41 @@ import React from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
 import '../css/Login.css';
-import Chatbot from "./Chatbot";
 
 export default function Login() {
 
   const navigate = useNavigate()
+  const [userid, setUserid] = React.useState("");
+  const [password, setPassword] = React.useState("");
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    // you can add login logic here
-    // console.log("Form submitted!");
-    navigate("/chatbot")
-  };
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  try {
+    const body = { userid, password };
+    const response = await fetch("http://localhost:3000/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body),
+      credentials: "include"
+    });
+
+    if (!response.ok) {
+      // Handle HTTP errors
+      const errorData = await response.json();
+      alert(errorData.message || "Login failed");
+      return;
+    }
+    const data = await response.json();
+
+    // Navigate to chatbot on success
+    navigate("/chatbot");
+
+  } catch (err) {
+    console.error("Login error:", err);
+    alert("Something went wrong. Please try again.");
+  }
+};
+
 
   return (
     <main className="form-signin text-center">
@@ -28,6 +51,8 @@ export default function Login() {
             className="form-control"
             id="floatingInput"
             placeholder="name@example.com"
+            value = {userid}
+            onChange={e => setUserid(e.target.value)}
           />
           <label htmlFor="floatingInput">Email address</label>
         </div>
@@ -38,6 +63,8 @@ export default function Login() {
             className="form-control"
             id="floatingPassword"
             placeholder="Password"
+            value = {password}
+            onChange={e => setPassword(e.target.value)}
           />
           <label htmlFor="floatingPassword">Password</label>
         </div>

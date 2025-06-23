@@ -1,12 +1,17 @@
 const express = require("express")
 const cors = require("cors");
 const cookieParser = require("cookie-parser");
-const app = express()
 const pool = require("./db");
 const uuidv4 = require("uuid").v4;
+const app = express()
+
+const port = process.env.PORT || 3000;
 
 //Middleware
-app.use(cors());
+app.use(cors({
+    origin: "http://localhost:5173", // Update this to your frontend URL
+    credentials: true, // Allow cookies to be sent with requests
+}));
 app.use(express.json());
 app.use(cookieParser());
 
@@ -24,7 +29,11 @@ app.post("/login", async (req, res) => {
         }
         // Generate a new session ID
         const sessionid = uuidv4();
-        res.set("Set-Cookie", `sessionid=${sessionid}`);
+        res.cookie("sessionid", sessionid, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+        });
         // Update the user's session ID in the database
         await pool.query("UPDATE user_login_table SET sessionid = $1 WHERE userid = $2", [sessionid, userid]);
         // Return the user data along with the new session ID
@@ -41,9 +50,25 @@ app.post("/login", async (req, res) => {
 //Create a user
 app.post("/signup", async (req, res) => {
     try {
-        const { userid, password, sessionid } = req.body;
+        const { userid, password } = req.body;
+
+        // Check if the user already exists
+        const existingUser = await pool.query("SELECT * FROM user_login_table WHERE userid = $1", [userid]);
+        if (existingUser.rows.length > 0) {
+            return res.status(400).json({ message: "User already exists" });
+        }
+        // Generate a new session ID
+        const sessionid = uuidv4();
+        res.cookie("sessionid", sessionid, {
+            httpOnly: true,
+            sameSite: "lax",
+            secure: false,
+        });
+        if (!userid || !password) {
+            return res.status(400).json({ message: "Email and password are required" });
+        }
         const newUser = await pool.query(
-            "INSERT INTO user_login_table (name, email) VALUES ($1, $2, $3) RETURNING *",
+            "INSERT INTO user_login_table (userid, password, sessionid) VALUES ($1, $2, $3) RETURNING *",
             [userid, password, sessionid]
         );
         res.json(newUser.rows[0]);
@@ -97,59 +122,131 @@ app.post('/profile', async(req, res) => {
 
 // Update user dietary preferences
 app.put('/profile', async (req, res) => {
-    const sessionid = req.cookies.sessionid;
-    if (!sessionid) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-    // Get useremail from sessionid
-    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
-    if (user.rows.length === 0) {
-        return res.status(404).json({ message: "invalid session id" });
+  const sessionid = req.cookies.sessionid;
+  if (!sessionid) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const user = await pool.query(
+    "SELECT userid FROM user_login_table WHERE sessionid = $1",
+    [sessionid]
+  );
+  if (user.rows.length === 0) {
+    return res.status(404).json({ message: "Invalid session id" });
+  }
+
+  const {
+    name,
+    phone_number,
+    gender,
+    weight,
+    height,
+    date_of_birth,
+    daily_calorie_goal,
+    dietary_preference,
+    profile_image,
+    allergies
+  } = req.body;
+
+  // Convert image data to Buffer if it exists
+  let imageBuffer = null;
+  if (profile_image && profile_image.data) {
+    imageBuffer = Buffer.from(profile_image.data);
+  }
+
+  try {
+    const updateUserDetailResult = await pool.query(
+      `UPDATE user_details 
+       SET phone_number = $1, name = $2, gender = $3, weight = $4, 
+           height = $5, date_of_birth = $6, profile_image = $7 
+       WHERE userid_fk = $8 
+       RETURNING *`,
+      [
+        phone_number,
+        name,
+        gender,
+        weight,
+        height,
+        date_of_birth,
+        imageBuffer,
+        user.rows[0].userid
+      ]
+    );
+
+    const updateDietaryPreference = await pool.query(
+      `UPDATE user_dietary_preference 
+       SET dietary_preference = $1, daily_calorie_goal = $2, allergies = $3 
+       WHERE userid = $4 
+       RETURNING *`,
+      [
+        dietary_preference,
+        daily_calorie_goal,
+        allergies,
+        user.rows[0].userid
+      ]
+    );
+
+    if (updateUserDetailResult.rows.length === 0 || updateDietaryPreference.rows.length === 0) {
+      return res.status(404).json({ message: "User not found" });
     }
 
-    const {phoneNumber, name, gender, weight, height, date_of_birth} = req.body;
-    try{
-        const result = await pool.query(
-            "UPDATE user_details SET phone_number = $1, name = $2, gender = $3, weight = $4, height = $5, date_of_birth = $6 WHERE userid_fk = $7 RETURNING *",[phoneNumber,name,gender,weight,height,date_of_birth,user.rows[0].userid]
-        );
-        if (result.rows.length === 0) {
-            return res.status(404).json({ message: "User dietary preferences not found" });
-        }
-    }
-    catch (err) {
-        console.error(err.message);
-        return res.status(500).send("Server Error");
-    }
     res.status(201).json({ message: "User dietary preferences updated successfully" });
+
+  } catch (err) {
+    console.error('Error updating profile:', err);
+    res.status(500).send("Server Error");
+  }
 });
+
 
 //Get user dietary preferences
-app.get('/profile', async(req, res) => {
-    const sessionid = req.cookies.sessionid;
-    if (!sessionid) {
-        return res.status(401).json({ message: "Unauthorized" });
-    }
-    // Get useremail from sessionid
-    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
-    if (user.rows.length === 0) {
-        return res.status(404).json({ message: "invalid session id" });
+app.get('/profile', async (req, res) => {
+  const sessionid = req.cookies.sessionid;
+  if (!sessionid) {
+    return res.status(401).json({ message: "Unauthorized" });
+  }
+
+  const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+  if (user.rows.length === 0) {
+    return res.status(404).json({ message: "Invalid session ID" });
+  }
+
+  pool.query(
+    `SELECT * 
+     FROM user_details ud
+     JOIN user_dietary_preference udp ON ud.userid_fk = udp.userid
+     WHERE ud.userid_fk = $1`,
+    [user.rows[0].userid]
+  )
+    .then(result => {
+      if (result.rows.length === 0) {
+        return res.status(404).json({ message: "User not found" });
+      }
+
+      const userData = result.rows[0];
+
+      if (userData.profile_image) {
+        const contentType = userData.profile_image_type || 'image/png';
+        const byteArray = [...userData.profile_image]; // Convert Buffer to array
+        userData.profile_image = {
+            data: byteArray,
+            contentType: contentType
+        };
+        } else {
+        userData.profile_image = {
+            data: [],
+            contentType: ''
+        };
     }
 
-    pool.query("SELECT * FROM user_details WHERE userid_fk = $1", [user.rows[0].userid])
-        .then(result => {
-            if (result.rows.length === 0) {
-                return res.status(404).json({ message: "User not found" });
-            }
-
-            // Return the user details
-            // Take note that date of birth might display differently based on timezone differences (inform me if need to adjust)
-            res.json(result.rows[0]);
-        })
-        .catch(err => {
-            console.error(err.message);
-            res.status(500).send("Server Error");
-        });
+      res.json(userData);
+    })
+    .catch(err => {
+      console.error(err.message);
+      res.status(500).send("Server Error");
+    });
 });
+
 
 // Create dietary preferences
 app.post('/dietary-preferences', async (req, res) => {
@@ -497,7 +594,7 @@ app.delete('/chatbot-history/:id', async (req, res) => {
 });
 
 //Get user recipie table
-app.get('/user-recipies', async (req, res) => {
+app.get('/user-recipes', async (req, res) => {
     const sessionid = req.cookies.sessionid;
     if (!sessionid) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -509,15 +606,41 @@ app.get('/user-recipies', async (req, res) => {
     }
 
     try {
-        const result = await pool.query("SELECT * FROM user_recipie_table WHERE userid = $1", [user.rows[0].userid]);
+        const result = await pool.query("SELECT * FROM user_recipe_table WHERE userid = $1", [user.rows[0].userid]);
         res.json(result.rows);
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");
     }
 });
-//Create user recipie
-app.post('/user-recipies', async (req, res) => {
+
+app.get('/user-recipes/:id', async (req, res) => {
+    const sessionid = req.cookies.sessionid;
+    if (!sessionid) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    // Get useremail from sessionid
+    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+
+    if (user.rows.length === 0) {
+        return res.status(404).json({ message: "invalid session id" });
+    }
+
+    const { id } = req.params;
+    try {
+        const result = await pool.query("SELECT * FROM user_recipe_table WHERE mid = $1 AND userid = $2", [id, user.rows[0].userid]);
+        if (result.rows.length === 0) {
+            return res.status(404).json({ message: "User recipe not found" });
+        }
+        res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+    //Create user recipe
+app.post('/user-recipes', async (req, res) => {
     const sessionid = req.cookies.sessionid;
     if (!sessionid) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -528,11 +651,14 @@ app.post('/user-recipies', async (req, res) => {
         return res.status(404).json({ message: "invalid session id" });
     }
 
-    const { mname, ingredients, instructions } = req.body;
+    let { mname, recipe_ingredients, recipe_instruction } = req.body;
+
+
+
     try {
         const result = await pool.query(
-            "INSERT INTO user_recipie_table (userid, mname, recipe_instruction, recipe_ingredients) VALUES ($1, $2, $3, $4) RETURNING *",
-            [user.rows[0].userid, mname, instructions, ingredients]
+            "INSERT INTO user_recipe_table (userid, mname, recipe_instruction, recipe_ingredients) VALUES ($1, $2, $3, $4) RETURNING *",
+            [user.rows[0].userid, mname, recipe_instruction, recipe_ingredients]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -542,7 +668,7 @@ app.post('/user-recipies', async (req, res) => {
 });
 
 //Update user recipie
-app.put('/user-recipies/:id', async (req, res) => {
+app.put('/user-recipes/:id', async (req, res) => {
     const sessionid = req.cookies.sessionid;
     if (!sessionid) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -554,14 +680,14 @@ app.put('/user-recipies/:id', async (req, res) => {
     }
 
     const { id } = req.params;
-    const { mname, ingredients, instructions } = req.body;
+    const { mname, recipe_ingredients, recipe_instruction } = req.body;
     try {
         const result = await pool.query(
-            "UPDATE user_recipie_table SET mname = $1, recipe_ingredients = $2, recipe_instruction = $3 WHERE mid = $4 AND userid = $5 RETURNING *",
-            [mname, ingredients, instructions, id, user.rows[0].userid]
+            "UPDATE user_recipe_table SET mname = $1, recipe_ingredients = $2, recipe_instruction = $3 WHERE mid = $4 AND userid = $5 RETURNING *",
+            [mname, recipe_ingredients, recipe_instruction, id, user.rows[0].userid]
         );
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: "User recipie not found" });
+            return res.status(404).json({ message: "User recipe not found" });
         }
         res.json(result.rows[0]);
     } catch (err) {
@@ -570,8 +696,8 @@ app.put('/user-recipies/:id', async (req, res) => {
     }
 });
 
-//Delete user recipie
-app.delete('/user-recipies/:id', async (req, res) => {
+//Delete user recipe
+app.delete('/user-recipes/:id', async (req, res) => {
     const sessionid = req.cookies.sessionid;
     if (!sessionid) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -584,18 +710,59 @@ app.delete('/user-recipies/:id', async (req, res) => {
 
     const { id } = req.params;
     try {
-        const result = await pool.query("DELETE FROM user_recipie_table WHERE mid = $1 AND userid = $2 RETURNING *", [id, user.rows[0].userid]);
+        const result = await pool.query("DELETE FROM user_recipe_table WHERE mid = $1 AND userid = $2 RETURNING *", [id, user.rows[0].userid]);
         if (result.rows.length === 0) {
-            return res.status(404).json({ message: "User recipie not found" });
+            return res.status(404).json({ message: "User recipe not found" });
         }
-        res.json({ message: "User recipie deleted successfully" });
+        res.json({ message: "User recipe deleted successfully" });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");
     }
 });  
 
+app.post('/onboarding', async (req, res) => {
+    const sessionid = req.cookies.sessionid;
 
-app.listen(5000,()=>{
-    console.log("Server is running on port 5000")
+    console.log("Session ID:", sessionid);
+    if (!sessionid) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    // Get useremail from sessionid
+    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+    if (user.rows.length === 0) {
+        return res.status(404).json({ message: "invalid session id" });
+    }
+
+    const { phone, name, gender, weight, height, date_of_birth, allergies, dietary_preference, calorie_goal } = req.body;
+
+    try {
+        // Insert user details
+        await pool.query(
+            "INSERT INTO user_details (phone_number, name, gender, weight, height, date_of_birth, userid_fk) VALUES ($1, $2, $3, $4, $5, $6, $7)",[phone, name, gender, weight, height, date_of_birth, user.rows[0].userid]
+        );
+        // Insert dietary preferences
+        await pool.query(
+            "INSERT INTO user_dietary_preference (userid, allergies, dietary_preference, daily_calorie_goal) VALUES ($1, $2, $3, $4)",[user.rows[0].userid, allergies, dietary_preference, calorie_goal]
+        );
+        res.status(201).json({ message: "Onboarding completed successfully" });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+})
+
+
+app.post('/logout', (req, res) => {
+    res.clearCookie("sessionid", {
+        httpOnly: true,
+        sameSite: "lax",
+        secure: false,
+    }); 
+    res.status(200).json({ message: "Logged out successfully" });
+});
+
+
+app.listen(3000,()=>{
+    console.log("Server is running on port: ", port);
 });
