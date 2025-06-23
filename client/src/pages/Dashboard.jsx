@@ -5,6 +5,7 @@ import "../css/Dashboard.css";
 const Dashboard = () => {
   const barRef = useRef(null);
   const [totalCalories, setTotalCalories] = useState(0);
+  const calorieGoal = 2000;
 
   const topDishes = [
     {
@@ -13,18 +14,21 @@ const Dashboard = () => {
       title: "Corn Baked Chicken Chop",
       description:
         "Juicy grilled chicken served with sweet corn and black pepper sauce.",
+      calories: 350,
     },
     {
       name: "Eggs and tomatoes",
       img: "https://images.squarespace-cdn.com/content/v1/58939a42d2b857c51ea91c0d/1566319942248-0GYBX3V9DUH8CU66ZE6V/bloody+mary+obsessed+one+pan+healthy+and+simple+breakfast+recipe+4.jpg",
       title: "Eggs & Tomatoes",
       description: "A healthy and simple breakfast dish cooked in one pan.",
+      calories: 480,
     },
     {
       name: "Fruit bowl",
       img: "https://tastesbetterfromscratch.com/wp-content/uploads/2017/06/Fresh-Fruit-Bowl-1.jpg",
       title: "Fresh Fruit Bowl",
       description: "A refreshing bowl of assorted fruits to boost your day.",
+      calories: 220,
     },
   ];
 
@@ -114,17 +118,22 @@ const Dashboard = () => {
         <h1>Healthier food, healthier you!</h1>
         <h3>Only the best recipes made for a better future!</h3>
       </div>
+      <div className="calorie-counter">
+        <h4>
+          Calories Consumed: <span>{totalCalories}/{calorieGoal}</span> kcal
+        </h4>
+      </div>
 
       {/* Top Dishes */}
       <div className=" section favourite-dishes">
         <h2>Top 3 Favourite Dishes</h2>
         <div className="horizontal-cards">
-          {topDishes.map((dish) => (
-            <div className="card" key={dish.name}>
-              <img src={dish.img} className="card-img-top" alt={dish.name} />
+          {topDishes.map((item) => (
+            <div className="card" key={item.name}>
+              <img src={item.img} className="card-img-top" alt={item.name} />
               <div className="card-body">
-                <h5 className="card-title">{dish.title}</h5>
-                <p className="card-text">{dish.description}</p>
+                <h5 className="card-title">{item.title}</h5>
+                <p className="card-text">{item.description}</p>
               </div>
               <div className="card-footer">
                 <div className="btn-group">
@@ -134,7 +143,7 @@ const Dashboard = () => {
                 <div className="btn-group right-group">
                   <button
                     className="btn"
-                    onClick={() => handleAdd(meal.calories)}
+                    onClick={() => handleAdd(item.calories)}
                   >
                     Add
                   </button>
@@ -152,23 +161,23 @@ const Dashboard = () => {
           <div className="section">
             <h2>Food Consumed Today</h2>
             <div className="horizontal-cards">
-              {suggestedMeals.map((meal) => (
-                <div className="card" key={meal.name}>
+              {suggestedMeals.map((item) => (
+                <div className="card" key={item.name}>
                   <img
-                    src={meal.img}
+                    src={item.img}
                     className="card-img-top"
-                    alt={meal.name}
+                    alt={item.name}
                   />
                   <div className="card-body">
-                    <h5 className="card-title">{meal.title}</h5>
-                    <p className="card-text">{meal.description}</p>
-                    <p className="card-calories">{meal.calories} kcal</p>
+                    <h5 className="card-title">{item.title}</h5>
+                    <p className="card-text">{item.description}</p>
+                    <p className="card-calories">{item.calories} kcal</p>
                   </div>
                   <div className="card-footer">
                     <div className="btn-group" style={{ marginLeft: "auto" }}>
                       <button
                         className="btn btn-outline"
-                        onClick={() => handleRemove(meal.calories)}
+                        onClick={() => handleRemove(item.calories)}
                       >
                         Remove
                       </button>
@@ -177,25 +186,22 @@ const Dashboard = () => {
                 </div>
               ))}
             </div>
-            <p className="total-calories">
-              Total Calories: <strong>{totalCalories}</strong> kcal
-            </p>
           </div>
 
           {/* Bookmarked */}
           <div className="section">
             <h2>Bookmarked Recipes</h2>
             <div className="horizontal-cards">
-              {suggestedMeals.map((meal) => (
-                <div className="card" key={meal.name}>
+              {suggestedMeals.map((item) => (
+                <div className="card" key={item.name}>
                   <img
-                    src={meal.img}
+                    src={item.img}
                     className="card-img-top"
-                    alt={meal.name}
+                    alt={item.name}
                   />
                   <div className="card-body">
-                    <h5 className="card-title">{meal.title}</h5>
-                    <p className="card-text">{meal.description}</p>
+                    <h5 className="card-title">{item.title}</h5>
+                    <p className="card-text">{item.description}</p>
                   </div>
                   <div className="card-footer">
                     <div className="btn-group">
@@ -205,7 +211,7 @@ const Dashboard = () => {
                     <div className="btn-group right-group">
                       <button
                         className="btn"
-                        onClick={() => handleAdd(meal.calories)}
+                        onClick={() => handleAdd(item.calories)}
                       >
                         Add
                       </button>
