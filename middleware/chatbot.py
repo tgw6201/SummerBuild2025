@@ -4,6 +4,7 @@ import gradio as gr
 import google.generativeai as genai
 from dotenv import load_dotenv
 import json
+import requests
 
 # Setup logging
 logging.basicConfig(
@@ -25,6 +26,46 @@ model = genai.GenerativeModel(
     generation_config={"temperature": 0.7}
 )
 
+##ROUTING FUNCTIONS##
+
+#Receiving user preference from server (Gets request /user-data)
+
+
+#Sending query and response to server (Post request /chatbot-history)
+def save_recent_prompt_to_db(user_input, assistant_response, sessionid):
+    url = "http://localhost:3000/chatbot-history"
+    headers = {"Cookie": f"sessionid={sessionid}"}
+    data = {"query": user_input, "response": assistant_response}
+    try:
+        response = requests.post(url, json=data, headers=headers)
+        if response.status_code != 201:
+            logger.error(f"Failed to save recent prompt to DB: {response.text}")
+    except Exception as e:
+        logger.error(f"Error saving recent prompt to DB: {e}")
+
+#Sending recipe  to server. (Post request /user-recipes)
+def save_recipe_to_db(json_string, sessionid):
+    url = "http://localhost:3000/user-recipes"
+    headers = {"Cookie": f"sessionid={sessionid}"}
+    try:
+        recipe_data = json.loads(json_string)
+        if "error" in recipe_data:
+            logger.warning("Invalid recipe, not saving to DB")
+            return
+        data = {
+            "mname": recipe_data["mname"],
+            "recipe_ingredients": recipe_data["Ingredients"],
+            "recipe_instruction": recipe_data["Instruction"],
+            "calories": recipe_data["calories"]
+        }
+        response = requests.post(url, json=data, headers=headers)
+        if response.status_code != 201:
+            logger.error(f"Failed to save recipe to DB: {response.text}")
+    except Exception as e:
+        logger.error(f"Error saving recipe to DB: {e}")
+## END OF ROUTING FUNCTIONS ##
+
+## START OF CHATBOT FUNCTIONS ##
 def load_messagesample():
     #Load user context from messagesample.json if it exists.
     try:
@@ -106,13 +147,15 @@ def format_context(messagesample_data):
         f"You must respect user's Allergies: {', '.join(user.get('food_preferences', {}).get('allergies', []))}, \n"
         f"The user's caloric Target: {user.get('calorie_target', 'unknown')} kcal/day.\n"
         f"You can only use the following ingredients unless explicitly stated by the user: {', '.join(i for i in ingredients)}.\n"
-        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly but you MUST return the calories of the recipe per serving and the serving size."
+        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly but you MUST return the calories of the recipe per serving and the serving size.\n"
+        f"Calorie value per serving of the recipe MUST be an exact, single value and in kcal unit.\n"
     )
 
 # Load messagesample.json at startup
 messagesample_data = load_messagesample()
 system_prompt = format_context(messagesample_data)
 
+## Save Recipe function
 def save_latest_response():
     try:
         history = load_chat_history()
@@ -132,10 +175,10 @@ def save_latest_response():
         
         # Prompt Gemini to convert the response to JSON
         json_prompt = (
-            f"Convert the following recipe into a JSON-formatted string with keys: Endname (recipe name), Ingredients (string), and Instruction (string).\n"
+            f"Convert the following recipe into a JSON-formatted string with the following case sensitive keys: mname (recipe name in string datatype), recipe_ingredients (string), and recipe_instruction (string), calories (int).\n"
             f"Return ONLY the JSON string, enclosed in triple backticks:\n"
             f"```\n"
-            f"{{\"Endname\": \"[Recipe Name]\", \"Ingredients\": \"[Ingredient 1,Ingredient 2\", ...], \"Instruction\": \"[Detailed steps]\"}}\n"
+            f"{{\"mname\": \"[Recipe Name]\", \"recipe_ingredients\": \"[Ingredient 1,Ingredient 2\", ...], \"recipe_instruction\": \"[Detailed steps]\", \"calories\":\"[calories]\"}}\n"
             f"```\n"
             f"Ensure the recipe respects the user preferences:\n"
             f"If the input is not a valid recipe, return:\n"
@@ -158,16 +201,20 @@ def save_latest_response():
         
         # Validate JSON
         recipe_data = json.loads(json_string)
-        
+
+        ##save_recipe_to_db(json_string, sessionid)
+
         # Save to recipe.json
         with open("recipe.json", "w", encoding="utf-8") as f:
             json.dump(recipe_data, f, indent=2, ensure_ascii=False)
         logger.debug("Recipe saved to recipe.json")
-        
+
+
         return json_string
     except Exception as e:
         logger.error(f"Error in save_latest_response: {e}")
         return json.dumps({"error": str(e)}, indent=2)
+    
 
     
 
@@ -189,6 +236,8 @@ def handle_user_query(user_input, chatbot_history):
         # Query the Gemini model
         response = model.generate_content(conversation)
         assistant_response = response.text
+
+        ## save_recent_prompt_to_db(response, assistant_response, sessionid)
         
         # Append assistant's response to chat history
         chatbot_history.append({"role": "assistant", "content": assistant_response})

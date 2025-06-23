@@ -3,10 +3,10 @@
     "age": 30,
     "food_preferences": {
       "allergies": ["peanuts", "shellfish"],
-      "dietary_preference": "vegetarian, halal"
+      "dietary_preference": ["vegetarian", "halal"]
     },
     "calorie_target": 2000
   },
   "ingredients":
-    "1 tablespoon olive oil, 1 medium onion, chopped, 2 cloves garlic, minced, 1 inch ginger, grated, 1 teaspoon cumin powder, 1 teaspoon coriander powder, 1/2 teaspoon turmeric powder, 1/4 teaspoon cayenne pepper, 14.5 ounce can diced tomatoes, 15 ounce can chickpeas, 5 ounces spinach, 1/2 cup vegetable, Salt, Fresh cilantro, basmati rice"
+    ""
 }

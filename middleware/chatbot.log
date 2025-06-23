@@ -1711,3 +1711,337 @@ DEBUG:__main__:Chat history saved to chat_history.json
 DEBUG:__main__:Chat history saved to chat_history.json
 DEBUG:__main__:Loaded chat history from recent_prompt.json
 DEBUG:__main__:Recipe saved to recipe.json
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001BC692A9160>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x000001BC68C14950> server_hostname='api.gradio.app' timeout=3
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001BC696ECE10>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001BC696ECF50>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x000001BC68CE8D40> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.connection:connect_tcp.started host='127.0.0.1' port=7860 local_address=None timeout=None socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001BC697C4180>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Sun, 22 Jun 2025 14:47:26 GMT'), (b'server', b'uvicorn'), (b'content-length', b'4'), (b'content-type', b'application/json')])
+INFO:httpx:HTTP Request: GET http://127.0.0.1:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:connect_tcp.started host='127.0.0.1' port=7860 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001BC697C55B0>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Jun 2025 14:47:28 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Sun, 22 Jun 2025 14:47:26 GMT'), (b'server', b'uvicorn'), (b'content-length', b'43441'), (b'content-type', b'text/html; charset=utf-8')])
+INFO:httpx:HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001BC691CFE30>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/launched HTTP/1.1" 200 0
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Sun, 22 Jun 2025 14:47:28 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AB236CF0>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x00000230AABC0950> server_hostname='api.gradio.app' timeout=3
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AB70CE10>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.connection:connect_tcp.started host='127.0.0.1' port=7860 local_address=None timeout=None socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AB70D810>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Mon, 23 Jun 2025 15:29:34 GMT'), (b'server', b'uvicorn'), (b'content-length', b'4'), (b'content-type', b'application/json')])
+INFO:httpx:HTTP Request: GET http://127.0.0.1:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:connect_tcp.started host='127.0.0.1' port=7860 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AC7355B0>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AC735A70>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x00000230AAC94D40> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 15:29:34 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Mon, 23 Jun 2025 15:29:34 GMT'), (b'server', b'uvicorn'), (b'content-length', b'45018'), (b'content-type', b'text/html; charset=utf-8')])
+INFO:httpx:HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AB345250>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/launched HTTP/1.1" 200 0
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 15:29:35 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:__main__:Recipe saved to recipe.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:__main__:Recipe saved to recipe.json
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AB045150>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x00000230AC740B00> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AB045370>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 15:55:32 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AC762F50>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x00000230A986FEC0> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x00000230AC763050>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 15:59:17 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+ERROR:__main__:Error loading chat history from JSON: Expecting value: line 1 column 1 (char 0)
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:asyncio:Using proactor: IocpProactor
+ERROR:__main__:Error loading chat history from JSON: Expecting value: line 1 column 1 (char 0)
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1554D8590>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x000001B154B34950> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.started host='127.0.0.1' port=7860 local_address=None timeout=None socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1554CB110>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Mon, 23 Jun 2025 16:05:20 GMT'), (b'server', b'uvicorn'), (b'content-length', b'4'), (b'content-type', b'application/json')])
+INFO:httpx:HTTP Request: GET http://127.0.0.1:7860/gradio_api/startup-events "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:httpcore.connection:connect_tcp.started host='127.0.0.1' port=7860 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1554CBB10>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'date', b'Mon, 23 Jun 2025 16:05:20 GMT'), (b'server', b'uvicorn'), (b'content-length', b'34244'), (b'content-type', b'text/html; charset=utf-8')])
+INFO:httpx:HTTP Request: HEAD http://127.0.0.1:7860/ "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'HEAD']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1551E3950>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x000001B155112D50> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1554D1BA0>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 16:05:21 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/launched HTTP/1.1" 200 0
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1552B1490>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 16:05:21 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+ERROR:__main__:Error loading chat history from JSON: Expecting value: line 1 column 1 (char 0)
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Chat history saved to chat_history.json
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:__main__:Recipe saved to recipe.json
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B154D61590>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x000001B155441D90> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B154D616A0>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 16:42:10 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
+DEBUG:__main__:Loaded user context from messagesample.json
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): huggingface.co:443
+DEBUG:__main__:Loaded chat history from recent_prompt.json
+DEBUG:urllib3.connectionpool:https://huggingface.co:443 "HEAD /api/telemetry/gradio/initiated HTTP/1.1" 200 0
+DEBUG:httpcore.connection:connect_tcp.started host='api.gradio.app' port=443 local_address=None timeout=3 socket_options=None
+DEBUG:httpcore.connection:connect_tcp.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1554E3250>
+DEBUG:httpcore.connection:start_tls.started ssl_context=<ssl.SSLContext object at 0x000001B154C07B60> server_hostname='api.gradio.app' timeout=3
+DEBUG:httpcore.connection:start_tls.complete return_value=<httpcore._backends.sync.SyncStream object at 0x000001B1554E3050>
+DEBUG:httpcore.http11:send_request_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_headers.complete
+DEBUG:httpcore.http11:send_request_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:send_request_body.complete
+DEBUG:httpcore.http11:receive_response_headers.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_headers.complete return_value=(b'HTTP/1.1', 200, b'OK', [(b'Date', b'Mon, 23 Jun 2025 16:44:48 GMT'), (b'Content-Type', b'application/json'), (b'Content-Length', b'21'), (b'Connection', b'keep-alive'), (b'Server', b'nginx/1.18.0'), (b'Access-Control-Allow-Origin', b'*')])
+INFO:httpx:HTTP Request: GET https://api.gradio.app/pkg-version "HTTP/1.1 200 OK"
+DEBUG:httpcore.http11:receive_response_body.started request=<Request [b'GET']>
+DEBUG:httpcore.http11:receive_response_body.complete
+DEBUG:httpcore.http11:response_closed.started
+DEBUG:httpcore.http11:response_closed.complete
+DEBUG:httpcore.connection:close.started
+DEBUG:httpcore.connection:close.complete
