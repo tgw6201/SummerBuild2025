@@ -768,6 +768,7 @@ app.post('/onboarding', async (req, res) => {
     }
 })
 
+
 app.post('/logout', (req, res) => {
     res.clearCookie("sessionid", {
         httpOnly: true,
