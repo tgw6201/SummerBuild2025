@@ -817,9 +817,46 @@ app.get('/dashboard', async (req, res) => {
         // user favorite meals
         const favorite_meals = await pool.query("SELECT mname,mid FROM saved_user_meals WHERE userid = $1", [user.rows[0].userid]);
         // user consumed meals
-        const consumed_meals = await pool.query("SELECT urt.mname, urt.mid, urt.calories FROM consumed_meals cm, user_recipe_table urt WHERE cm.userid = $1 AND cm.mid = urt.mid", [user.rows[0].userid]);
+        const consumed_meals = await pool.query("SELECT urt.mname, urt.mid, urt.calories, cm.cmid FROM consumed_meals cm, user_recipe_table urt WHERE cm.userid = $1 AND cm.mid = urt.mid", [user.rows[0].userid]);
+        // user's past week calorie intake
+        const past_week_calories = await pool.query(
+            `SELECT SUM(urt.calories) AS total_calories, cm.date::date AS date
+            FROM consumed_meals cm
+            JOIN user_recipe_table urt ON cm.mid = urt.mid
+            WHERE cm.userid = $1
+                AND cm.date >= date_trunc('week', CURRENT_DATE)
+                AND cm.date <= CURRENT_DATE
+            GROUP BY cm.date
+            ORDER BY cm.date ASC`,
+            [user.rows[0].userid]
+        );
 
-        res.json({ calorie_goal: calorie_goal.rows[0], favorite_meals: favorite_meals.rows, consumed_meals: consumed_meals.rows });
+        const weeklyData = {
+            Monday: 0,
+            Tuesday: 0,
+            Wednesday: 0,
+            Thursday: 0,
+            Friday: 0,
+            Saturday: 0,
+            Sunday: 0,
+            };
+
+            for (const row of past_week_calories.rows) {
+            const dayName = new Date(row.date).toLocaleDateString("en-US", {
+                weekday: "long",
+                timeZone: "Asia/Singapore",
+            });
+            if (weeklyData.hasOwnProperty(dayName)) {
+                weeklyData[dayName] += parseInt(row.total_calories, 10);
+            }
+        }
+
+        res.json({
+            calorie_goal: calorie_goal.rows[0],
+            favorite_meals: favorite_meals.rows,
+            consumed_meals: consumed_meals.rows,
+            past_week_calories: weeklyData,
+        });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");
