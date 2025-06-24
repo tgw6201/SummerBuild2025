@@ -1,0 +1,44 @@
+.landing-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 80px); /* assuming navbar height ~80px */
+  background-image: url("/static/images/home2.png");
+  background-size: cover;
+  background-position: center;
+}
+
+.landing-hero {
+  text-align: center;
+  color: white;
+  background-color: rgba(0, 0, 0, 0.5); /* optional overlay */
+  padding: 3rem;
+  border-radius: 16px;
+}
+
+.landing-hero h1 {
+  font-size: 3.5rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+}
+
+.landing-hero p {
+  font-size: 1.5rem;
+  font-weight: 300;
+  margin-bottom: 2rem;
+}
+
+.hero-button {
+  padding: 12px 28px;
+  font-size: 1.2rem;
+  background-color: #D63531;
+  color: white;
+  border: none;
+  border-radius: 50px;
+  text-decoration: none;
+  transition: background-color 0.3s ease;
+}
+
+.hero-button:hover {
+  background-color: #9e0a2c;
+}
