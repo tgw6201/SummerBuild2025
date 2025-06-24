@@ -123,14 +123,12 @@ export default function Navbar() {
         <button
           onClick={handleLogout}
           disabled={loading}
+          className="btn btn-danger btn-sm rounded-pill"
           style={{
-            background: 'none',
-            border: 'none',
-            color: 'inherit',
-            cursor: loading ? 'not-allowed' : 'pointer',
-            fontSize: '1rem',
-            padding: 0,
-            textDecoration: 'underline',
+            minWidth: 100,
+            fontWeight: 600,
+            opacity: loading ? 0.7 : 1,
+            transition: "opacity 0.3s"
           }}
         >
           {loading ? 'Logging out...' : 'Logout'}
