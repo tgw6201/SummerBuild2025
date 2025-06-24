@@ -1,0 +1,6 @@
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:__main__:Reading input file: messagesample.json
+ERROR:__main__:Error in chatbotTest: [Errno 2] No such file or directory: 'messagesample.json'
+DEBUG:asyncio:Using proactor: IocpProactor
+DEBUG:__main__:Reading input file: messagesample.json
+ERROR:__main__:Error in chatbotTest: [Errno 2] No such file or directory: 'messagesample.json'
