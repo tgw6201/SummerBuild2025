@@ -1,11 +1,10 @@
 .dashboard-container {
   padding: 2rem;
-  padding-top: 85px;
   font-family: "Segoe UI", sans-serif;
   background: #fafafa;
 }
 
-.dashboard-container .dashboard-header {
+.dashboard-header {
   margin-bottom: 2rem;
   padding: 1.5rem;
   background: #fff;
@@ -14,18 +13,18 @@
   text-align: center;
 }
 
-.dashboard-container .dashboard-header h1 {
+.dashboard-header h1 {
   color: #ff7615;
   font-size: 2.5rem;
   margin-bottom: 0.5rem;
 }
 
-.dashboard-container .dashboard-header h3 {
+.dashboard-header h3 {
   color: #555;
   font-weight: 400;
 }
 
-.dashboard-container .calorie-counter {
+.calorie-counter {
   text-align: center;
   margin-bottom: 2rem;
   background: #fff8ec;
@@ -38,22 +37,22 @@
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
 }
 
-.dashboard-container .favourite-dishes .card {
-  width: calc(33.333% - 0.67rem);
+.favourite-dishes .card {
+  width: calc(33.333% - 0.67rem); /* 3 cards per row with spacing */
 }
 
-.dashboard-container .section {
+.section {
   margin-bottom: 3rem;
 }
 
-.dashboard-container .horizontal-cards {
+.horizontal-cards {
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: space-between;
+  justify-content: flex-start; /* to distribute evenly */
 }
 
-.dashboard-container .card {
+.card {
   background: white;
   border-radius: 12px;
   overflow: hidden;
@@ -64,40 +63,40 @@
   transition: transform 0.3s ease-in-out;
 }
 
-.dashboard-container .card:hover {
+.card:hover {
   transform: translateY(-5px);
 }
 
-.dashboard-container .card-img-top {
+.card-img-top {
   width: 100%;
   height: 180px;
   object-fit: cover;
 }
 
-.dashboard-container .card-body {
+.card-body {
   padding: 1rem;
   flex-grow: 1;
 }
 
-.dashboard-container .card-title {
+.card-title {
   font-size: 1.1rem;
   font-weight: bold;
   color: #181c62;
   margin-bottom: 0.5rem;
 }
 
-.dashboard-container .card-text {
+.card-text {
   color: #333;
   font-size: 0.9rem;
   margin-bottom: 0.5rem;
 }
 
-.dashboard-container .card-calories {
+.card-calories {
   font-size: 0.85rem;
   color: #999;
 }
 
-.dashboard-container .card-footer {
+.card-footer {
   padding: 0.75rem 1rem;
   background: #fff;
   display: flex;
@@ -107,12 +106,12 @@
   gap: 0.5rem;
 }
 
-.dashboard-container .btn-group {
+.btn-group {
   display: flex;
   gap: 0.5rem;
 }
 
-.dashboard-container .btn {
+.btn {
   background-color: #ff7615;
   color: white;
   border: none;
@@ -123,28 +122,28 @@
   transition: background 0.2s ease;
 }
 
-.dashboard-container .btn:hover {
+.btn:hover {
   background-color: #e95f00;
 }
 
-.dashboard-container .btn-outline {
+.btn-outline {
   background-color: transparent;
   color: #ff7615;
   border: 1px solid #ff7615;
 }
 
-.dashboard-container .btn-outline:hover {
+.btn-outline:hover {
   background-color: #ff7615;
   color: white;
 }
 
-.dashboard-container .total-calories {
+.total-calories {
   margin-top: 1rem;
   font-size: 1rem;
   color: #333;
 }
 
-.dashboard-container .chart-container {
+.chart-container {
   background: #fff;
   padding: 1rem;
   border-radius: 12px;
