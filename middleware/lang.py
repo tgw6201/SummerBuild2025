@@ -93,7 +93,7 @@ def load_user_preferences_from_db(sessionid):
     url = "http://localhost:3000/profile"
     headers = {"Cookie": f"sessionid={sessionid}"}
     try:
-        response = requests.get(url, headers=headers)
+        response = requests.get(url, headers)
         if response.status_code != 200:
             logger.error(f"Failed to fetch user preferences: {response.text}")
             return None
@@ -187,7 +187,9 @@ chat_histories = {}
 # Save latest response as JSON (adapted from save_latest_response)
 def save_latest_response(sessionid):
     try:
+        
         history = chat_histories.get(sessionid, [])
+
         if not history:
             logger.warning("No chat history found")
             return json.dumps({"error": "No chat history available"}, indent=2)
@@ -245,7 +247,9 @@ async def health_check():
 async def chat(request: ChatRequest):
     try:
         # Load user preferences
-        messagesample_data = load_user_preferences_from_db(request.sessionid)
+        sessionid= request.cookie.get('sessionid')
+        messagesample_data = load_user_preferences_from_db(sessionid)
+
         if not messagesample_data:
             messagesample_data = load_messagesample()
         system_prompt_local = format_context(messagesample_data)
@@ -259,9 +263,9 @@ async def chat(request: ChatRequest):
         chain_local = prompt_local | llm
         
         # Get or initialize chat history
-        if request.sessionid not in chat_histories:
-            chat_histories[request.sessionid] = []
-        chatbot_history = chat_histories[request.sessionid]
+        if request.cookie.get('sessionid') not in chat_histories:
+            chat_histories[request.cookie.get('sessionid')] = []
+        chatbot_history = chat_histories[request.cookie.get('sessionid')]
         
         # Append user message
         chatbot_history.append(HumanMessage(content=request.message))
@@ -312,7 +316,8 @@ async def chat(request: ChatRequest):
 @app.post("/save-recipe")
 async def save_recipe(request: SaveRecipeRequest):
     try:
-        json_string = save_latest_response(request.sessionid)
+        sessionid= request.cookie.get('sessionid')
+        json_string = save_latest_response(sessionid)
         return {"recipe_json": json_string}
     except Exception as e:
         logger.error(f"Error saving recipe: {e}")
