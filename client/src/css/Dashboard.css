@@ -49,7 +49,7 @@
   display: flex;
   flex-wrap: wrap;
   gap: 1rem;
-  justify-content: space-between; /* to distribute evenly */
+  justify-content: flex-start; /* to distribute evenly */
 }
 
 .card {
@@ -60,7 +60,7 @@
   width: calc(25% - 1rem);
   display: flex;
   flex-direction: column;
-  transition: transform 0.2s ease-in-out;
+  transition: transform 0.3s ease-in-out;
 }
 
 .card:hover {
