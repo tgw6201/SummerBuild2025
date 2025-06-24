@@ -64,7 +64,7 @@ def save_recent_prompt_to_db(user_input, assistant_response, sessionid):
     headers = {"Cookie": f"sessionid={sessionid}"}
     data = {"query": user_input, "response": assistant_response}
     try:
-        response = requests.post(url, json=data, headers=headers)
+        response = requests.post(url, json=data, headers=headers)# deleted headers
         if response.status_code != 201:
             logger.error(f"Failed to save recent prompt to DB: {response.text}")
     except Exception as e:
@@ -90,7 +90,7 @@ def save_recipe_to_db(json_string, sessionid):
         logger.error(f"Error saving recipe to DB: {e}")
 
 def load_user_preferences_from_db(sessionid):
-    url = "http://localhost:3000/profile"
+    url = "http://localhost:3000/user-details"
     headers = {"Cookie": f"sessionid={sessionid}"}
     try:
         response = requests.get(url, headers)
@@ -183,22 +183,32 @@ chain = prompt | llm
 
 # In-memory chat history (per sessionid)
 chat_histories = {}
+# Get the chat history
+def get_latest_response(sessionid):
+    url = "http://localhost:3000/chatbot-history"
+    headers = {"Cookie": f"sessionid={sessionid}"}
+    try:
+        response = requests.get(url, headers)
+        if response.status_code != 200:
+            logger.error(f"Failed to fetch user preferences: {response.text}")
+            return None
+        history = response.json()
+        return history
+    except Exception as e:
+        logger.error(f"Error fetching user preferences from DB: {e}")
+        return None
 
 # Save latest response as JSON (adapted from save_latest_response)
 def save_latest_response(sessionid):
     try:
-        
-        history = chat_histories.get(sessionid, [])
-
+        history = get_latest_response(sessionid)
+        print(history)
         if not history:
             logger.warning("No chat history found")
             return json.dumps({"error": "No chat history available"}, indent=2)
         
-        latest_response = None
-        for msg in reversed(history):
-            if isinstance(msg, AIMessage):
-                latest_response = msg.content
-                break
+        latest_response = history[0]["ai_response"]
+        print(latest_response)
         if not latest_response:
             logger.warning("No assistant response found in chat history")
             return json.dumps({"error": "No assistant response found"}, indent=2)
@@ -247,7 +257,7 @@ async def health_check():
 async def chat(request: ChatRequest):
     try:
         # Load user preferences
-        sessionid= request.cookie.get('sessionid')
+        sessionid= request.sessionid
         messagesample_data = load_user_preferences_from_db(sessionid)
 
         if not messagesample_data:
@@ -263,9 +273,9 @@ async def chat(request: ChatRequest):
         chain_local = prompt_local | llm
         
         # Get or initialize chat history
-        if request.cookie.get('sessionid') not in chat_histories:
-            chat_histories[request.cookie.get('sessionid')] = []
-        chatbot_history = chat_histories[request.cookie.get('sessionid')]
+        if request.sessionid not in chat_histories:
+            chat_histories[request.sessionid] = []
+        chatbot_history = chat_histories[request.sessionid]
         
         # Append user message
         chatbot_history.append(HumanMessage(content=request.message))
@@ -316,7 +326,7 @@ async def chat(request: ChatRequest):
 @app.post("/save-recipe")
 async def save_recipe(request: SaveRecipeRequest):
     try:
-        sessionid= request.cookie.get('sessionid')
+        sessionid= request.sessionid
         json_string = save_latest_response(sessionid)
         return {"recipe_json": json_string}
     except Exception as e:

@@ -864,6 +864,65 @@ app.get('/dashboard', async (req, res) => {
     }
 });
 
+//added new function
+
+app.get('/user-details', async (req, res) => {
+    const sessionid = req.cookies.sessionid;
+    if (!sessionid) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+
+    try {
+        // Get userid from sessionid
+        const userResult = await pool.query(
+            "SELECT userid FROM user_login_table WHERE sessionid = $1",
+            [sessionid]
+        );
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({ message: "Invalid session id" });
+        }
+
+        const userid = userResult.rows[0].userid;
+
+        // Get age
+        const ageResult = await pool.query(
+            "SELECT EXTRACT(YEAR FROM AGE(date_of_birth)) AS age FROM user_details WHERE userid_fk = $1",
+            [userid]
+        );
+
+        // Get calorie goal, allergies, and dietary preference
+        const preferenceResult = await pool.query(
+            "SELECT daily_calorie_goal, allergies, dietary_preference FROM user_dietary_preference WHERE userid = $1",
+            [userid]
+        );
+
+        if (preferenceResult.rows.length === 0) {
+            return res.status(404).json({ message: "User preferences not found" });
+        }
+
+        const { daily_calorie_goal, allergies, dietary_preference } = preferenceResult.rows[0];
+
+        const formattedResponse = {
+            user: {
+                age: ageResult.rows[0].age,
+                food_preferences: {
+                    allergies: allergies ? allergies.split(',').map(a => a.trim()) : [],
+                    dietary_preference: dietary_preference ? dietary_preference.split(',').map(d => d.trim()) : []
+                },
+                calorie_target: daily_calorie_goal
+            },
+            ingredients: ""
+        };
+
+        res.json(formattedResponse);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+
 app.listen(3000,()=>{
     console.log("Server is running on port: ", port);
 });
