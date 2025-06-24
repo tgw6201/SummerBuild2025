@@ -1,0 +1,200 @@
+import React, { useState, useEffect, useRef } from "react";
+import "../css/Chatbot.css";
+
+export default function Chatbot() {
+  /* State Management */
+  const [conversations, setConversations] = useState([
+    {
+      id: 1,
+      title: "CalorieBot",
+      messages: [
+        { id: 1, sender: "bot", text: "Hi! How can I help you today?" },
+      ],
+    },
+    {
+      id: 2,
+      title: "RecipeBot",
+      messages: [{ id: 1, sender: "bot", text: "What recipe do you want?" }],
+    },
+  ]);
+  const [activeConversationId, setActiveConversationId] = useState(1);
+  const [input, setInput] = useState(""); // Current text in the input field
+  const [isTyping, setIsTyping] = useState(false); // Boolean to show/hide typing indicator
+
+  /* Refs for DOM Access */
+  const messagesEndRef = useRef(null); // Points to bottom of messages (for auto-scroll)
+  const inputRef = useRef(null); // Points to input field (for auto-focus)
+
+  /* Auto-scroll Effect */
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  }, [conversations, activeConversationId, isTyping]);
+
+  /* Auto-focus Effect */
+  useEffect(() => {
+    inputRef.current?.focus(); // Put cursor inside box
+  }, []);
+
+  /* Send Message Function */
+  const handleSend = async (msg) => {
+    const messageToSend = msg !== undefined ? msg : input;
+    if (!messageToSend.trim() || isTyping) return;
+
+    setConversations((prev) =>
+      prev.map((conv) =>
+        conv.id === activeConversationId
+          ? {
+              ...conv,
+              messages: [
+                ...conv.messages,
+                { id: Date.now(), sender: "user", text: messageToSend.trim() },
+              ],
+            }
+          : conv
+      )
+    );
+    setInput("");
+    setIsTyping(true);
+
+    /* Simulated Bot Response */
+    setTimeout(() => {
+      const responses = [
+        "That's an interesting question! Let me think about that...",
+        "I understand what you're asking. Here's my perspective on that topic.",
+        "Great question! Based on what you've shared, I'd suggest considering...",
+        "Thanks for asking! Here's what I think about that...",
+        "I see what you mean. Let me provide some insights on this.",
+        "That's a thoughtful question. Here's how I would approach it...",
+      ];
+
+      const randomResponse =
+        responses[Math.floor(Math.random() * responses.length)];
+
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === activeConversationId
+            ? {
+                ...conv,
+                messages: [
+                  ...conv.messages,
+                  { id: Date.now() + 1, sender: "bot", text: randomResponse },
+                ],
+              }
+            : conv
+        )
+      );
+      setIsTyping(false);
+      inputRef.current?.focus();
+    }, 1200);
+  };
+
+  const activeConversation = conversations.find(
+    (c) => c.id === activeConversationId
+  );
+
+  /* Keyboard Handler */
+  const handleKeyPress = (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      handleSend();
+    }
+  };
+
+  /* Suggested messages for user convenience */
+  const suggestions = ["Suggest recipe", "Log meal", "Track Calories", "Help"];
+
+  return (
+    <div className="app-container">
+      {" "}
+      {/* top-level flex container */}
+      <aside className="history-sidebar">
+        <div
+          style={{
+            fontWeight: 600,
+            margin: "0.5rem 0 1rem 0",
+            fontSize: "1.1rem",
+            textAlign: "center",
+          }}
+        >
+          Conversations
+        </div>
+        <ul className="history-list">
+          {conversations.map((conv) => (
+            <li
+              key={conv.id}
+              className={`history-item${
+                conv.id === activeConversationId ? " active" : ""
+              }`}
+              onClick={() => setActiveConversationId(conv.id)}
+            >
+              <div className="history-title">{conv.title}</div>
+              <div className="history-preview">
+                {conv.messages[conv.messages.length - 1]?.text.slice(0, 30) ||
+                  ""}
+              </div>
+            </li>
+          ))}
+        </ul>
+      </aside>
+      <div className="chat-container">
+        <h3 className="chat-header">RennyBot</h3>
+
+        <div className="chat-messages">
+          {(activeConversation?.messages || []).map((msg, idx) => (
+            <div key={idx} className={`message ${msg.sender}`}>
+              <strong>{msg.sender}:</strong>
+              {msg.text.split("\n").map((line, i) => (
+                <React.Fragment key={i}>
+                  {line}
+                  {i < msg.text.split("\n").length - 1 && <br />}
+                </React.Fragment>
+              ))}
+            </div>
+          ))}
+
+          {isTyping && (
+            <div className="message bot typing">Bot is typing...</div>
+          )}
+
+          <div ref={messagesEndRef} />
+        </div>
+
+        <div className="chat-suggestions">
+          {suggestions.map((text) => (
+            <button
+              key={text}
+              className="suggestion-bubble"
+              type="button"
+              onClick={() => handleSend(text)}
+            >
+              {text}
+            </button>
+          ))}
+        </div>
+
+        <div className="chat-input">
+          <textarea
+            placeholder="Type your message..."
+            value={input}
+            ref={inputRef}
+            onChange={(e) => setInput(e.target.value)}
+            onKeyDown={handleKeyPress}
+            rows={2}
+            style={{ resize: "none" }}
+          />
+          <button onClick={() => handleSend()} className="send-button">
+            <svg
+              xmlns="http://www.w3.org/2000/svg"
+              viewBox="0 0 24 24"
+              width="20"
+              height="20"
+              fill="currentColor"
+            >
+              <path d="M2 21l21-9L2 3v7l15 2-15 2v7z" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  );
+}

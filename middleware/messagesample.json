@@ -1,0 +1,12 @@
+{
+  "user": {
+    "age": 30,
+    "food_preferences": {
+      "allergies": ["peanuts", "shellfish"],
+      "dietary_preference": ["vegetarian", "halal"]
+    },
+    "calorie_target": 2000
+  },
+  "ingredients":
+    ""
+}
