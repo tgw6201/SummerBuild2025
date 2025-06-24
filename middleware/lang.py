@@ -101,38 +101,25 @@ def save_recipe_to_db(json_string, sessionid):
 
 def load_user_preferences_from_db(sessionid):
     url = "http://localhost:3000/user-details"
-    headers = {"Cookie": f"sessionid={sessionid}"}
+    #headers = {"Cookie": f"sessionid={sessionid}"}
+    cookies={"sessionid":sessionid}
     try:
-        response = requests.get(url, headers)
+        response = requests.get(url,cookies=cookies)
         if response.status_code != 200:
             logger.error(f"Failed to fetch user preferences: {response.text}")
             return None
         user_data = response.json()
         logger.debug(f"user_data from /profile: {user_data}")
-
-        dob_str = user_data.get("date_of_birth")
-        age = None
-        if dob_str:
-            try:
-                dob = datetime.strptime(dob_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-                age = (datetime.now() - dob).days // 365
-            except Exception as e:
-                logger.error(f"date_of_birth format error: {e}")
-                age = None
-        else:
-            logger.warning("date_of_birth missing in user_data")
-            age = None
-
         return {
             "user": {
-                "age": age if age is not None else "unknown",
-                "calorie_target": user_data.get("daily_calorie_goal", 2000),
+                "age": user_data['user']['age'],
+                "calorie_target": user_data['user']['calorie_target'],
                 "food_preferences": {
-                    "allergies": user_data.get("allergies", []),
-                    "dietary_preference": user_data.get("dietary_preference", "none")
+                    "allergies": user_data['user']['food_preferences']['allergies'],
+                    "dietary_preference": user_data['user']['food_preferences']['dietary_preference']
                 }
             },
-            "ingredients": []  # Fetch ingredients separately if needed
+            "ingredients": user_data['ingredients'] 
         }
     except Exception as e:
         logger.error(f"Error fetching user preferences from DB: {e}")
