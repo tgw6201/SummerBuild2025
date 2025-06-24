@@ -9,15 +9,15 @@ function LogoutButton() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/logout', {
-        method: 'POST',
-        credentials: 'include'
+      const response = await fetch("http://localhost:3000/logout", {
+        method: "POST",
+        credentials: "include",
       });
 
       if (response.ok) {
         // Optional: brief delay to show success or fade out
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 500); // half a second delay
       } else {
         alert("Logout failed. Please try again.");
