@@ -119,15 +119,18 @@ export default function Navbar() {
       </div>
       
       <div className="nav-right">
+        {/* Use a button for logout to handle the action */}
         <button
           onClick={handleLogout}
           disabled={loading}
-          className="btn btn-danger btn-sm rounded-pill"
           style={{
-            minWidth: 100,
-            fontWeight: 600,
-            opacity: loading ? 0.7 : 1,
-            transition: "opacity 0.3s"
+            background: 'none',
+            border: 'none',
+            color: 'inherit',
+            cursor: loading ? 'not-allowed' : 'pointer',
+            fontSize: '1rem',
+            padding: 0,
+            textDecoration: 'underline',
           }}
         >
           {loading ? 'Logging out...' : 'Logout'}

@@ -1,5 +1,5 @@
 :root {
-  font-family: 'Rubik', sans-serif;
+  font-family: "Rubik", sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
@@ -18,12 +18,11 @@ body {
   /*display: flex;
   place-items: center;
   justify-content: center;
-  align-items: center;*/ 
+  align-items: center; */
   min-width: 320px;
   min-height: 100vh;
   background-color: #ffffff; 
 }
-
 
 @media (prefers-color-scheme: light) {
   :root {
@@ -63,7 +62,7 @@ body {
 }
 
 .navbar a:hover {
-  color: #4f86f7;
+  color: #c53e15;
 }
 
 .dropdown-btn {

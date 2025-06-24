@@ -9,15 +9,15 @@ function LogoutButton() {
     setLoading(true);
 
     try {
-      const response = await fetch('http://localhost:3000/logout', {
-        method: 'POST',
-        credentials: 'include'
+      const response = await fetch("http://localhost:3000/logout", {
+        method: "POST",
+        credentials: "include",
       });
 
       if (response.ok) {
         // Optional: brief delay to show success or fade out
         setTimeout(() => {
-          navigate('/login');
+          navigate("/login");
         }, 500); // half a second delay
       } else {
         alert("Logout failed. Please try again.");
@@ -34,16 +34,12 @@ function LogoutButton() {
     <button
       onClick={handleLogout}
       disabled={loading}
-      className="btn btn-danger px-4 py-2 rounded-pill d-flex align-items-center gap-2"
       style={{
-        fontWeight: 600,
-        fontSize: "1.1rem",
-        minWidth: 150,
-        opacity: loading ? 0.7 : 1,
-        transition: "opacity 0.3s"
+        opacity: loading ? 0.6 : 1,
+        cursor: loading ? "not-allowed" : "pointer",
+        transition: "opacity 0.3s ease",
       }}
     >
-      <i className="bi bi-box-arrow-right"></i>
       {loading ? "Logging out..." : "Logout"}
     </button>
   );
