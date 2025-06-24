@@ -1,11 +1,11 @@
 .app-container {
+  margin-top:  32px; /* space for header */;
   display: flex;
   gap: 20px;
   height: 90vh; /* fill most of viewport height */
   width: 130vh;
   padding: 1rem;
   box-sizing: border-box;
-  padding-top: 72px;
 }
 
 .history-sidebar {

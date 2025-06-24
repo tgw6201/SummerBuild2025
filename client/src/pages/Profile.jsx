@@ -134,7 +134,7 @@ export default function Profile() {
     if (field === 'gender') {
       return (
         <select
-          className="form-control"
+          className="profile-field-input"
           value={profile[field] || ''}
           onChange={e => handleChange(field, e.target.value)}
         >
@@ -146,7 +146,7 @@ export default function Profile() {
       return (
         <input
           type="date"
-          className="form-control"
+          className="profile-field-input"
           value={formatDateForInput(profile[field])}
           onChange={e => handleChange(field, e.target.value)}
         />
@@ -155,7 +155,7 @@ export default function Profile() {
       return (
         <input
           type="tel"
-          className="form-control"
+          className="profile-field-input"
           value={profile[field] || ''}
           onChange={e => handleChange(field, e.target.value)}
           placeholder="e.g., +65 9123 4567"
@@ -165,7 +165,7 @@ export default function Profile() {
       return (
         <input
           type="number"
-          className="form-control"
+          className="profile-field-input"
           value={profile[field] || ''}
           onChange={e => handleChange(field, e.target.value)}
           min="0"
@@ -175,7 +175,7 @@ export default function Profile() {
       return (
         <input
           type="text"
-          className="form-control"
+          className="profile-field-input"
           value={profile[field] || ''}
           onChange={e => handleChange(field, e.target.value)}
         />
@@ -278,11 +278,9 @@ export default function Profile() {
   // Show loading state
   if (loading) {
     return (
-      <div className="container py-5">
-        <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '60vh' }}>
-          <div className="spinner-border text-primary" role="status">
-          <span className="ms-3">Loading profile...</span>
-          </div>   
+      <div className="profile-container">
+        <div className="profile-loading">
+          <h2>Loading profile...</h2>
         </div>
       </div>
     );
@@ -291,11 +289,11 @@ export default function Profile() {
   // Show error state
   if (error) {
     return (
-      <div className="container py-5">
-        <div className="alert alert-danger text-center">
+      <div className="profile-container">
+        <div className="profile-error">
           <h2>Error</h2>
           <p>{error}</p>
-          <button className="btn btn-warning" onClick={() => window.location.reload()}>
+          <button onClick={() => window.location.reload()}>
             Retry
           </button>
         </div>
@@ -305,16 +303,16 @@ export default function Profile() {
 
   return (
     <div className="profile-container">
-      <div className="card shadow profile-card">
-        <div className="card-body">
-          {/* Profile header: avatar and name centered */}
-          <div className="d-flex flex-column align-items-center mb-4">
-            <label htmlFor="avatar-upload" style={{ cursor: 'pointer' }}>
+      <h2 className="profile-title">Profile</h2>
+      <div className="profile-card">
+        <div className="profile-avatar-row">
+          <div className="profile-avatar-wrapper">
+            <label htmlFor="avatar-upload">
               <img
                 src={profile.profile_image}
                 alt="Avatar"
-                className="rounded-circle border border-3"
-                style={{ width: 100, height: 100, objectFit: 'cover', background: '#eee' }}
+                className="profile-avatar"
+                style={{ cursor: 'pointer' }}
               />
             </label>
             <input
@@ -324,49 +322,50 @@ export default function Profile() {
               style={{ display: 'none' }}
               onChange={handleAvatarChange}
             />
-            <h3 className="mb-0 mt-3">{profile.name || 'Your Name'}</h3>
-            <div className="text-muted" style={{ fontSize: '0.95em' }}>Click avatar to change</div>
           </div>
-
-          <hr />
-
-          <h5 className="mb-3 text-warning">Personal Information</h5>
-          <div className="row g-3 mb-4">
-            {['name', 'phone_number', 'gender', 'date_of_birth'].map((field) => (
-              <div className="col-md-6" key={field}>
-                <label className="form-label fw-bold">{getFieldDisplayName(field)}</label>
-                {renderInput(field)}
-              </div>
-            ))}
-          </div>
-
-          <h5 className="mb-3 text-warning">Health & Fitness</h5>
-          <div className="row g-3 mb-4">
-            {['weight', 'height', 'daily_calorie_goal', 'dietary_preference', 'allergies'].map((field) => (
-              <div className="col-md-6" key={field}>
-                <label className="form-label fw-bold">{getFieldDisplayName(field)}</label>
-                {renderInput(field)}
-              </div>
-            ))}
-          </div>
-
-          {message && (
-            <div className="alert alert-info py-2 text-center" style={{ fontSize: '1em' }}>
-              {message}
-            </div>
-          )}
-
-          <div className="d-flex justify-content-end">
-            <button
-              onClick={handleSaveAll}
-              className="btn btn-warning rounded-pill"
-              style={{ minWidth: 220 }}
-              disabled={Object.keys(profile).length === 0}
-            >
-              Save All Changes
-            </button>
+          <div>
+            <div className="profile-avatar-name">{profile.name}</div>
+            <div className="profile-avatar-hint">Click avatar to change</div>
           </div>
         </div>
+        
+        {/* Personal Information Section */}
+        <div className="profile-section">
+          <h3 className="profile-section-title">Personal Information</h3>
+          {['name', 'phone_number', 'gender', 'date_of_birth'].map((field) => (
+            <div key={field} className="profile-field-row">
+              <strong className="profile-field-label">
+                {getFieldDisplayName(field)}
+              </strong>
+              {renderInput(field)}
+            </div>
+          ))}
+        </div>
+
+        {/* Health & Fitness Section */}
+        <div className="profile-section">
+          <h3 className="profile-section-title">Health & Fitness</h3>
+          {['weight', 'height', 'daily_calorie_goal', 'dietary_preference', 'allergies'].map((field) => (
+            <div key={field} className="profile-field-row">
+              <strong className="profile-field-label">
+                {getFieldDisplayName(field)}
+              </strong>
+              {renderInput(field)}
+            </div>
+          ))}
+        </div>
+
+        <div className="profile-save-all-container">
+          <button 
+            onClick={handleSaveAll}
+            className="profile-save-all-btn"
+            disabled={Object.keys(profile).length === 0}
+          >
+            Save All Changes
+          </button>
+        </div>
+
+        {message && <div className="profile-message">{message}</div>}
       </div>
     </div>
   );

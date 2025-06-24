@@ -14,14 +14,15 @@
 }
 
 body {
-  font-family: 'Rubik', sans-serif;
-  /*display: flex;
+  font-family: "Rubik", sans-serif;
+  display: flex;
   place-items: center;
   justify-content: center;
-  align-items: center;*/ 
+  align-items: center;
   min-width: 320px;
   min-height: 100vh;
-  background-color: #ffffff; 
+  background-color: #ffffff;
+  padding-top: 90px;
 }
 
 @media (prefers-color-scheme: light) {
