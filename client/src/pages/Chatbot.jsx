@@ -56,20 +56,32 @@ export default function Chatbot() {
     setInput("");
     setIsTyping(true);
 
-    /* Simulated Bot Response */
-    setTimeout(() => {
-      const responses = [
-        "That's an interesting question! Let me think about that...",
-        "I understand what you're asking. Here's my perspective on that topic.",
-        "Great question! Based on what you've shared, I'd suggest considering...",
-        "Thanks for asking! Here's what I think about that...",
-        "I see what you mean. Let me provide some insights on this.",
-        "That's a thoughtful question. Here's how I would approach it...",
-      ];
+    try {
+      // Debug: log all cookies
+      console.log("document.cookie:", document.cookie);
 
-      const randomResponse =
-        responses[Math.floor(Math.random() * responses.length)];
+      // Get sessionid from cookie
+      const sessionid = document.cookie
+        .split("; ")
+        .find((row) => row.startsWith("sessionid="))
+        ?.split("=")[1];
 
+      console.log("Sending to /chat:", { sessionid, message: messageToSend.trim() });
+
+      const response = await fetch("http://localhost:8000/chat", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        credentials: "include", // this sends cookies!
+        body: JSON.stringify({
+          message: messageToSend.trim(),
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to get response from AI");
+      }
+
+      const data = await response.json();
       setConversations((prev) =>
         prev.map((conv) =>
           conv.id === activeConversationId
@@ -77,15 +89,29 @@ export default function Chatbot() {
                 ...conv,
                 messages: [
                   ...conv.messages,
-                  { id: Date.now() + 1, sender: "bot", text: randomResponse },
+                  { id: Date.now() + 1, sender: "bot", text: data.response },
                 ],
               }
             : conv
         )
       );
-      setIsTyping(false);
-      inputRef.current?.focus();
-    }, 1200);
+    } catch (error) {
+      setConversations((prev) =>
+        prev.map((conv) =>
+          conv.id === activeConversationId
+            ? {
+                ...conv,
+                messages: [
+                  ...conv.messages,
+                  { id: Date.now() + 1, sender: "bot", text: "Error: Could not reach AI service." },
+                ],
+              }
+            : conv
+        )
+      );
+    }
+    setIsTyping(false);
+    inputRef.current?.focus();
   };
 
   const activeConversation = conversations.find(
@@ -129,8 +155,9 @@ export default function Chatbot() {
             >
               <div className="history-title">{conv.title}</div>
               <div className="history-preview">
-                {conv.messages[conv.messages.length - 1]?.text.slice(0, 30) ||
-                  ""}
+                {(conv.messages && conv.messages.length > 0 && conv.messages[conv.messages.length - 1]?.text)
+                  ? conv.messages[conv.messages.length - 1].text.slice(0, 30)
+                  : ""}
               </div>
             </li>
           ))}

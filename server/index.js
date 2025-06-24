@@ -33,6 +33,7 @@ app.post("/login", async (req, res) => {
             httpOnly: true,
             sameSite: "lax",
             secure: false,
+            path: "/"
         });
         // Update the user's session ID in the database
         await pool.query("UPDATE user_login_table SET sessionid = $1 WHERE userid = $2", [sessionid, userid]);
@@ -63,6 +64,7 @@ app.post("/signup", async (req, res) => {
             httpOnly: true,
             sameSite: "lax",
             secure: false,
+            path: "/"
         });
         if (!userid || !password) {
             return res.status(400).json({ message: "Email and password are required" });
@@ -818,7 +820,7 @@ app.get('/dashboard', async (req, res) => {
         // user favorite meals
         const favorite_meals = await pool.query("SELECT mname,mid FROM saved_user_meals WHERE userid = $1", [user.rows[0].userid]);
         // user consumed meals
-        const consumed_meals = await pool.query("SELECT urt.mname, urt.mid, urt.calories, cm.cmid FROM consumed_meals cm, user_recipe_table urt WHERE cm.userid = $1 AND cm.mid = urt.mid", [user.rows[0].userid]);
+        const consumed_meals = await pool.query("SELECT urt.mname, urt.mid, urt.calories, cm.cmid FROM consumed_meals cm, user_recipe_table urt WHERE cm.userid = $1 AND cm.mid = urt.mid AND cm.date = CURRENT_DATE", [user.rows[0].userid]);
         // user's past week calorie intake
         const past_week_calories = await pool.query(
             `SELECT SUM(urt.calories) AS total_calories, cm.date::date AS date
@@ -864,8 +866,7 @@ app.get('/dashboard', async (req, res) => {
     }
 });
 
-//added new function
-
+// get user details for peter
 app.get('/user-details', async (req, res) => {
     const sessionid = req.cookies.sessionid;
     if (!sessionid) {

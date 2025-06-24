@@ -9,6 +9,8 @@ from langchain_core.prompts import ChatPromptTemplate, MessagesPlaceholder
 from langchain_core.messages import HumanMessage, AIMessage
 import requests
 from datetime import datetime
+from fastapi.middleware.cors import CORSMiddleware
+from fastapi import Cookie
 
 # Setup logging
 logging.basicConfig(
@@ -35,7 +37,6 @@ llm = ChatGoogleGenerativeAI(
 
 # Define Pydantic models for request bodies
 class ChatRequest(BaseModel):
-    sessionid: str
     message: str
 
 class SaveRecipeRequest(BaseModel):
@@ -58,6 +59,15 @@ class SaveRecipeRequest(BaseModel):
 #                user_query = None
 #    except Exception as e:
 #        logger.error(f"Error saving chat history to DB: {e}")
+
+# CORS middleware for frontend access
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["http://localhost:5173"],  # your frontend
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
 
 def save_recent_prompt_to_db(user_input, assistant_response, sessionid):
     url = "http://localhost:3000/chatbot-history"
@@ -98,15 +108,28 @@ def load_user_preferences_from_db(sessionid):
             logger.error(f"Failed to fetch user preferences: {response.text}")
             return None
         user_data = response.json()
-        dob = datetime.strptime(user_data["date_of_birth"], "%Y-%m-%dT%H:%M:%S.%fZ")
-        age = (datetime.now() - dob).days // 365
+        logger.debug(f"user_data from /profile: {user_data}")
+
+        dob_str = user_data.get("date_of_birth")
+        age = None
+        if dob_str:
+            try:
+                dob = datetime.strptime(dob_str, "%Y-%m-%dT%H:%M:%S.%fZ")
+                age = (datetime.now() - dob).days // 365
+            except Exception as e:
+                logger.error(f"date_of_birth format error: {e}")
+                age = None
+        else:
+            logger.warning("date_of_birth missing in user_data")
+            age = None
+
         return {
             "user": {
-                "age": age,
-                "calorie_target": user_data["daily_calorie_goal"],
+                "age": age if age is not None else "unknown",
+                "calorie_target": user_data.get("daily_calorie_goal", 2000),
                 "food_preferences": {
-                    "allergies": user_data["allergies"] or [],
-                    "dietary_preference": user_data["dietary_preference"] or "none"
+                    "allergies": user_data.get("allergies", []),
+                    "dietary_preference": user_data.get("dietary_preference", "none")
                 }
             },
             "ingredients": []  # Fetch ingredients separately if needed
@@ -254,10 +277,11 @@ async def health_check():
     return {"status": "healthy"}
 
 @app.post("/chat")
-async def chat(request: ChatRequest):
+async def chat(request: ChatRequest, sessionid: str = Cookie(None)):
     try:
         # Load user preferences
-        sessionid= request.sessionid
+        if not sessionid:
+            raise HTTPException(status_code=401, detail="No sessionid cookie found")
         messagesample_data = load_user_preferences_from_db(sessionid)
 
         if not messagesample_data:
@@ -273,9 +297,9 @@ async def chat(request: ChatRequest):
         chain_local = prompt_local | llm
         
         # Get or initialize chat history
-        if request.sessionid not in chat_histories:
-            chat_histories[request.sessionid] = []
-        chatbot_history = chat_histories[request.sessionid]
+        if sessionid not in chat_histories:
+            chat_histories[sessionid] = []
+        chatbot_history = chat_histories[sessionid]
         
         # Append user message
         chatbot_history.append(HumanMessage(content=request.message))
@@ -308,7 +332,7 @@ async def chat(request: ChatRequest):
             "response": assistant_response
         }
         save_chat_history(recent_data, "recent_prompt")
-        save_recent_prompt_to_db(request.message, assistant_response, request.sessionid)
+        save_recent_prompt_to_db(request.message, assistant_response, sessionid)
         
         # Convert chatbot_history to response format
         #history_response = [
