@@ -122,9 +122,46 @@ const Dashboard = () => {
     };
   }, []);
 
+  // Handle Removing of favorite dish
+  const handleRemoveFavorite = async (mealToRemove) => {
+    console.log("Removing favorite dish:", mealToRemove);
+    try {
+      const response = await fetch(`http://localhost:3000/saved-meals/${mealToRemove.mid}`, {
+        method: "DELETE",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to remove favorite dish");
+
+      // Update local state
+      setFavoriteDishes((dishes) => dishes.filter((dish) => dish.mid !== mealToRemove.mid));
+    } catch (error) {
+      console.error("Error removing favorite dish:", error);
+    }
+  }
+
+
   // Handle adding calories from favorite dishes (assuming 500 kcal default)
-  const handleAdd = (cal) => {
-    setTotalCalories((c) => c + cal);
+  const handleTrack = async (mealToConsume) => {
+    try {
+      const response = await fetch("http://localhost:3000/consumed-meals", {
+        method: "POST",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ mid: mealToConsume.mid }),
+      });
+
+      if (!response.ok) throw new Error("Failed to track consumed meal");
+
+      await fetchDashboardData(); // Refresh everything after adding
+    } catch (error) {
+      console.error("Error tracking consumed meal:", error);
+    }
   };
 
   // Delete consumed meal then refresh dashboard data
@@ -146,9 +183,27 @@ const Dashboard = () => {
     }
   };
 
-  // Remove favorite dish locally (could extend to backend later)
-  const handleRemoveFavorite = (mid) => {
-    setFavoriteDishes((dishes) => dishes.filter((dish) => dish.mid !== mid));
+  // Handle Editing favorite dish
+  const handleEditFavorite = async (mealToEdit) => {
+    console.log("Editing favorite dish:", mealToEdit);
+    try{
+      const response = await fetch(`http://localhost:3000/user-recipes/${mealToEdit.mid}`, {
+        method: "GET",
+        credentials: "include",
+        headers: {
+          "Content-Type": "application/json",
+        },
+      });
+
+      if (!response.ok) throw new Error("Failed to fetch recipe for editing");
+
+      const recipeData = await response.json();
+      // Redirect to RecipeInput with the recipe data
+      window.location.href = `/recipe-input/${mealToEdit.mid}`;
+    }
+    catch (error) {
+      console.error("Error fetching recipe for editing:", error);
+    }
   };
 
   return (
@@ -175,11 +230,11 @@ const Dashboard = () => {
               </div>
               <div className="card-footer">
                 <div className="btn-group">
-                  <button className="btn" onClick={() => handleRemoveFavorite(item.mid)}>Remove</button>
-                  <button className="btn btn-outline">Edit</button>
+                  <button className="btn" onClick={() => handleRemoveFavorite(item)}>Remove</button>
+                  <button className="btn btn-outline" onClick={() => handleEditFavorite(item)}>Edit</button>
                 </div>
                 <div className="btn-group right-group">
-                  <button className="btn" onClick={() => handleAdd(500)}>
+                  <button className="btn" onClick={() => handleTrack(item)}>
                     Track
                   </button>
                 </div>
