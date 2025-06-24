@@ -33,6 +33,7 @@ app.post("/login", async (req, res) => {
             httpOnly: true,
             sameSite: "lax",
             secure: false,
+            path: "/"
         });
         // Update the user's session ID in the database
         await pool.query("UPDATE user_login_table SET sessionid = $1 WHERE userid = $2", [sessionid, userid]);
@@ -63,6 +64,7 @@ app.post("/signup", async (req, res) => {
             httpOnly: true,
             sameSite: "lax",
             secure: false,
+            path: "/"
         });
         if (!userid || !password) {
             return res.status(400).json({ message: "Email and password are required" });
