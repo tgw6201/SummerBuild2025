@@ -18,6 +18,7 @@ export default function Profile() {
   const [message, setMessage] = useState('');
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
+  const [originalProfileImage, setOriginalProfileImage] = useState(initialProfile.profile_image);
 
   // Helper function to format date for display (DD/MM/YYYY)
   const formatDateForDisplay = (dateString) => {
@@ -70,16 +71,9 @@ export default function Profile() {
         });
 
         if (response.ok) {
-          console.log('Profile data fetched successfully');
-          // Parse the response data
-          console.log('Response status:', response.status);
-          console.log('Response headers:', response.headers);
-
           const profileData = await response.json();
-
-          console.log('Response body:', profileData);
           
-          // Convert profile_image byte array to data URL if it exists and is a byte array
+          let profileImage = initialProfile.profile_image;
           if (
             profileData.profile_image &&
             typeof profileData.profile_image === 'object' &&
@@ -89,14 +83,14 @@ export default function Profile() {
           ) {
             const byteArray = new Uint8Array(profileData.profile_image.data);
             const blob = new Blob([byteArray], { type: profileData.profile_image.contentType });
-            const url = URL.createObjectURL(blob);
-            profileData.profile_image = url;
-          } else {
-            profileData.profile_image = initialProfile.profile_image;
+            profileImage = URL.createObjectURL(blob);
           }
-          console.log('Fetched profile image:', profileData.profile_image);
           
-          setProfile(profileData);
+          setProfile({
+            ...profileData,
+            profile_image: profileImage
+          });
+          setOriginalProfileImage(profileData.profile_image); // Store the original data
         } else if (response.status === 401) {
           setError('Please log in to view your profile');
         } else {
@@ -196,8 +190,8 @@ export default function Profile() {
       // Prepare the profile data to send
       const profileToSend = { ...profile };
       
-      // If avatar is a data URL, convert it to byte array
-      if (profile.profile_image && profile.profile_image.startsWith('data:')) {
+      // Only process image if it's a new one (hasNewImage flag)
+      if (profile.hasNewImage && profile.profile_image.startsWith('data:')) {
         const response = await fetch(profile.profile_image);
         const blob = await response.blob();
         const arrayBuffer = await blob.arrayBuffer();
@@ -207,7 +201,13 @@ export default function Profile() {
           data: Array.from(byteArray), // Convert to regular array for JSON
           contentType: blob.type
         };
+      } else {
+        // If no new image, send the original image data
+        profileToSend.profile_image = originalProfileImage;
       }
+      
+      // Remove the temporary flag
+      delete profileToSend.hasNewImage;
       
       const response = await fetch('http://localhost:3000/profile', {
         method: 'PUT',
@@ -218,8 +218,16 @@ export default function Profile() {
         body: JSON.stringify(profileToSend),
       });
 
-      console.log('Profile data to send:', profileToSend);
       if (response.ok) {
+        const updatedProfile = await response.json();
+        // Update the original image data if we sent a new one
+        if (profile.hasNewImage) {
+          setOriginalProfileImage(updatedProfile.profile_image);
+        }
+        setProfile(prev => ({
+          ...prev,
+          hasNewImage: false // Reset the flag
+        }));
         setMessage('Profile saved successfully!');
         setTimeout(() => setMessage(''), 3000);
       } else {
@@ -240,9 +248,14 @@ export default function Profile() {
       try {
         const reader = new FileReader();
         reader.onload = (ev) => {
-          setProfile(prev => ({ ...prev, profile_image: ev.target.result }));
-          setMessage('Profile picture updated!');
-          setTimeout(() => setMessage(''), 1500);
+          setProfile(prev => ({ 
+            ...prev, 
+            profile_image: ev.target.result,
+            // Add a flag to indicate a new image was selected
+            hasNewImage: true 
+          }));
+          setMessage('Profile picture updated! (Changes will be saved when you click "Save All Changes")');
+          setTimeout(() => setMessage(''), 3000);
         };
         reader.readAsDataURL(file);
       } catch (error) {
