@@ -193,13 +193,14 @@ def save_latest_response():
         json_string = response.text.strip()
         #for debugging to see AI's response
         #print(json_string)
-        # Extract JSON from triple backticks
+
+        # Extract JSON formatted string from triple backticks
         if json_string.startswith("```json") and json_string.endswith("```"):
             json_string = json_string[7:-3].strip()
         elif json_string.startswith("```") and json_string.endswith("```"):
             json_string = json_string[3:-3].strip()
         
-        # Validate JSON
+        # Validate JSON formatted string
         recipe_data = json.loads(json_string)
 
         ##save_recipe_to_db(json_string, sessionid)
