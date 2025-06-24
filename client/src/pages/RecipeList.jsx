@@ -19,6 +19,7 @@ export default function RecipeList() {
                 throw new Error("Failed to fetch recipes");
             }
             const data = await response.json();
+            console.log("Fetched recipes:", data);
             setRecipes(data);
         } catch (err) {
             setError(err.message);
@@ -40,8 +41,52 @@ export default function RecipeList() {
                 throw new Error("Failed to delete recipe");
             }
 
-            // Update local state
             setRecipes(prev => prev.filter(recipe => recipe.mid !== mid));
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+
+    const handleFavorite = async (recipe) => {
+        try {
+            const response = await fetch(`http://localhost:3000/saved-meals/${recipe.mid}`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mname: recipe.mname }), // important!
+            });
+
+            if (response.status === 409) {
+                alert("Already marked as favorite!");
+            } else if (!response.ok) {
+                throw new Error("Failed to mark as favorite");
+            } else {
+                alert("Marked as favorite!");
+            }
+        } catch (err) {
+            alert(`Error: ${err.message}`);
+        }
+    };
+
+
+    const handleConsumed = async (recipe) => {
+        try {
+            const response = await fetch(`http://localhost:3000/consumed-meals`, {
+                method: 'POST',
+                credentials: 'include',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ mid: recipe.mid }),
+            });
+            console.log("sending consumed recipe:", recipe.mid);
+            console.log("Response from marking as consumed:", response);
+            if (!response.ok) {
+                throw new Error("Failed to mark as consumed");
+            }
+            alert("Marked as consumed!");
         } catch (err) {
             alert(`Error: ${err.message}`);
         }
@@ -50,8 +95,6 @@ export default function RecipeList() {
     const navigate = useNavigate();
 
     const handleEdit = (recipe) => {
-        // Troubleshooting: Check if recipe.mid is defined
-        // alert(`Edit clicked for: ${recipe.mname}\n(MID: ${recipe.mid})`);
         navigate(`/recipe-input/${recipe.mid}`);
     };
 
@@ -70,32 +113,46 @@ export default function RecipeList() {
                             <th>Name</th>
                             <th>Ingredients</th>
                             <th>Instructions</th>
+                            <th>Calories</th>
                             <th>Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
-                        {recipes.map((recipe) => (
-                            <tr key={recipe.mid}>
-                                <td>{recipe.mname}</td>
-                                <td>{recipe.recipe_ingredients}</td>
-                                <td>{recipe.recipe_instruction}</td>
-                                <td>
-                                    <button
-                                        className="btn btn-secondary me-2"
-                                        onClick={() => handleEdit(recipe)}
-                                    >
-                                        Edit
-                                    </button>
-                                    <button
-                                        className="btn btn-sm btn-danger"
-                                        onClick={() => handleDelete(recipe.mid)}
-                                    >
-                                        Delete
-                                    </button>
-                                </td>
-                            </tr>
-                        ))}
-                    </tbody>
+                        <tbody>
+                            {recipes.map((recipe) => (
+                                <tr key={recipe.mid}>
+                                    <td>{recipe.mname}</td>
+                                    <td>{recipe.recipe_ingredients}</td>
+                                    <td>{recipe.recipe_instruction}</td>
+                                    <td>{recipe.calories}</td>
+                                    <td>
+                                        <button
+                                            className="btn btn-secondary me-2"
+                                            onClick={() => handleEdit(recipe)}
+                                        >
+                                            Edit
+                                        </button>
+                                        <button
+                                            className="btn btn-sm btn-danger me-2"
+                                            onClick={() => handleDelete(recipe)}
+                                        >
+                                            Delete
+                                        </button>
+                                        <button
+                                            className="btn btn-sm btn-warning me-2"
+                                            onClick={() => handleFavorite(recipe)}
+                                        >
+                                            Favorite
+                                        </button>
+                                        <button
+                                            className="btn btn-sm btn-success"
+                                            onClick={() => handleConsumed(recipe)}
+                                        >
+                                            Consumed
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
                 </table>
             )}
         </div>

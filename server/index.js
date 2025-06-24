@@ -332,12 +332,19 @@ app.post('/consumed-meals', async (req, res) => {
     if (!sessionid) {
         return res.status(401).json({ message: "Unauthorized" });
     }
-    // Get useremail from sessionid
+
     const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
     if (user.rows.length === 0) {
         return res.status(404).json({ message: "invalid session id" });
     }
-    const { mid, day, date } = req.body;
+
+    const { mid } = req.body;
+
+    // Get current day and date
+    const now = new Date();
+    const day = now.toLocaleString('en-US', { weekday: 'long' }); // e.g. "Monday"
+    const date = now.toISOString().split('T')[0]; // e.g. "2025-06-23"
+
     try {
         const result = await pool.query(
             "INSERT INTO consumed_meals (mid, userid, day, date) VALUES ($1, $2, $3, $4) RETURNING *",
@@ -349,6 +356,7 @@ app.post('/consumed-meals', async (req, res) => {
         res.status(500).send("Server Error");
     }
 });
+
 
 // read consumed meals
 app.get('/consumed-meals', async (req, res) => {
@@ -425,7 +433,7 @@ app.put('/consumed-meals/:id', async (req, res) => {
 });
 
 // Create saved user meals
-app.post('/saved-meals', async (req, res) => {
+app.post('/saved-meals/:id', async (req, res) => {
     const sessionid = req.cookies.sessionid;
     if (!sessionid) {
         return res.status(401).json({ message: "Unauthorized" });
@@ -436,11 +444,19 @@ app.post('/saved-meals', async (req, res) => {
         return res.status(404).json({ message: "invalid session id" });
     }
 
-    const { mid, mname, mtype, calories } = req.body;
+    const mid = req.params.id; // Get mid from URL parameter
+    const { mname } = req.body;
+    const alreadySaved = await pool.query(
+        'SELECT 1 FROM saved_user_meals WHERE mid = $1 AND userid = $2',
+        [mid, user.rows[0].userid]
+    );
+    if (alreadySaved.rowCount > 0) {
+        return res.status(409).json({ message: 'Recipe already favorited' });
+        }
     try {
         const result = await pool.query(
-            "INSERT INTO saved_user_meals (mid, userid, mname, mtype, calories) VALUES ($1, $2, $3, $4, $5) RETURNING *",
-            [mid,user.rows[0].userid, mname, mtype, calories]
+            "INSERT INTO saved_user_meals (mid, userid, mname) VALUES ($1, $2, $3) RETURNING *",
+            [mid,user.rows[0].userid, mname]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -507,11 +523,11 @@ app.put('/saved-meals/:id', async (req, res) => {
     }
 
     const { id } = req.params;
-    const { mname, mtype, calories } = req.body;
+    const { mname } = req.body;
     try {
         const result = await pool.query(
-            "UPDATE saved_user_meals SET mname = $1, mtype = $2, calories = $3 WHERE mid = $4 AND userid = $5 RETURNING *",
-            [mname, mtype, calories, id, user.rows[0].userid]
+            "UPDATE saved_user_meals SET mname = $1 WHERE mid = $2 AND userid = $3 RETURNING *",
+            [mname, id, user.rows[0].userid]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "Saved meal not found" });
@@ -651,14 +667,14 @@ app.post('/user-recipes', async (req, res) => {
         return res.status(404).json({ message: "invalid session id" });
     }
 
-    let { mname, recipe_ingredients, recipe_instruction } = req.body;
+    let { mname, recipe_ingredients, recipe_instruction, calories } = req.body;
 
 
 
     try {
         const result = await pool.query(
-            "INSERT INTO user_recipe_table (userid, mname, recipe_instruction, recipe_ingredients) VALUES ($1, $2, $3, $4) RETURNING *",
-            [user.rows[0].userid, mname, recipe_instruction, recipe_ingredients]
+            "INSERT INTO user_recipe_table (userid, mname, recipe_instruction, recipe_ingredients, calories) VALUES ($1, $2, $3, $4, $5) RETURNING *",
+            [user.rows[0].userid, mname, recipe_instruction, recipe_ingredients, calories]
         );
         res.status(201).json(result.rows[0]);
     } catch (err) {
@@ -680,11 +696,11 @@ app.put('/user-recipes/:id', async (req, res) => {
     }
 
     const { id } = req.params;
-    const { mname, recipe_ingredients, recipe_instruction } = req.body;
+    const { mname, recipe_ingredients, recipe_instruction, calories } = req.body;
     try {
         const result = await pool.query(
-            "UPDATE user_recipe_table SET mname = $1, recipe_ingredients = $2, recipe_instruction = $3 WHERE mid = $4 AND userid = $5 RETURNING *",
-            [mname, recipe_ingredients, recipe_instruction, id, user.rows[0].userid]
+            "UPDATE user_recipe_table SET mname = $1, recipe_ingredients = $2, recipe_instruction = $3, calories = $4 WHERE mid = $5 AND userid = $6 RETURNING *",
+            [mname, recipe_ingredients, recipe_instruction, calories, id, user.rows[0].userid]
         );
         if (result.rows.length === 0) {
             return res.status(404).json({ message: "User recipe not found" });
