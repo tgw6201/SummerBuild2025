@@ -777,6 +777,7 @@ app.post('/logout', (req, res) => {
     res.status(200).json({ message: "Logged out successfully" });
 });
 
+// Data to send peter
 app.get('/user-data', async (req, res) => {
     const sessionid = req.cookies.sessionid;
     if (!sessionid) {
@@ -791,6 +792,34 @@ app.get('/user-data', async (req, res) => {
     try {
         const result = await pool.query("SELECT * FROM user_login_table WHERE userid = $1", [user.rows[0].userid]);
         res.json(result.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+// Data to be fetched for dashboard
+app.get('/dashboard', async (req, res) => {
+    const sessionid = req.cookies.sessionid;
+    if (!sessionid) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    // Get useremail from sessionid
+    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+    if (user.rows.length === 0) {
+        return res.status(404).json({ message: "invalid session id" });
+    }
+
+    try {
+        // Fetch user dashboard data
+        // user calorie goal
+        const calorie_goal = await pool.query("SELECT daily_calorie_goal FROM user_dietary_preference WHERE userid = $1", [user.rows[0].userid])
+        // user favorite meals
+        const favorite_meals = await pool.query("SELECT mname,mid FROM saved_user_meals WHERE userid = $1", [user.rows[0].userid]);
+        // user consumed meals
+        const consumed_meals = await pool.query("SELECT urt.mname, urt.mid, urt.calories FROM consumed_meals cm, user_recipe_table urt WHERE cm.userid = $1 AND cm.mid = urt.mid", [user.rows[0].userid]);
+
+        res.json({ calorie_goal: calorie_goal.rows[0], favorite_meals: favorite_meals.rows, consumed_meals: consumed_meals.rows });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");

@@ -5,32 +5,9 @@ import "../css/Dashboard.css";
 const Dashboard = () => {
   const barRef = useRef(null);
   const [totalCalories, setTotalCalories] = useState(0);
-  const calorieGoal = 2000;
-
-  const topDishes = [
-    {
-      name: "Corn baked chicken chop",
-      img: "https://www.wokandskillet.com/wp-content/uploads/2016/08/black-pepper-chicken-chop.jpg",
-      title: "Corn Baked Chicken Chop",
-      description:
-        "Juicy grilled chicken served with sweet corn and black pepper sauce.",
-      calories: 350,
-    },
-    {
-      name: "Eggs and tomatoes",
-      img: "https://images.squarespace-cdn.com/content/v1/58939a42d2b857c51ea91c0d/1566319942248-0GYBX3V9DUH8CU66ZE6V/bloody+mary+obsessed+one+pan+healthy+and+simple+breakfast+recipe+4.jpg",
-      title: "Eggs & Tomatoes",
-      description: "A healthy and simple breakfast dish cooked in one pan.",
-      calories: 480,
-    },
-    {
-      name: "Fruit bowl",
-      img: "https://tastesbetterfromscratch.com/wp-content/uploads/2017/06/Fresh-Fruit-Bowl-1.jpg",
-      title: "Fresh Fruit Bowl",
-      description: "A refreshing bowl of assorted fruits to boost your day.",
-      calories: 220,
-    },
-  ];
+  const [calorieGoal, setCalorieGoal] = useState(2000);
+  const [favoriteDishes, setFavoriteDishes] = useState([]);
+  const [consumedMeals, setConsumedMeals] = useState([]);
 
   const suggestedMeals = [
     {
@@ -65,6 +42,45 @@ const Dashboard = () => {
   ];
 
   useEffect(() => {
+    const fetchDashboardData = async () => {
+      try{
+        const response = await fetch('http://localhost:3000/dashboard', {
+          method: 'GET',
+          credentials: 'include',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+        })
+        if (!response.ok) {
+          throw new Error("Failed to fetch dashboard data");
+        }
+        const data = await response.json();
+        console.log("Dashboard data:", data);
+
+        // gets daily calorie goal from the response
+        if (data.calorie_goal?.daily_calorie_goal) {
+        setCalorieGoal(data.calorie_goal.daily_calorie_goal);
+        }
+
+        // gets favorite dishes from the response
+        if (data.favorite_meals && Array.isArray(data.favorite_meals)) {
+          setFavoriteDishes(data.favorite_meals);
+        } else {
+          console.warn("No favorite meals found in the response");
+        }
+
+        // gets consumed meals from the response
+        if (data.consumed_meals && Array.isArray(data.consumed_meals)) {
+          setConsumedMeals(data.consumed_meals);
+        } else {
+          console.warn("No consumed meals found in the response");
+        }
+      } catch (error) {
+        console.error("Error fetching dashboard data:", error);
+      }
+    }
+
+    fetchDashboardData();
     if (!barRef.current) return;
 
     const chart = new Chart(barRef.current, {
@@ -74,7 +90,7 @@ const Dashboard = () => {
         datasets: [
           {
             label: "Calories Consumed",
-            data: [1600, 1800, 2000, 1700, 1900, 2100, 1500],
+            data: [0, 0, 0, 0, 0, 2100, 1500],
             backgroundColor: "#f58636",
           },
           {
@@ -125,27 +141,25 @@ const Dashboard = () => {
       </div>
 
       {/* Top Dishes */}
-      <div className=" section favourite-dishes">
-        <h2>Top 3 Favourite Dishes</h2>
+      <div className="section favourite-dishes">
+        <h2>Favourite Dishes</h2>
         <div className="horizontal-cards">
-          {topDishes.map((item) => (
-            <div className="card" key={item.name}>
-              <img src={item.img} className="card-img-top" alt={item.name} />
+          {favoriteDishes.map((item) => (
+            <div className="card" key={item.mid}>
               <div className="card-body">
-                <h5 className="card-title">{item.title}</h5>
-                <p className="card-text">{item.description}</p>
+                <h5 className="card-title">{item.mname}</h5>
               </div>
               <div className="card-footer">
                 <div className="btn-group">
-                  <button className="btn">View</button>
+                  <button className="btn">Remove</button>
                   <button className="btn btn-outline">Edit</button>
                 </div>
                 <div className="btn-group right-group">
                   <button
                     className="btn"
-                    onClick={() => handleAdd(item.calories)}
+                    onClick={() => handleAdd(500)} // assume a default of 500 kcal per favorite meal
                   >
-                    Add
+                    Track
                   </button>
                 </div>
               </div>
@@ -161,16 +175,10 @@ const Dashboard = () => {
           <div className="section">
             <h2>Food Consumed Today</h2>
             <div className="horizontal-cards">
-              {suggestedMeals.map((item) => (
-                <div className="card" key={item.name}>
-                  <img
-                    src={item.img}
-                    className="card-img-top"
-                    alt={item.name}
-                  />
+              {consumedMeals.map((item, index) => (
+                <div className="card" key={item.mid + "-" + index}>
                   <div className="card-body">
-                    <h5 className="card-title">{item.title}</h5>
-                    <p className="card-text">{item.description}</p>
+                    <h5 className="card-title">{item.mname}</h5>
                     <p className="card-calories">{item.calories} kcal</p>
                   </div>
                   <div className="card-footer">
@@ -180,40 +188,6 @@ const Dashboard = () => {
                         onClick={() => handleRemove(item.calories)}
                       >
                         Remove
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-
-          {/* Bookmarked */}
-          <div className="section">
-            <h2>Bookmarked Recipes</h2>
-            <div className="horizontal-cards">
-              {suggestedMeals.map((item) => (
-                <div className="card" key={item.name}>
-                  <img
-                    src={item.img}
-                    className="card-img-top"
-                    alt={item.name}
-                  />
-                  <div className="card-body">
-                    <h5 className="card-title">{item.title}</h5>
-                    <p className="card-text">{item.description}</p>
-                  </div>
-                  <div className="card-footer">
-                    <div className="btn-group">
-                      <button className="btn">View</button>
-                      <button className="btn btn-outline">Edit</button>
-                    </div>
-                    <div className="btn-group right-group">
-                      <button
-                        className="btn"
-                        onClick={() => handleAdd(item.calories)}
-                      >
-                        Add
                       </button>
                     </div>
                   </div>
