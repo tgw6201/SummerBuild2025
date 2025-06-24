@@ -6,6 +6,7 @@
     "express": "^5.1.0",
     "express-session": "^1.18.1",
     "feather-icons": "^4.29.2",
+    "node": "^20.19.3",
     "nodemon": "^3.1.10",
     "pg": "^8.16.0",
     "react": "^19.1.0",

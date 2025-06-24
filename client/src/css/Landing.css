@@ -1,44 +1,203 @@
-.landing-container {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  height: calc(100vh - 80px); /* assuming navbar height ~80px */
-  background-image: url("/static/images/home2.png");
+main {
+  padding-top: 0 !important;
+  margin-top: 0 !important;
+}
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  overflow-x: hidden;
+}
+
+.hero-section {
+  width: 100vw;
+  height: 600px;
+  background-image: url("https://plus.unsplash.com/premium_photo-1661777692723-ba8dd05065d9?fm=jpg&q=60&w=3000&ixlib=rb-4.1.0&ixid=M3wxMjA3fDB8MHxzZWFyY2h8NXx8Zm9vZCUyMHRhYmxlfGVufDB8fDB8fHww");
   background-size: cover;
   background-position: center;
-}
-
-.landing-hero {
-  text-align: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
-  background-color: rgba(0, 0, 0, 0.5); /* optional overlay */
-  padding: 3rem;
-  border-radius: 16px;
+  text-align: center;
+  position: relative;
+  overflow: hidden;
+  z-index: 1;
 }
 
-.landing-hero h1 {
+.hero-section::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.422); 
+  z-index: 2;
+}
+
+.hero-content {
+  max-width: 700px;
+  padding: 0 1rem;
+  position: relative;
+  z-index: 3;
+}
+
+.hero-title {
   font-size: 3.5rem;
   font-weight: 800;
-  margin-bottom: 1rem;
 }
 
-.landing-hero p {
+.hero-subtitle {
   font-size: 1.5rem;
-  font-weight: 300;
-  margin-bottom: 2rem;
+  margin-top: 1rem;
 }
 
 .hero-button {
-  padding: 12px 28px;
-  font-size: 1.2rem;
-  background-color: #D63531;
-  color: white;
-  border: none;
-  border-radius: 50px;
+  display: inline-block;
+  margin-top: 1.5rem;
+  color: #ffffff;
+  background-color: rgb(246, 123, 78);
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
   text-decoration: none;
-  transition: background-color 0.3s ease;
+  border-radius: 5px;
+  transition: background 0.3s;
 }
 
 .hero-button:hover {
-  background-color: #9e0a2c;
+  background-color: rgb(184, 73, 33);
+  color: #fff;
+}
+
+.features-section {
+  padding: 3rem 1rem;
+}
+
+.features-container {
+  display: flex;
+  justify-content: space-between;
+  gap: 1.5rem;
+  flex-wrap: wrap;
+  margin: 0 auto;
+  text-align: center;
+  max-width: 1200px;
+}
+
+.feature-box {
+  flex: 1 1 250px;
+}
+
+.features-container i {
+  font-size: 4.5rem;
+  color: #ea6a20;
+  padding: 3rem;
+  margin-bottom: 1.2rem;
+  border-radius: 50%;
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  width: 90px;
+  height: 90px;
+}
+
+.feature-box h4 {
+  color: #ea6a20;
+  font-size: 2rem;
+  font-weight: 700;
+  margin-bottom: 0.5rem;
+}
+
+.feature-box p {
+  color: #696969;
+  font-size: 1.1rem;
+  font-weight: 450;
+}
+
+.testimonials-section {
+  padding: 4rem 2rem;
+  text-align: center;
+}
+
+.testimonials-section h2 {
+  font-size: 3rem;
+  font-weight: 700;
+  margin-bottom: 3rem;
+}
+
+.testimonials-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 2rem;
+}
+
+.testimonials-container blockquote {
+  max-width: 300px;
+  background-color: #fff;
+  padding: 2rem;
+  border-radius: 10px;
+  border: 2px solid #dc7235;
+  position: relative;
+  font-size: 1.1rem;
+  font-style: italic;
+  line-height: 1.6;
+}
+
+.testimonials-container blockquote::before {
+  content: "“";
+  font-size: 6rem;
+  color: #dc7235;
+  position: absolute;
+  top: -0.5em;
+  left: 20px;
+}
+
+.testimonials-container footer {
+  margin-top: 1rem;
+  font-weight: bold;
+  font-size: 0.95rem;
+}
+
+.cta-section {
+  background-color: #fe973d;
+  color: white;
+  text-align: center;
+  padding: 3rem 2rem;
+}
+
+.cta-section h2 {
+  font-size: 2.5rem;
+}
+
+.cta-section p {
+  font-size: 1.2rem;
+  margin-top: 0.5rem;
+}
+
+.cta-button {
+  display: inline-block;
+  margin-top: 1.2rem;
+  background-color: #ffffff;
+  color: rgb(246, 123, 78);
+  padding: 0.75rem 2rem;
+  font-size: 1.1rem;
+  text-decoration: none;
+  border-radius: 5px;
+  transition: background 0.3s;
+}
+
+.cta-button:hover {
+  background-color: rgb(184, 73, 33);
+  color: #f8f9fa;
+}
+
+.footer {
+  padding: 2rem 0;
+  text-align: center;
+  background-color: #f8f9fa;
+  font-size: 0.9rem;
 }
