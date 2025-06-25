@@ -11,6 +11,7 @@ import requests
 from datetime import datetime
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi import Cookie
+import re
 
 # Setup logging
 logging.basicConfig(
@@ -42,6 +43,12 @@ class ChatRequest(BaseModel):
 class SaveRecipeRequest(BaseModel):
     sessionid: str
 
+class CalculateCaloriesRequest(BaseModel):
+    mname: str
+    recipe_ingredients: str
+    recipe_instruction: str
+    calories: int = 0
+
 # HTTP request functions
 #def save_chat_history_to_db(chatbot_history, sessionid):
 #    url = "http://localhost:3000/chatbot-history"
@@ -71,10 +78,10 @@ app.add_middleware(
 
 def save_recent_prompt_to_db(user_input, assistant_response, sessionid):
     url = "http://localhost:3000/chatbot-history"
-    headers = {"Cookie": f"sessionid={sessionid}"}
+    cookies = {"sessionid": sessionid}
     data = {"query": user_input, "response": assistant_response}
     try:
-        response = requests.post(url, json=data, headers=headers)
+        response = requests.post(url, json=data, cookies=cookies)
         if response.status_code != 201:
             logger.error(f"Failed to save recent prompt to DB: {response.text}")
     except Exception as e:
@@ -85,55 +92,67 @@ def save_recipe_to_db(json_string, sessionid):
     headers = {"Cookie": f"sessionid={sessionid}"}
     try:
         recipe_data = json.loads(json_string)
+
+        if not isinstance(recipe_data.get("recipe_ingredients"), str):
+            recipe_data["recipe_ingredients"] = ", ".join(recipe_data["recipe_ingredients"])
+        if not isinstance(recipe_data.get("calories"), int):
+            try:
+                recipe_data["calories"] = int(recipe_data["calories"])
+            except ValueError:
+                recipe_data["calories"] = 0
+
         if "error" in recipe_data:
             logger.warning("Invalid recipe, not saving to DB")
             return
+
+        # Ensure all required fields are present
+        if not all(k in recipe_data for k in ("mname", "recipe_ingredients", "recipe_instruction", "calories")):
+            logger.error("Recipe data missing required fields.")
+            return
+
         data = {
             "mname": recipe_data["mname"],
-            "recipe_ingredients": recipe_data["Ingredients"],
-            "recipe_instruction": recipe_data["Instruction"]
+            "recipe_ingredients": recipe_data["recipe_ingredients"],
+            "recipe_instruction": recipe_data["recipe_instruction"],
+            "calories": recipe_data["calories"]
         }
+
         response = requests.post(url, json=data, headers=headers)
         if response.status_code != 201:
             logger.error(f"Failed to save recipe to DB: {response.text}")
+        else:
+            logger.info(f"Recipe saved successfully: {response.json()}")
     except Exception as e:
         logger.error(f"Error saving recipe to DB: {e}")
 
+
 def load_user_preferences_from_db(sessionid):
-    url = "http://localhost:3000/profile"
-    headers = {"Cookie": f"sessionid={sessionid}"}
+    url = "http://localhost:3000/user-details"
+    cookie = {"sessionid": sessionid}
     try:
-        response = requests.get(url, headers)
+        response = requests.get(url, cookies=cookie)
         if response.status_code != 200:
             logger.error(f"Failed to fetch user preferences: {response.text}")
             return None
-        user_data = response.json()
-        logger.debug(f"user_data from /profile: {user_data}")
 
-        dob_str = user_data.get("date_of_birth")
-        age = None
-        if dob_str:
-            try:
-                dob = datetime.strptime(dob_str, "%Y-%m-%dT%H:%M:%S.%fZ")
-                age = (datetime.now() - dob).days // 365
-            except Exception as e:
-                logger.error(f"date_of_birth format error: {e}")
-                age = None
-        else:
-            logger.warning("date_of_birth missing in user_data")
-            age = None
+        raw_data = response.json()
+        logger.debug(f"user_data from /user-details: {raw_data}")
+
+        user_info = raw_data.get("user", {})
+        food_prefs = user_info.get("food_preferences", {})
 
         return {
             "user": {
-                "age": age if age is not None else "unknown",
-                "calorie_target": user_data.get("daily_calorie_goal", 2000),
+                "age": user_info.get("age", "unknown"),
+                "calorie_target": user_info.get("calorie_target", 2000),
                 "food_preferences": {
-                    "allergies": user_data.get("allergies", []),
-                    "dietary_preference": user_data.get("dietary_preference", "none")
+                    "allergies": food_prefs.get("allergies", []),
+                    "dietary_preference": food_prefs.get("dietary_preference", "none")
                 }
             },
-            "ingredients": []  # Fetch ingredients separately if needed
+            "ingredients": ""  # You may later populate this
         }
+
     except Exception as e:
         logger.error(f"Error fetching user preferences from DB: {e}")
         return None
@@ -210,56 +229,79 @@ chat_histories = {}
 # Save latest response as JSON (adapted from save_latest_response)
 def save_latest_response(sessionid):
     try:
-        
         history = chat_histories.get(sessionid, [])
-
         if not history:
             logger.warning("No chat history found")
             return json.dumps({"error": "No chat history available"}, indent=2)
-        
-        latest_response = None
+
+        # Find the most recent recipe in chat history
+        latest_recipe = None
         for msg in reversed(history):
-            if isinstance(msg, AIMessage):
-                latest_response = msg.content
+            if isinstance(msg, AIMessage) and "Recipe:" in msg.content:
+                latest_recipe = msg.content
                 break
-        if not latest_response:
-            logger.warning("No assistant response found in chat history")
-            return json.dumps({"error": "No assistant response found"}, indent=2)
-        
-        json_prompt = (
-            f"Convert the following recipe into a JSON-formatted string with keys: mname (recipe name), recipe_ingredients(Ingredients), recipe_instructions(Instruction), calories (int).\n"
-            f"Return ONLY the JSON string, enclosed in triple backticks:\n"
-            f"```\n"
-            f"{{\"mname\": \"[Recipe Name]\", \"recipe_ingredients\": \"[Ingredient 1,Ingredient 2\", ...], \"recipe_instruction\": \"[Detailed steps]\", \"calories\":\"[calories]\"}}\n"
-            f"```\n"
-            f"Ensure the recipe respects the user preferences:\n"
-            f"If the input is not a valid recipe, return:\n"
-            f"```\n"
-            f"{{\"error\": \"Invalid recipe description\"}}\n"
-            f"```\n"
-            f"Recipe description: {latest_response}\n"
-            f"DO NOT include any text outside the triple backticks."
-        )
-        
-        response = chain.invoke({"chat_history": [], "input": json_prompt})
-        json_string = response.content.strip()
-        if json_string.startswith("```json") and json_string.endswith("```"):
-            json_string = json_string[7:-3].strip()
-        elif json_string.startswith("```") and json_string.endswith("```"):
-            json_string = json_string[3:-3].strip()
-        
-        recipe_data = json.loads(json_string)
-        
+
+        if not latest_recipe:
+            logger.warning("No recipe found in chat history")
+            return json.dumps({"error": "No recipe found in chat history"}, indent=2)
+
+        # Parse the recipe text into structured data
+        recipe_data = {
+            "mname": "",
+            "recipe_ingredients": "",
+            "recipe_instruction": "",
+            "calories": 0
+        }
+
+        # Extract recipe name
+        recipe_name_match = re.search(r"Recipe:\s*(.*?)\n", latest_recipe)
+        if recipe_name_match:
+            recipe_data["mname"] = recipe_name_match.group(1).strip()
+
+        # Extract ingredients
+        ingredients_match = re.search(r"Ingredients:\s*([\s\S]*?)\nInstructions:", latest_recipe)
+        if ingredients_match:
+            ingredients_text = ingredients_match.group(1).strip()
+            # Convert bullet points or dashes to comma-separated list
+            ingredients_list = [ing.strip().replace("- ", "").replace("* ", "") 
+                              for ing in ingredients_text.split("\n") if ing.strip()]
+            recipe_data["recipe_ingredients"] = ", ".join(ingredients_list)
+
+        # Extract instructions
+        instructions_match = re.search(r"Instructions:\s*([\s\S]*?)(?:\nCalories|\nServing|\n\d+\.|$)", latest_recipe)
+        if instructions_match:
+            instructions_text = instructions_match.group(1).strip()
+            # Clean up numbered steps if present
+            instructions_text = re.sub(r"^\d+\.\s*", "", instructions_text, flags=re.MULTILINE)
+            recipe_data["recipe_instruction"] = instructions_text
+
+        # Extract calories
+        calories_match = re.search(r"Calories per serving:\s*(\d+)", latest_recipe)
+        if calories_match:
+            try:
+                recipe_data["calories"] = int(calories_match.group(1))
+            except ValueError:
+                recipe_data["calories"] = 0
+
+        # Validate we have all required fields
+        if not all(recipe_data.values()):
+            logger.error("Failed to extract complete recipe data")
+            return json.dumps({"error": "Incomplete recipe data"}, indent=2)
+
+        # Save to file
         with open("recipe.json", "w", encoding="utf-8") as f:
             json.dump(recipe_data, f, indent=2, ensure_ascii=False)
-        logger.debug("Recipe saved to recipe.json")
-        
-        save_recipe_to_db(json_string, sessionid)
-        
-        return json_string
+
+        # Save to DB
+        save_recipe_to_db(json.dumps(recipe_data), sessionid)
+        logger.debug("Recipe saved successfully")
+
+        return json.dumps(recipe_data, indent=2)
+
     except Exception as e:
         logger.error(f"Error in save_latest_response: {e}")
         return json.dumps({"error": str(e)}, indent=2)
+
 
 # FastAPI endpoints
 @app.get("/health")
@@ -269,6 +311,25 @@ async def health_check():
 @app.post("/chat")
 async def chat(request: ChatRequest, sessionid: str = Cookie(None)):
     try:
+        # First check if this is a "Log meal" command
+        if request.message.strip().lower() == "log meal":
+            # Try to save the most recent recipe
+            recipe_json = save_latest_response(sessionid)
+            recipe_data = json.loads(recipe_json)
+            
+            if "error" not in recipe_data:
+                # If save was successful, return confirmation message
+                return {
+                    "query": request.message,
+                    "response": f"Recipe '{recipe_data.get('mname', '')}' successfully saved to your log!"
+                }
+            else:
+                return {
+                    "query": request.message,
+                    "response": "I couldn't find a recent recipe to log. Please ask for a recipe first, then say 'Log meal'."
+                }
+
+        # Normal chat processing for all other messages
         # Load user preferences
         if not sessionid:
             raise HTTPException(status_code=401, detail="No sessionid cookie found")
@@ -296,10 +357,11 @@ async def chat(request: ChatRequest, sessionid: str = Cookie(None)):
         
         # Convert history to LangChain format
         langchain_history = [
-            HumanMessage(content=msg.content) if msg["role"] == "user" else AIMessage(content=msg.content)
-            for msg in chatbot_history if isinstance(msg, dict)
-        ] + [
-            msg for msg in chatbot_history if isinstance(msg, (HumanMessage, AIMessage))
+            HumanMessage(content=msg.content) if isinstance(msg, dict) and msg.get("role") == "user" else 
+            AIMessage(content=msg.content) if isinstance(msg, dict) and msg.get("role") == "assistant" else 
+            msg
+            for msg in chatbot_history
+            if isinstance(msg, (dict, HumanMessage, AIMessage))
         ]
         
         # Invoke LangChain chain
@@ -311,11 +373,7 @@ async def chat(request: ChatRequest, sessionid: str = Cookie(None)):
         # Append assistant response
         assistant_response = response.content
         chatbot_history.append(AIMessage(content=assistant_response))
-        
-        # Save chat history to file and DB, saving for chat_history not working
-        #save_chat_history(chatbot_history, "chat_history")
-        #save_chat_history_to_db(chatbot_history, request.sessionid)
-        
+
         # Save recent prompt to file and DB
         recent_data = {
             "query": request.message,
@@ -324,11 +382,6 @@ async def chat(request: ChatRequest, sessionid: str = Cookie(None)):
         save_chat_history(recent_data, "recent_prompt")
         save_recent_prompt_to_db(request.message, assistant_response, sessionid)
         
-        # Convert chatbot_history to response format
-        #history_response = [
-        #    {"role": "user" if isinstance(msg, HumanMessage) else "assistant", "content": msg.content}
-        #    for msg in chatbot_history
-        #    ]
         return {
             "query": request.message,
             "response": assistant_response
@@ -355,6 +408,57 @@ def save_chat_history(chatbot_history, filename: str):
         logger.debug(f"Chat history saved to {filename}.json")
     except Exception as e:
         logger.error(f"Error saving chat history to JSON: {e}")
+
+@app.post("/calculate-calories")
+async def calculate_calories(request: CalculateCaloriesRequest, sessionid: str = Cookie(None)):
+    try:
+        if not sessionid:
+            raise HTTPException(status_code=401, detail="No sessionid cookie found")
+        
+        # Create prompt for calorie calculation
+        calorie_prompt = f"""
+        Calculate the total calories for this recipe based on its ingredients and preparation method.
+        Return ONLY the total calorie count as a single integer number.
+        
+        Recipe Name: {request.mname}
+        Ingredients: {request.recipe_ingredients}
+        Instructions: {request.recipe_instruction}
+        
+        Current calorie value: {request.calories} (update this if inaccurate)
+        """
+        
+        # Get calorie calculation from LLM
+        response = await llm.ainvoke(calorie_prompt)
+        
+        # Extract the calorie number from the response
+        try:
+            # Look for a number in the response
+            calorie_match = re.search(r'\d+', response.content)
+            if calorie_match:
+                calculated_calories = int(calorie_match.group())
+            else:
+                calculated_calories = request.calories  # fallback to original if no number found
+        except Exception as e:
+            logger.error(f"Error parsing calorie calculation: {e}")
+            calculated_calories = request.calories
+        
+        # Update the recipe with calculated calories
+        recipe_data = {
+            "mname": request.mname,
+            "recipe_ingredients": request.recipe_ingredients,
+            "recipe_instruction": request.recipe_instruction,
+            "calories": calculated_calories
+        }
+        
+        # Save to database
+        save_recipe_to_db(json.dumps(recipe_data), sessionid)
+        
+        return recipe_data
+        
+    except Exception as e:
+        logger.error(f"Error calculating calories: {e}")
+        raise HTTPException(status_code=500, detail=str(e))
+
 
 # Run the FastAPI app
 if __name__ == "__main__":
