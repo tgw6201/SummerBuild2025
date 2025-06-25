@@ -1,65 +1,90 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import '../css/ChangePassword.css';
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import "../css/ChangePassword.css";
 
 export default function ChangePassword() {
-  const [oldPassword, setOldPassword] = useState('');
-  const [newPassword, setNewPassword] = useState('');
-  const [confirmPassword, setConfirmPassword] = useState('');
-  const [message, setMessage] = useState('');
+  const [oldPassword, setOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [message, setMessage] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  setMessage('');
+    e.preventDefault();
+    setMessage("");
 
-  if (!oldPassword || !newPassword || !confirmPassword) {
-    setMessage('Please fill in all fields.');
-    return;
-  }
-
-  if (newPassword !== confirmPassword) {
-    setMessage('New passwords do not match.');
-    return;
-  }
-
-  try {
-    const response = await fetch('http://localhost:3000/change-password', {
-      method: 'PUT',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      credentials: 'include',
-      body: JSON.stringify({
-        oldPassword,
-        newPassword,
-      }),
-    });
-
-    const result = await response.json();
-
-    if (!response.ok) {
-      setMessage(result.message || 'Failed to change password.');
+    if (!oldPassword || !newPassword || !confirmPassword) {
+      setMessage("Please fill in all fields.");
       return;
     }
 
-    setMessage('Password changed successfully!, redirecting to Chatbot...');
-    setOldPassword('');
-    setNewPassword('');
-    setConfirmPassword('');
+    if (newPassword !== confirmPassword) {
+      setMessage("New passwords do not match.");
+      return;
+    }
 
-    setTimeout(() => navigate('/Chatbot'), 2000);
-  } catch (error) {
-    console.error('Password change error:', error);
-    setMessage('Network error. Please try again.');
-  }
-};
+    try {
+      const response = await fetch("http://localhost:3000/change-password", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        credentials: "include",
+        body: JSON.stringify({
+          oldPassword,
+          newPassword,
+        }),
+      });
 
+      const result = await response.json();
+
+      if (!response.ok) {
+        setMessage(result.message || "Failed to change password.");
+        return;
+      }
+
+      setMessage("Password changed successfully!, redirecting to Chatbot...");
+      setOldPassword("");
+      setNewPassword("");
+      setConfirmPassword("");
+
+      setTimeout(() => navigate("/Chatbot"), 2000);
+    } catch (error) {
+      console.error("Password change error:", error);
+      setMessage("Network error. Please try again.");
+    }
+  };
 
   return (
     <main className="form-signin text-center">
       <form onSubmit={handleSubmit}>
-        <h1 className="title">RennyBot.co</h1>
+        <h1 className="title">
+          RennyBot.co
+          <span className="bubble-layer">
+            {[...Array(40)].map((_, i) => {
+              const left = Math.random() * 100;
+              const top = Math.random() * 90;
+              const size = 4 + Math.random() * 6;
+              const delay = Math.random() * 5;
+              const duration = 3 + Math.random() * 5;
+
+              return (
+                <span
+                  key={i}
+                  className="bubble-inside"
+                  style={{
+                    left: `${left}%`,
+                    top: `${top}%`,
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    animationDelay: `${delay}s`,
+                    animationDuration: `${duration}s`,
+                  }}
+                />
+              );
+            })}
+          </span>
+        </h1>
         <h1 className="h3 mb-3 fw-normal">Change your password</h1>
 
         <div className="form-floating">
@@ -69,7 +94,7 @@ export default function ChangePassword() {
             id="oldPassword"
             placeholder="Old Password"
             value={oldPassword}
-            onChange={e => setOldPassword(e.target.value)}
+            onChange={(e) => setOldPassword(e.target.value)}
             autoComplete="current-password"
             required
           />
@@ -83,7 +108,7 @@ export default function ChangePassword() {
             id="newPassword"
             placeholder="New Password"
             value={newPassword}
-            onChange={e => setNewPassword(e.target.value)}
+            onChange={(e) => setNewPassword(e.target.value)}
             autoComplete="new-password"
             required
           />
@@ -97,7 +122,7 @@ export default function ChangePassword() {
             id="confirmPassword"
             placeholder="Confirm New Password"
             value={confirmPassword}
-            onChange={e => setConfirmPassword(e.target.value)}
+            onChange={(e) => setConfirmPassword(e.target.value)}
             autoComplete="new-password"
             required
           />

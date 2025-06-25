@@ -139,6 +139,32 @@ export default function Chatbot() {
   return (
     <div className="app-container">
       <div className="chat-container">
+        {/* Bubble Layer */}
+        <span className="bubble-layer">
+          {[...Array(40)].map((_, i) => {
+            const left = Math.random() * 100;
+            const bottom = Math.random() * 20; // near bottom only
+            const size = 4 + Math.random() * 6;
+            const delay = Math.random() * 5;
+            const duration = 3 + Math.random() * 5;
+
+            return (
+              <span
+                key={i}
+                className="bubble-inside"
+                style={{
+                  left: `${left}%`,
+                  bottom: `${bottom}%`,
+                  width: `${size}px`,
+                  height: `${size}px`,
+                  animationDelay: `${delay}s`,
+                  animationDuration: `${duration}s`,
+                }}
+              />
+            );
+          })}
+        </span>
+        
         <h3 className="chat-header">RennyBot</h3>
 
         <div className="chat-messages">
