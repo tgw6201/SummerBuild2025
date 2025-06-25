@@ -34,6 +34,7 @@ const Dashboard = () => {
     const remainingCalories = caloriesConsumed.map((cal) =>
       cal < calorieGoal ? calorieGoal - cal : 0
     );
+    
 
     // Destroy old chart if exists
     if (chartInstanceRef.current) {
@@ -119,6 +120,7 @@ const Dashboard = () => {
         setTotalCalories(total);
       }
 
+      console.log("Fetched dashboard data:", data);
       createChart(
         data.past_week_calories || {},
         data.calorie_goal?.daily_calorie_goal || calorieGoal

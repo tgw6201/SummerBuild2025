@@ -23,36 +23,13 @@ export default function Profile() {
   // Helper function to format date for display (DD/MM/YYYY)
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return 'Not set';
-    
-    try {
-      const date = new Date(dateString);
-      // Check if date is valid
-      if (isNaN(date.getTime())) return dateString;
-      
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const year = date.getFullYear();
-      
-      return `${day}/${month}/${year}`;
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return dateString;
-    }
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
   };
 
   // Helper function to format date for input (YYYY-MM-DD)
   const formatDateForInput = (dateString) => {
-    if (!dateString) return '';
-    
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return '';
-      
-      return date.toISOString().split('T')[0];
-    } catch (error) {
-      console.error('Error formatting date for input:', error);
-      return '';
-    }
+    return typeof dateString === 'string' ? dateString.slice(0, 10) : '';
   };
 
   // Fetch profile data when component mounts
