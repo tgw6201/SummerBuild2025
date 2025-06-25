@@ -203,9 +203,11 @@ def format_context(messagesample_data):
         f"User Age: {user.get('age', 'unknown')}-year-old\n"
         f"You must respect user's Dietary preference: {user.get('food_preferences', {}).get('dietary_preference', 'no diet')} diet\n"
         f"You must respect user's Allergies: {', '.join(user.get('food_preferences', {}).get('allergies', []))}\n"
-        f"The user's caloric Target: {user.get('calorie_target', 'unknown')} kcal/day\n"
-        f"You can only use the following ingredients unless explicitly stated by the user: {ingredients}\n"
-        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly but you MUST return the calories of the recipe per serving and the serving size.\n"
+        f"The user's caloric Target is: {user.get('calorie_target', 'unknown')} kcal/day\n"
+        f"You can use the following ingredients: {ingredients}\n"
+        f"You can ignore ingredients that do not adhere to the user's Dietary preference or Allergies.\n"
+        f"If no ingredients are listed, you can initially suggest a random recipe.\n" 
+        f"You need not follow the caloric target strictly but you MUST return the calories of the recipe per serving and the serving size.\n"
         f"Calorie value per serving of the recipe MUST be an exact, single value and in kcal unit.\n"
     )
 
