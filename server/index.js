@@ -240,7 +240,16 @@ app.get('/profile', async (req, res) => {
             contentType: ''
         };
     }
+        if (userData.date_of_birth instanceof Date) {
+    // Create a new Date from the original date_of_birth
+    let date = new Date(userData.date_of_birth);
 
+    // Add 8 hours (8 * 60 * 60 * 1000 milliseconds)
+    date = new Date(date.getTime() + 8 * 60 * 60 * 1000);
+
+    // Then format as YYYY-MM-DD (or you can do any format you want)
+    userData.date_of_birth = date.toISOString().split('T')[0];
+    }
       res.json(userData);
     })
     .catch(err => {
@@ -820,7 +829,7 @@ app.get('/dashboard', async (req, res) => {
         // user favorite meals
         const favorite_meals = await pool.query("SELECT mname,mid FROM saved_user_meals WHERE userid = $1", [user.rows[0].userid]);
         // user consumed meals
-        const consumed_meals = await pool.query("SELECT urt.mname, urt.mid, urt.calories, cm.cmid FROM consumed_meals cm, user_recipe_table urt WHERE cm.userid = $1 AND cm.mid = urt.mid AND cm.date = CURRENT_DATE", [user.rows[0].userid]);
+        const consumed_meals = await pool.query("SELECT urt.mname, urt.mid, urt.calories, cm.cmid FROM consumed_meals cm, user_recipe_table urt WHERE cm.userid = $1 AND cm.mid = urt.mid AND cm.date = CURRENT_DATE AND cm.userid = urt.userid", [user.rows[0].userid]);
         // user's past week calorie intake
         const past_week_calories = await pool.query(
             `SELECT SUM(urt.calories) AS total_calories, cm.date::date AS date
@@ -829,10 +838,12 @@ app.get('/dashboard', async (req, res) => {
             WHERE cm.userid = $1
                 AND cm.date >= date_trunc('week', CURRENT_DATE)
                 AND cm.date <= CURRENT_DATE
+                AND cm.userid = urt.userid
             GROUP BY cm.date
             ORDER BY cm.date ASC`,
             [user.rows[0].userid]
         );
+
 
         const weeklyData = {
             Monday: 0,
@@ -917,6 +928,44 @@ app.get('/user-details', async (req, res) => {
         };
 
         res.json(formattedResponse);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+
+// Change password
+app.put('/change-password', async (req, res) => {
+    const sessionid = req.cookies.sessionid;
+    if (!sessionid) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    // Get useremail from sessionid
+    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+    if (user.rows.length === 0) {
+        return res.status(404).json({ message: "invalid session id" });
+    }
+
+    const { oldPassword, newPassword } = req.body;
+    try {
+        // Check if old password is correct
+        const result = await pool.query(
+            "SELECT * FROM user_login_table WHERE userid = $1 AND password = $2",
+            [user.rows[0].userid, oldPassword]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ message: "Old password is incorrect" });
+        }
+
+        // Update password
+        await pool.query(
+            "UPDATE user_login_table SET password = $1 WHERE userid = $2",
+            [newPassword, user.rows[0].userid]
+        );
+
+        res.json({ message: "Password changed successfully" });
     } catch (err) {
         console.error(err.message);
         res.status(500).send("Server Error");

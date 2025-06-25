@@ -203,9 +203,11 @@ def format_context(messagesample_data):
         f"User Age: {user.get('age', 'unknown')}-year-old\n"
         f"You must respect user's Dietary preference: {user.get('food_preferences', {}).get('dietary_preference', 'no diet')} diet\n"
         f"You must respect user's Allergies: {', '.join(user.get('food_preferences', {}).get('allergies', []))}\n"
-        f"The user's caloric Target: {user.get('calorie_target', 'unknown')} kcal/day\n"
-        f"You can only use the following ingredients unless explicitly stated by the user: {ingredients}\n"
-        f"Ignore ingredients that do not adhere to the user's Dietary preference or Allergies. You need not follow the caloric target strictly but you MUST return the calories of the recipe per serving and the serving size.\n"
+        f"The user's caloric Target is: {user.get('calorie_target', 'unknown')} kcal/day\n"
+        f"You can use the following ingredients: {ingredients}\n"
+        f"You can ignore ingredients that do not adhere to the user's Dietary preference or Allergies.\n"
+        f"If no ingredients are listed, you can initially suggest a random recipe.\n" 
+        f"You need not follow the caloric target strictly but you MUST return the calories of the recipe per serving and the serving size.\n"
         f"Calorie value per serving of the recipe MUST be an exact, single value and in kcal unit.\n"
     )
 
@@ -225,6 +227,20 @@ chain = prompt | llm
 
 # In-memory chat history (per sessionid)
 chat_histories = {}
+# Get the chat history
+def get_latest_response(sessionid):
+    url = "http://localhost:3000/chatbot-history"
+    headers = {"Cookie": f"sessionid={sessionid}"}
+    try:
+        response = requests.get(url, headers)
+        if response.status_code != 200:
+            logger.error(f"Failed to fetch user preferences: {response.text}")
+            return None
+        history = response.json()
+        return history
+    except Exception as e:
+        logger.error(f"Error fetching user preferences from DB: {e}")
+        return None
 
 # Save latest response as JSON (adapted from save_latest_response)
 def save_latest_response(sessionid):
@@ -268,7 +284,7 @@ def save_latest_response(sessionid):
             recipe_data["recipe_ingredients"] = ", ".join(ingredients_list)
 
         # Extract instructions
-        instructions_match = re.search(r"Instructions:\s*([\s\S]*?)(?:\nCalories|\nServing|\n\d+\.|$)", latest_recipe)
+        instructions_match = re.search(r"Instructions:\s*([\s\S]*?)(?=\n(?:Calories|Serving|$))", latest_recipe)
         if instructions_match:
             instructions_text = instructions_match.group(1).strip()
             # Clean up numbered steps if present

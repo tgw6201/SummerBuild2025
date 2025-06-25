@@ -9,25 +9,52 @@ export default function ChangePassword() {
   const [message, setMessage] = useState('');
   const navigate = useNavigate();
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    setMessage('');
+  const handleSubmit = async (e) => {
+  e.preventDefault();
+  setMessage('');
 
-    if (!oldPassword || !newPassword || !confirmPassword) {
-      setMessage('Please fill in all fields.');
+  if (!oldPassword || !newPassword || !confirmPassword) {
+    setMessage('Please fill in all fields.');
+    return;
+  }
+
+  if (newPassword !== confirmPassword) {
+    setMessage('New passwords do not match.');
+    return;
+  }
+
+  try {
+    const response = await fetch('http://localhost:3000/change-password', {
+      method: 'PUT',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      credentials: 'include',
+      body: JSON.stringify({
+        oldPassword,
+        newPassword,
+      }),
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      setMessage(result.message || 'Failed to change password.');
       return;
     }
-    if (newPassword !== confirmPassword) {
-      setMessage('New passwords do not match.');
-      return;
-    }
-    // TODO: Replace with your API call
-    setMessage('Password changed successfully!');
+
+    setMessage('Password changed successfully!, redirecting to Chatbot...');
     setOldPassword('');
     setNewPassword('');
     setConfirmPassword('');
-    navigate('/chatbot'); 
-  };
+
+    setTimeout(() => navigate('/Chatbot'), 2000);
+  } catch (error) {
+    console.error('Password change error:', error);
+    setMessage('Network error. Please try again.');
+  }
+};
+
 
   return (
     <main className="form-signin text-center">

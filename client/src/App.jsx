@@ -1,6 +1,6 @@
 // App.js
-
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import Landing from './pages/Landing';
 import Chatbot from './pages/Chatbot'; 
 import Navbar from './components/Navbar';
 import Settings from './pages/Settings';
@@ -17,13 +17,14 @@ import './index.css';
 // This must be used *inside* Router
 function AppRoutes() {
   const location = useLocation();
-  const hideNavbar = ['/', '/login', '/signup', '/onboarding'].includes(location.pathname);
+  const hideNavbar = ['/', '/login', '/signup', '/onboarding','/landing'].includes(location.pathname);
 
   return (
     <>
       {!hideNavbar && <Navbar />}
       <Routes>
-        <Route path="/" element={<Chatbot />} /> {/* default page */}
+        <Route path="/" element={<Landing />} /> {/* default page */}
+        <Route path="/landing" element={<Landing />} /> 
         <Route path="/change-password" element={<ChangePassword />} />
         <Route path="/login" element={<Login />} />
         <Route path="/onboarding" element={<Onboarding />} />

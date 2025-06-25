@@ -66,7 +66,10 @@ export default function Chatbot() {
         .find((row) => row.startsWith("sessionid="))
         ?.split("=")[1];
 
-      console.log("Sending to /chat:", { sessionid, message: messageToSend.trim() });
+      console.log("Sending to /chat:", {
+        sessionid,
+        message: messageToSend.trim(),
+      });
 
       const response = await fetch("http://localhost:8000/chat", {
         method: "POST",
@@ -103,7 +106,11 @@ export default function Chatbot() {
                 ...conv,
                 messages: [
                   ...conv.messages,
-                  { id: Date.now() + 1, sender: "bot", text: "Error: Could not reach AI service." },
+                  {
+                    id: Date.now() + 1,
+                    sender: "bot",
+                    text: "Error: Could not reach AI service.",
+                  },
                 ],
               }
             : conv
@@ -127,49 +134,17 @@ export default function Chatbot() {
   };
 
   /* Suggested messages for user convenience */
-  const suggestions = ["Suggest recipe", "Log meal", "Track Calories", "Help"];
+  const suggestions = ["Suggest recipe", "Log meal"];
 
   return (
     <div className="app-container">
-      {" "}
-      {/* top-level flex container */}
-      <aside className="history-sidebar">
-        <div
-          style={{
-            fontWeight: 600,
-            margin: "0.5rem 0 1rem 0",
-            fontSize: "1.1rem",
-            textAlign: "center",
-          }}
-        >
-          Conversations
-        </div>
-        <ul className="history-list">
-          {conversations.map((conv) => (
-            <li
-              key={conv.id}
-              className={`history-item${
-                conv.id === activeConversationId ? " active" : ""
-              }`}
-              onClick={() => setActiveConversationId(conv.id)}
-            >
-              <div className="history-title">{conv.title}</div>
-              <div className="history-preview">
-                {(conv.messages && conv.messages.length > 0 && conv.messages[conv.messages.length - 1]?.text)
-                  ? conv.messages[conv.messages.length - 1].text.slice(0, 30)
-                  : ""}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </aside>
       <div className="chat-container">
         <h3 className="chat-header">RennyBot</h3>
 
         <div className="chat-messages">
           {(activeConversation?.messages || []).map((msg, idx) => (
             <div key={idx} className={`message ${msg.sender}`}>
-              <strong>{msg.sender}:</strong>
+              <strong>{msg.sender === "bot" ? "Bot" : "You"}: </strong>
               {msg.text.split("\n").map((line, i) => (
                 <React.Fragment key={i}>
                   {line}
