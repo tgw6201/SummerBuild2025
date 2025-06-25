@@ -1,5 +1,5 @@
 .app-container {
-  margin-top:  32px; /* space for header */;
+  margin-top:  4rem; /* space for header */;
   display: flex;
   gap: 20px;
   height: 90vh; /* fill most of viewport height */
@@ -48,6 +48,21 @@
   background-color: #ff9634;
   color: white;
   font-weight: bold;
+}
+
+.icon-button {
+  background: none;
+  border: none;
+  padding: 0.25rem;
+  cursor: pointer;
+  color: #ee6516;
+  display: flex;
+  align-items: center;
+  transition: color 0.2s ease;
+}
+
+.icon-button:hover {
+  color: #c63710;
 }
 
 .chat-area {

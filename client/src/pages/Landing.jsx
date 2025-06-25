@@ -1,11 +1,8 @@
 import "../css/Landing.css";
-import Navbar from "../components/Navbar";
 
 export default function Landing() {
   return (
     <main role="main">
-      <Navbar />
-
       {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content">
@@ -13,7 +10,7 @@ export default function Landing() {
           <p className="hero-subtitle">
             Your guide to the best recipes that are tasty and nutritional.
           </p>
-          <a href="#" className="hero-button">
+          <a href="/signup" className="hero-button">
             Start Exploring
           </a>
         </div>
@@ -73,7 +70,7 @@ export default function Landing() {
       <section className="cta-section">
         <h2>Hungry?</h2>
         <p>Find the perfect meal tailored just for you.</p>
-        <a href="#" className="cta-button">
+        <a href="/signup" className="cta-button">
           Sign Up Now
         </a>
       </section>
