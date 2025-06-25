@@ -80,81 +80,80 @@ export default function RecipeInput({ onSave, onBack }) {
   };
 
   const handleSave = async () => {
-    if (!name.trim() || ingredients.length === 0 || !instructions.trim()) {
-      alert("Please fill in all the fields.");
-      return;
-    }
+  if (!name.trim() || ingredients.length === 0 || !instructions.trim()) {
+    alert("Please fill in all the fields.");
+    return;
+  }
 
-    const formattedIngredients = ingredients
-      .map(ing => ing.text.trim())
-      .filter(str => str.length > 0)
-      .join(', ');
+  const formattedIngredients = ingredients
+    .map(ing => ing.text.trim())
+    .filter(str => str.length > 0)
+    .join(', ');
 
-    if (autoCalculateCalories) {
-      console.log("formattedIngredients:", formattedIngredients);
-      try {
-        const response = await fetch('http://localhost:8000/calculate-calories', {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            mname: name.trim(),
-            recipe_ingredients: formattedIngredients,
-            recipe_instruction: instructions.trim(),
-            calories: totalCalories
-          }),
-          credentials: "include"
-        });
-
-        if (!response.ok) throw new Error("Failed to fetch calories");
-
-        const data = await response.json();
-        setManualCalories(data.calories);
-      } catch (error) {
-        console.error("Error fetching calories:", error);
-      }
-    }
-
-
-    const recipeToSend = {
-      mname: name.trim(),
-      recipe_ingredients: formattedIngredients,
-      recipe_instruction: instructions.trim(),
-      calories: totalCalories,
-    };
-
-    console.log("Sending recipe:", recipeToSend);
-
+  if (autoCalculateCalories) {
     try {
-      const url = mid
-        ? `http://localhost:3000/user-recipes/${mid}`
-        : 'http://localhost:3000/user-recipes';
-
-      const method = mid ? 'PUT' : 'POST';
-
-      const response = await fetch(url, {
-        method,
-        credentials: 'include',
+      const response = await fetch('http://localhost:8000/calculate-calories', {
+        method: "POST",
         headers: {
-          'Content-Type': 'application/json',
+          "Content-Type": "application/json",
         },
-        body: JSON.stringify(recipeToSend),
+        body: JSON.stringify({
+          mname: name.trim(),
+          recipe_ingredients: formattedIngredients,
+          recipe_instruction: instructions.trim(),
+        }),
+        credentials: "include"
       });
 
-      if (response.ok) {
-        alert('Recipe saved successfully!');
-        if (onSave) onSave(recipeToSend);
-        navigate('/Chatbot'); // Redirect to chatbot after saving
-      } else {
-        const err = await response.json();
-        alert(`Failed to save: ${err.message || 'Unknown error'}`);
-      }
+      if (!response.ok) throw new Error("Failed to calculate calories");
+
+      const data = await response.json();
+      setManualCalories(data.calories); 
+      navigate('/Chatbot');
     } catch (error) {
-      console.error("Error saving recipe:", error);
-      alert("Network error. Please try again.");
+      console.error("Error calculating calories:", error);
+      alert("Failed to calculate calories. Try again.");
+    }
+    return; 
+  }
+
+  const recipeToSend = {
+    mname: name.trim(),
+    recipe_ingredients: formattedIngredients,
+    recipe_instruction: instructions.trim(),
+    calories: Number(manualCalories) || 0,
+  };
+
+  try {
+    const url = mid
+      ? `http://localhost:3000/user-recipes/${mid}`
+      : 'http://localhost:3000/user-recipes';
+
+    const method = mid ? 'PUT' : 'POST';
+
+    const response = await fetch(url, {
+      method,
+      credentials: 'include',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(recipeToSend),
+    });
+
+    if (response.ok) {
+      alert('Recipe saved successfully!');
+      if (onSave) onSave(recipeToSend);
+      navigate('/Chatbot');
+    } else {
+      const err = await response.json();
+      alert(`Failed to save: ${err.message || 'Unknown error'}`);
+    }
+  } catch (error) {
+    console.error("Error saving recipe:", error);
+    alert("Network error. Please try again.");
     }
   };
+
 
   const openModal = () => setShowModal(true);
   const closeModal = () => setShowModal(false);
