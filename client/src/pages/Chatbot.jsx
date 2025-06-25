@@ -134,7 +134,7 @@ export default function Chatbot() {
   };
 
   /* Suggested messages for user convenience */
-  const suggestions = ["Suggest recipe", "Log meal", "Help"];
+  const suggestions = ["Suggest recipe", "Log meal"];
 
   return (
     <div className="app-container">
