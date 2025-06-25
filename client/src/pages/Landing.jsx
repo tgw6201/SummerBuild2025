@@ -35,7 +35,7 @@ export default function Landing() {
           <div className="feature-box">
             <i class="bi bi-clipboard-data-fill"></i>
             <h4>Keep Track</h4>
-            <p>Share your experiences and help others find great food.</p>
+            <p>Track your calorie consumption using our user friendly dashboard.</p>
           </div>
         </div>
       </section>
