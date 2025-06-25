@@ -5,12 +5,33 @@ import "../css/Dashboard.css";
 const Dashboard = () => {
   const barRef = useRef(null);
   const chartInstanceRef = useRef(null);
+  const fallbackImage =
+    "https://img.freepik.com/free-photo/top-view-table-full-delicious-food-composition_23-2149141352.jpg?semt=ais_items_boosted&w=740";
 
   const [loading, setLoading] = useState(true);
   const [totalCalories, setTotalCalories] = useState(0);
   const [calorieGoal, setCalorieGoal] = useState(2000);
   const [favoriteDishes, setFavoriteDishes] = useState([]);
   const [consumedMeals, setConsumedMeals] = useState([]);
+
+  const imageBank = [
+    "https://img.freepik.com/free-photo/top-view-table-full-delicious-food-composition_23-2149141352.jpg?semt=ais_items_boosted&w=740",
+    "https://images.lifestyleasia.com/wp-content/uploads/sites/6/2020/02/03154109/hawker-food-hero-image-image-credit-visit-singapore.jpg",
+    "https://thumbs.dreamstime.com/b/table-full-delicious-european-food-plates-top-view-fries-soup-salad-burgers-pasta-sauces-festive-dinner-big-table-265814662.jpg",
+    "https://singaporefood.travel.blog/wp-content/uploads/2020/03/hai-tien-lo-restaurant-top-chinese-singapore-food.jpg?w=728&h=397&crop=1",
+    "https://media.istockphoto.com/id/1400584543/photo/unrecognizable-friends-and-family-sharing-food-at-dinning-room.jpg?s=612x612&w=0&k=20&c=lqNa9FQfX5saQeqdf7n5R46IZu43MjsenBzDl9EIPEQ=",
+    "https://www.shutterstock.com/image-photo/summer-food-table-scene-over-260nw-2316297723.jpg",
+    "https://thumbs.dreamstime.com/b/middle-eastern-traditional-dinner-authentic-arab-cuisine-meze-party-food-top-view-flat-lay-overhead-middle-eastern-traditional-108753264.jpg",
+    "https://thumbs.dreamstime.com/b/assorted-lebanese-food-assorted-lebanese-food-top-view-128959883.jpg",
+    "https://www.saveur.com/uploads/2022/08/08/00-HERO-Singapores-Heritage-Cuisine-SAVEUR-scaled.jpg?auto=webp",
+    "https://img.freepik.com/free-photo/flat-lay-table-full-delicious-food-arrangement_23-2149141378.jpg?semt=ais_items_boosted&w=740"
+  ];
+
+  const getImageForMeal = (mid) => {
+    if (!mid) return fallbackImage;
+    const index = mid % imageBank.length;
+    return imageBank[index];
+  };
 
   const createChart = (weeklyCalories, calorieGoal) => {
     const weekDays = [
@@ -274,34 +295,53 @@ const Dashboard = () => {
           <div className="section favourite-dishes">
             <h2>Favourite Dishes</h2>
             <div className="horizontal-cards">
-              {favoriteDishes.map((item) => (
-                <div className="card" key={item.mid}>
-                  <div className="card-body">
-                    <h5 className="card-title">{item.mname}</h5>
-                  </div>
-                  <div className="card-footer">
-                    <div className="btn-group">
-                      <button
-                        className="btn"
-                        onClick={() => handleRemoveFavorite(item)}
-                      >
-                        Remove
-                      </button>
-                      <button
-                        className="btn btn-outline"
-                        onClick={() => handleEditFavorite(item)}
-                      >
-                        Edit
-                      </button>
+              {favoriteDishes.length > 0 ? (
+                favoriteDishes.map((item, index) => (
+                  <div className="card" key={item.mid}>
+                    <img
+                      src={getImageForMeal(item.mid)}
+                      alt={item.mname}
+                      className="card-img-top"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          "https://via.placeholder.com/300x180?text=No+Image";
+                      }}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">{item.mname}</h5>
                     </div>
-                    <div className="btn-group right-group">
-                      <button className="btn" onClick={() => handleTrack(item)}>
-                        Track
-                      </button>
+                    <div className="card-footer">
+                      <div className="btn-group">
+                        <button
+                          className="btn"
+                          onClick={() => handleRemoveFavorite(item)}
+                        >
+                          Remove
+                        </button>
+                        <button
+                          className="btn btn-outline"
+                          onClick={() => handleEditFavorite(item)}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <div className="btn-group right-group">
+                        <button
+                          className="btn"
+                          onClick={() => handleTrack(item)}
+                        >
+                          Track
+                        </button>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="empty-state">
+                  No favourite dishes yet. Start saving some!
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -312,27 +352,43 @@ const Dashboard = () => {
               <div className="section">
                 <h2>Food Consumed Today</h2>
                 <div className="horizontal-cards">
-                  {consumedMeals.map((item, index) => (
-                    <div className="card" key={`${item.cmid}-${index}`}>
-                      <div className="card-body">
-                        <h5 className="card-title">{item.mname}</h5>
-                        <p className="card-calories">{item.calories} kcal</p>
-                      </div>
-                      <div className="card-footer">
-                        <div
-                          className="btn-group"
-                          style={{ marginLeft: "auto" }}
-                        >
-                          <button
-                            className="btn btn-outline"
-                            onClick={() => handleRemoveConsume(item)}
+                  {consumedMeals.length > 0 ? (
+                    consumedMeals.map((item, index) => (
+                      <div className="card" key={`${item.cmid}-${index}`}>
+                        <img
+                          src={getImageForMeal(item.mid)}
+                          alt={item.mname}
+                          className="card-img-top"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://via.placeholder.com/300x180?text=No+Image";
+                          }}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{item.mname}</h5>
+                          <p className="card-calories">{item.calories} kcal</p>
+                        </div>
+                        <div className="card-footer">
+                          <div
+                            className="btn-group"
+                            style={{ marginLeft: "auto" }}
                           >
-                            Remove
-                          </button>
+                            <button
+                              className="btn btn-outline"
+                              onClick={() => handleRemoveConsume(item)}
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="empty-state">
+                      No records found yet. Get your tracking started!
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
