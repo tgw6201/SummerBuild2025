@@ -935,6 +935,44 @@ app.get('/user-details', async (req, res) => {
 });
 
 
+// Change password
+app.put('/change-password', async (req, res) => {
+    const sessionid = req.cookies.sessionid;
+    if (!sessionid) {
+        return res.status(401).json({ message: "Unauthorized" });
+    }
+    // Get useremail from sessionid
+    const user = await pool.query("SELECT userid FROM user_login_table WHERE sessionid = $1", [sessionid]);
+    if (user.rows.length === 0) {
+        return res.status(404).json({ message: "invalid session id" });
+    }
+
+    const { oldPassword, newPassword } = req.body;
+    try {
+        // Check if old password is correct
+        const result = await pool.query(
+            "SELECT * FROM user_login_table WHERE userid = $1 AND password = $2",
+            [user.rows[0].userid, oldPassword]
+        );
+
+        if (result.rows.length === 0) {
+            return res.status(400).json({ message: "Old password is incorrect" });
+        }
+
+        // Update password
+        await pool.query(
+            "UPDATE user_login_table SET password = $1 WHERE userid = $2",
+            [newPassword, user.rows[0].userid]
+        );
+
+        res.json({ message: "Password changed successfully" });
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).send("Server Error");
+    }
+});
+
+
 app.listen(3000,()=>{
     console.log("Server is running on port: ", port);
 });
