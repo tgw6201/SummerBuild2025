@@ -151,7 +151,7 @@ export default function Profile() {
       return (
         <input
           type="date"
-          className="profile-field-input"
+          className="form-control"
           value={formatDateForInput(profile[field])}
           onChange={(e) => handleChange(field, e.target.value)}
         />
@@ -309,8 +309,8 @@ export default function Profile() {
   // Show error state
   if (error) {
     return (
-      <div className="profile-container">
-        <div className="profile-error">
+      <div className="container py-5">
+        <div className="alert alert-danger text-center">
           <h2>Error</h2>
           <p>{error}</p>
           <button onClick={() => window.location.reload()}>Retry</button>
@@ -321,11 +321,11 @@ export default function Profile() {
 
   return (
     <div className="profile-container">
-      <h2 className="profile-title">Profile</h2>
-      <div className="profile-card">
-        <div className="profile-avatar-row">
-          <div className="profile-avatar-wrapper">
-            <label htmlFor="avatar-upload">
+      <div className="card shadow profile-card">
+        <div className="card-body">
+          {/* Profile header: avatar and name centered */}
+          <div className="d-flex flex-column align-items-center mb-4">
+            <label htmlFor="avatar-upload" style={{ cursor: 'pointer' }}>
               <img
                 src={profile.profile_image}
                 alt="Avatar"
@@ -340,10 +340,47 @@ export default function Profile() {
               style={{ display: "none" }}
               onChange={handleAvatarChange}
             />
+            <h3 className="mb-0 mt-3">{profile.name || 'Your Name'}</h3>
+            <div className="text-muted" style={{ fontSize: '0.95em' }}>Click avatar to change</div>
           </div>
-          <div>
-            <div className="profile-avatar-name">{profile.name}</div>
-            <div className="profile-avatar-hint">Click avatar to change</div>
+
+          <hr />
+
+          <h5 className="mb-3 text-warning">Personal Information</h5>
+          <div className="row g-3 mb-4">
+            {['name', 'phone_number', 'gender', 'date_of_birth'].map((field) => (
+              <div className="col-md-6" key={field}>
+                <label className="form-label fw-bold">{getFieldDisplayName(field)}</label>
+                {renderInput(field)}
+              </div>
+            ))}
+          </div>
+
+          <h5 className="mb-3 text-warning">Health & Fitness</h5>
+          <div className="row g-3 mb-4">
+            {['weight', 'height', 'daily_calorie_goal', 'dietary_preference', 'allergies'].map((field) => (
+              <div className="col-md-6" key={field}>
+                <label className="form-label fw-bold">{getFieldDisplayName(field)}</label>
+                {renderInput(field)}
+              </div>
+            ))}
+          </div>
+
+          {message && (
+            <div className="alert alert-info py-2 text-center" style={{ fontSize: '1em' }}>
+              {message}
+            </div>
+          )}
+
+          <div className="d-flex justify-content-end">
+            <button
+              onClick={handleSaveAll}
+              className="btn btn-warning rounded-pill"
+              style={{ minWidth: 220 }}
+              disabled={Object.keys(profile).length === 0}
+            >
+              Save All Changes
+            </button>
           </div>
         </div>
 

@@ -90,169 +90,34 @@
 }
 
 .profile-card {
-  background: #fff;
-  border-radius: 20px;
-  padding: 32px;
-  box-shadow: 0 2px 16px #eee;
-  margin-bottom: 40px;
-  max-width: 600px;
-  margin-left: auto;
-  margin-right: auto;
+  max-width: 1100px;
+  margin: 72px auto 2rem auto;
+  padding: 0 1rem;
 }
 
-.profile-field-row {
-  margin-bottom: 24px;
-  display: flex;
-  align-items: center;
-  font-size: 18px;
+.profile-card .card-body {
+  padding: 2rem 2rem 1.5rem 2rem;
 }
 
-.profile-field-label {
-  width: 120px;
-  text-transform: capitalize;
-}
-
-.profile-field-input {
-  flex: 1;
-  margin-right: 8px;
-  font-size: 16px;
-  padding: 4px;
-  border-radius: 6px;
-  border: 1px solid #ccc;
-}
-
-.profile-edit-btn {
-  background: none;
-  border: none;
-  cursor: pointer;
-  font-size: 20px;
-  color: #e66a17;
-}
-
-.profile-action-btn {
-  margin-right: 8px;
-  font-size: 18px;
-}
-
-.profile-message {
-  color: #e66a17;
-  margin-bottom: 1em;
-}
-
-.bookmark-title {
-  margin-top: 40px;
-  font-size: 32px;
-  margin-bottom: 24px;
-}
-
-.bookmark-list {
-  display: flex;
-  gap: 32px;
-  flex-wrap: wrap;
-  justify-content: flex-start;
-}
-
-.bookmark-folder {
-  background: #f7f7f7;
-  border-radius: 20px;
-  padding: 20px;
-  width: 260px;
-  height: 180px;
-  cursor: pointer;
-  box-shadow: 0 1px 8px #eee;
-  transition: box-shadow 0.2s;
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-}
-
-.bookmark-folder-name {
-  font-weight: bold;
-  margin-bottom: 12px;
-  font-size: 20px;
-}
-
-.bookmark-recipes {
-  display: flex;
-  gap: 12px;
-  margin-bottom: 12px;
-}
-
-.bookmark-recipe-preview {
-  text-align: center;
-  width: 60px;
-}
-
-.bookmark-recipe-img {
-  width: 50px;
-  height: 50px;
-  border-radius: 8px;
-  object-fit: cover;
-  margin-bottom: 4px;
-  background: #ddd;
-}
-
-.bookmark-recipe-title {
-  font-size: 12px;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
-.bookmark-more {
-  align-self: center;
-  font-size: 12px;
-}
-
-.bookmark-count {
-  color: #888;
-  font-size: 14px;
-}
-
-/* Avatar row and wrapper */
 .profile-avatar {
   width: 100px;
   height: 100px;
   border-radius: 50%;
   object-fit: cover;
   background: #eee;
-  cursor: pointer;
-  display: block;
-}
-
-.profile-avatar-row {
-  display: flex;
-  align-items: center;
-  margin-bottom: 32px;
+  border: 3px solid #ffe9d4;
 }
 
 .profile-avatar-wrapper {
   position: relative;
-  margin-right: 24px;
-  width: 100px;
-  height: 100px;
-}
-
-.profile-avatar-name {
-  font-weight: bold;
-  font-size: 22px;
 }
 
 .profile-avatar-hint {
   color: #888;
+  font-size: 0.95em;
 }
 
-/* Edit avatar button */
-.profile-edit-avatar-btn {
-  position: absolute;
-  bottom: 8px;
-  right: 8px;
-  background: #fff;
-  border-radius: 50%;
-  border: 1px solid #ccc;
-  padding: 4px;
-  font-size: 18px;
+.profile-message {
   color: #e66a17;
   cursor: pointer;
   z-index: 2;

@@ -1,3 +1,4 @@
+
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate } from 'react-router-dom';
 import '../css/RecipeInput.css';
@@ -89,6 +90,33 @@ export default function RecipeInput({ onSave, onBack }) {
       .filter(str => str.length > 0)
       .join(', ');
 
+    if (autoCalculateCalories) {
+      console.log("formattedIngredients:", formattedIngredients);
+      try {
+        const response = await fetch('http://localhost:8000/calculate-calories', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mname: name.trim(),
+            recipe_ingredients: formattedIngredients,
+            recipe_instruction: instructions.trim(),
+            calories: totalCalories
+          }),
+          credentials: "include"
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch calories");
+
+        const data = await response.json();
+        setManualCalories(data.calories);
+      } catch (error) {
+        console.error("Error fetching calories:", error);
+      }
+    }
+
+
     const recipeToSend = {
       mname: name.trim(),
       recipe_ingredients: formattedIngredients,
@@ -133,123 +161,139 @@ export default function RecipeInput({ onSave, onBack }) {
 
   return (
     <div className="recipe-input-container">
-      <h2>{mid ? "Edit Recipe" : "Create New Recipe"}</h2>
-
-      <label className="form-label fw-bold">Recipe Name</label>
-      <input
-        type="text"
-        className="form-control mb-3"
-        value={name}
-        onChange={e => setName(e.target.value)}
-      />
-
-      <div className="section-title">Ingredients</div>
-      <div className="mb-2 text-muted" style={{ fontSize: "0.9rem" }}>
-        Please enter each ingredient's name, amount, and measurement.
-        <p>(e.g. "Chicken Breast, 200, grams" or "Rice, 1, cup")</p>
-      </div>
-
-      {ingredients.map((ing, idx) => (
-      <div className="ingredient-row" key={idx}>
-        <input
-          className="form-control"
-          placeholder='e.g. Chicken Breast 200 grams'
-          value={ing.text || ""}
-          onChange={e =>
-            setIngredients(ings =>
-              ings.map((item, i) =>
-                i === idx ? { ...item, text: e.target.value } : item
-              )
-            )
-          }
-        />
-        {ingredients.length > 1 && (
-          <button
-            type="button"
-            className="btn btn-outline-danger btn-sm"
-            onClick={() => removeIngredient(idx)}
-          >
-            &times;
-          </button>
-        )}
-      </div>
-    ))}
-
-
-      <button
-        type="button"
-        className="btn btn-outline-primary add-ingredient-btn"
-        onClick={addIngredient}
-      >
-        + Add Ingredient
-      </button>
-
-      <div className="form-check mb-2">
-        <input
-          className="form-check-input"
-          type="checkbox"
-          id="autoCalcCalories"
-          checked={autoCalculateCalories}
-          onChange={() => setAutoCalculateCalories(prev => !prev)}
-        />
-        <label className="form-check-label" htmlFor="autoCalcCalories">
-          Automatically calculate calories
-        </label>
-      </div>
-
-      <div className="mb-3">
-        <label className="form-label fw-bold">Total Calories</label>
-        <input
-          type="number"
-          className="form-control"
-          value={totalCalories}
-          disabled={autoCalculateCalories}
-          onChange={(e) => setManualCalories(e.target.value)}
-          placeholder="Enter total calories"
-        />
-      </div>
-
-
-      <label className="form-label fw-bold">Instructions</label>
-      <textarea
-        className="form-control instructions-area"
-        value={instructions}
-        onChange={e => setInstructions(e.target.value)}
-        rows={4}
-      />
-
-      {showModal && (
-        <div className="modal show" tabIndex="-1" style={{ display: "block", background: "rgba(0,0,0,0.3)" }}>
-          <div className="modal-dialog">
-            <div className="modal-content">
-              <div className="modal-header">
-                <h5 className="modal-title">Estimated Calories & Verdict</h5>
-                <button type="button" className="btn-close" onClick={closeModal}></button>
-              </div>
-              <div className="modal-body">
-                <p><strong>Estimated Calories:</strong> {totalCalories} kcal</p>
-                <p><strong>Verdict:</strong> {verdict}</p>
-              </div>
-              <div className="modal-footer">
-                <button type="button" className="btn btn-secondary" onClick={closeModal}>
-                  Close
-                </button>
-              </div>
+      <div className="card shadow recipe-input-card">
+        <div className="card-body">
+          {/* Header */}
+          <div className="d-flex flex-column align-items-center mb-4">
+            <h2 className="mb-0 mt-2 text-warning">{mid ? "Edit Recipe" : "Create New Recipe"}</h2>
+            <div className="text-muted" style={{ fontSize: '1.1em' }}>
+              Fill in your recipe details below
             </div>
           </div>
-        </div>
-      )}
+          <hr />
 
-      <div className="recipe-btn-group">
-        <button type="button" className="btn btn-info" onClick={openModal}>
-          Show Calories & Verdict
-        </button>
-        <button type="button" className="btn btn-warning" onClick={handleSave}>
-          Save recipe and Eat
-        </button>
-        <button type="button" className="btn btn-secondary" onClick={onBack || (() => navigate('/chatbot'))}>
-          Back
-        </button>
+          {/* Recipe Name */}
+          <div className="mb-3">
+            <label className="form-label fw-bold">Recipe Name</label>
+            <input
+              type="text"
+              className="form-control"
+              value={name}
+              onChange={e => setName(e.target.value)}
+            />
+          </div>
+
+          {/* Ingredients */}
+          <h5 className="mb-3 text-warning">Ingredients</h5>
+          <div className="mb-2 text-muted" style={{ fontSize: "0.9rem" }}>
+            Please enter each ingredient's name, amount, and measurement.
+            <p>(e.g. "Chicken Breast, 200, grams" or "Rice, 1, cup")</p>
+          </div>
+          {ingredients.map((ing, idx) => (
+            <div className="ingredient-row" key={idx}>
+              <input
+                className="form-control"
+                placeholder='e.g. Chicken Breast 200 grams'
+                value={ing.text || ""}
+                onChange={e => handleIngredientChange(idx,"text" ,e.target.value)}
+              />
+              {ingredients.length > 1 && (
+                <button
+                  type="button"
+                  className="btn btn-outline-danger btn-sm"
+                  onClick={() => removeIngredient(idx)}
+                >
+                  &times;
+                </button>
+              )}
+            </div>
+          ))}
+          <button
+            type="button"
+            className="btn btn-outline-primary add-ingredient-btn"
+            onClick={addIngredient}
+          >
+            + Add Ingredient
+          </button>
+          <hr />
+
+          {/* Calories */}
+          <div className="form-check mb-3">
+            <input
+              className="form-check-input"
+              type="checkbox"
+              id="autoCalcCalories"
+              checked={autoCalculateCalories}
+              onChange={() => setAutoCalculateCalories(prev => !prev)}
+            />
+            <label className="form-check-label" htmlFor="autoCalcCalories">
+              Automatically calculate calories
+            </label>
+          </div>
+          <div className="mb-3">
+            <label className="form-label fw-bold">Total Calories</label>
+            <input
+              type="number"
+              className="form-control"
+              value={totalCalories}
+              disabled={autoCalculateCalories}
+              onChange={(e) => setManualCalories(e.target.value)}
+              placeholder="Enter total calories"
+            />
+          </div>
+          <hr />
+
+          {/* Instructions */}
+          <h5 className="mb-3 text-warning">Instructions</h5>
+          <textarea
+            className="form-control instructions-area"
+            value={instructions}
+            onChange={e => setInstructions(e.target.value)}
+            rows={4}
+          />
+          <hr />
+
+          {/* Modal */}
+          {showModal && (
+            <div className="modal show" tabIndex="-1" style={{ display: "block", background: "rgba(0,0,0,0.3)" }}>
+              <div className="modal-dialog">
+                <div className="modal-content">
+                  <div className="modal-header">
+                    <h5 className="modal-title">Estimated Calories & Verdict</h5>
+                    <button type="button" className="btn-close" onClick={closeModal}></button>
+                  </div>
+                  <div className="modal-body">
+                    <p><strong>Estimated Calories:</strong> {totalCalories} kcal</p>
+                    <p><strong>Verdict:</strong> {verdict}</p>
+                  </div>
+                  <div className="modal-footer">
+                    <button type="button" className="btn btn-secondary" onClick={closeModal}>
+                      Close
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          )}
+
+          {/* Buttons */}
+          <div className="d-flex justify-content-end gap-3 mt-4">
+           <button
+              type="button"
+              className="btn btn-info rounded-pill"
+              onClick={openModal}
+              disabled={autoCalculateCalories}
+            >
+              Show Calories & Verdict
+            </button>
+            <button type="button" className="btn btn-warning rounded-pill" onClick={handleSave}>
+              Save recipe and Eat
+            </button>
+            <button type="button" className="btn btn-secondary rounded-pill" onClick={onBack || (() => navigate('/chatbot'))}>
+              Back
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );
