@@ -16,14 +16,14 @@ const Dashboard = () => {
 
   const imageBank = [
     "https://img.freepik.com/free-photo/top-view-table-full-delicious-food-composition_23-2149141352.jpg?semt=ais_items_boosted&w=740",
-    "https://media.istockphoto.com/id/1423092276/photo/business-lunch-in-cafe-tasty-food-on-table-pizza-with-greenery-mozzarella-cheese-bacon-fried.jpg?s=612x612&w=0&k=20&c=GWJKMUd3CsMEd3U9EydhNKZAMzK6LOYzvqJtNGqwmVY=",
+    "https://images.lifestyleasia.com/wp-content/uploads/sites/6/2020/02/03154109/hawker-food-hero-image-image-credit-visit-singapore.jpg",
     "https://thumbs.dreamstime.com/b/table-full-delicious-european-food-plates-top-view-fries-soup-salad-burgers-pasta-sauces-festive-dinner-big-table-265814662.jpg",
-    "https://img.freepik.com/free-photo/delicious-food-table-view_23-2149139520.jpg",
+    "https://singaporefood.travel.blog/wp-content/uploads/2020/03/hai-tien-lo-restaurant-top-chinese-singapore-food.jpg?w=728&h=397&crop=1",
     "https://media.istockphoto.com/id/1400584543/photo/unrecognizable-friends-and-family-sharing-food-at-dinning-room.jpg?s=612x612&w=0&k=20&c=lqNa9FQfX5saQeqdf7n5R46IZu43MjsenBzDl9EIPEQ=",
     "https://www.shutterstock.com/image-photo/summer-food-table-scene-over-260nw-2316297723.jpg",
     "https://thumbs.dreamstime.com/b/middle-eastern-traditional-dinner-authentic-arab-cuisine-meze-party-food-top-view-flat-lay-overhead-middle-eastern-traditional-108753264.jpg",
     "https://thumbs.dreamstime.com/b/assorted-lebanese-food-assorted-lebanese-food-top-view-128959883.jpg",
-    "https://media.istockphoto.com/id/696864806/photo/grilled-steak-with-grilled-vegetables-beer-and-wine-on-a-dark-wooden-table-top-view.jpg?s=612x612&w=0&k=20&c=3UpTNozF8PoUyfv2685lIL00Ec53PscOPMZec6xw2rU=",
+    "https://www.saveur.com/uploads/2022/08/08/00-HERO-Singapores-Heritage-Cuisine-SAVEUR-scaled.jpg?auto=webp",
     "https://img.freepik.com/free-photo/flat-lay-table-full-delicious-food-arrangement_23-2149141378.jpg?semt=ais_items_boosted&w=740"
   ];
 
