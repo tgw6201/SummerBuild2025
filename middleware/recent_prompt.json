@@ -1,4 +1,4 @@
 {
-    "query": "Suggest recipe",
-    "response": "Recipe: Keto Chicken and Avocado Salad\n\nIngredients:\n- 200g cooked chicken breast (about 300 kcal)\n- 1/2 avocado (about 160 kcal)\n- 2 tablespoons olive oil (about 240 kcal)\n- 1 tablespoon lemon juice (about 4 kcal)\n- Salt and pepper to taste\n- 50g mixed greens (about 15 kcal)\n\nInstructions:\n1. Dice the cooked chicken breast into bite-sized pieces.\n2. Cube the avocado.\n3. In a bowl, combine the diced chicken, avocado, olive oil, and lemon juice.\n4. Season with salt and pepper to taste.\n5. Serve the chicken and avocado mixture over a bed of mixed greens.\n\nServing size: 1 serving\nCalories per serving: 719 kcal"
+    "query": "Track Calories",
+    "response": "Okay, I can help with that. Please tell me what you ate today, including the portion sizes, and I'll calculate the calorie count for you."
 }

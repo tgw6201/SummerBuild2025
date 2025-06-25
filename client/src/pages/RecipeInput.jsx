@@ -90,6 +90,33 @@ export default function RecipeInput({ onSave, onBack }) {
       .filter(str => str.length > 0)
       .join(', ');
 
+    if (autoCalculateCalories) {
+      console.log("formattedIngredients:", formattedIngredients);
+      try {
+        const response = await fetch('http://localhost:8000/calculate-calories', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            mname: name.trim(),
+            recipe_ingredients: formattedIngredients,
+            recipe_instruction: instructions.trim(),
+            calories: totalCalories
+          }),
+          credentials: "include"
+        });
+
+        if (!response.ok) throw new Error("Failed to fetch calories");
+
+        const data = await response.json();
+        setManualCalories(data.calories);
+      } catch (error) {
+        console.error("Error fetching calories:", error);
+      }
+    }
+
+
     const recipeToSend = {
       mname: name.trim(),
       recipe_ingredients: formattedIngredients,
@@ -168,7 +195,7 @@ export default function RecipeInput({ onSave, onBack }) {
                 className="form-control"
                 placeholder='e.g. Chicken Breast 200 grams'
                 value={ing.text || ""}
-                onChange={e => handleIngredientChange(idx, e.target.value)}
+                onChange={e => handleIngredientChange(idx,"text" ,e.target.value)}
               />
               {ingredients.length > 1 && (
                 <button
@@ -251,7 +278,12 @@ export default function RecipeInput({ onSave, onBack }) {
 
           {/* Buttons */}
           <div className="d-flex justify-content-end gap-3 mt-4">
-            <button type="button" className="btn btn-info rounded-pill" onClick={openModal}>
+           <button
+              type="button"
+              className="btn btn-info rounded-pill"
+              onClick={openModal}
+              disabled={autoCalculateCalories}
+            >
               Show Calories & Verdict
             </button>
             <button type="button" className="btn btn-warning rounded-pill" onClick={handleSave}>
