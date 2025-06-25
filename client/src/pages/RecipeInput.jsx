@@ -165,7 +165,7 @@ export default function RecipeInput({ onSave, onBack }) {
         <div className="card-body">
           {/* Header */}
           <div className="d-flex flex-column align-items-center mb-4">
-            <h2 className="mb-0 mt-2 text-warning">{mid ? "Edit Recipe" : "Create New Recipe"}</h2>
+            <h2 className="header-h2">{mid ? "Edit Recipe" : "Create New Recipe"}</h2>
             <div className="text-muted" style={{ fontSize: '1.1em' }}>
               Fill in your recipe details below
             </div>
@@ -174,7 +174,7 @@ export default function RecipeInput({ onSave, onBack }) {
 
           {/* Recipe Name */}
           <div className="mb-3">
-            <label className="form-label fw-bold">Recipe Name</label>
+            <label className="header-h5">Recipe Name</label>
             <input
               type="text"
               className="form-control"
@@ -184,7 +184,7 @@ export default function RecipeInput({ onSave, onBack }) {
           </div>
 
           {/* Ingredients */}
-          <h5 className="mb-3 text-warning">Ingredients</h5>
+          <h5 className="header-h5">Ingredients</h5>
           <div className="mb-2 text-muted" style={{ fontSize: "0.9rem" }}>
             Please enter each ingredient's name, amount, and measurement.
             <p>(e.g. "Chicken Breast, 200, grams" or "Rice, 1, cup")</p>
@@ -231,7 +231,7 @@ export default function RecipeInput({ onSave, onBack }) {
             </label>
           </div>
           <div className="mb-3">
-            <label className="form-label fw-bold">Total Calories</label>
+            <label className="header-h5">Total Calories</label>
             <input
               type="number"
               className="form-control"
@@ -244,7 +244,7 @@ export default function RecipeInput({ onSave, onBack }) {
           <hr />
 
           {/* Instructions */}
-          <h5 className="mb-3 text-warning">Instructions</h5>
+          <h5 className="header-h5">Instructions</h5>
           <textarea
             className="form-control instructions-area"
             value={instructions}

@@ -120,7 +120,7 @@ export default function RecipeList() {
                 <div className="card-body">
                     {/* Header */}
                     <div className="d-flex flex-column align-items-center mb-4">
-                        <h2 className="mb-0 text-warning">All Recipes</h2>
+                        <h2 className="header-h2">All Recipes</h2>
                         <div className="text-muted" style={{ fontSize: '1.1em' }}>
                             Browse and manage your saved recipes
                         </div>

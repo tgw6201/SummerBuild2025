@@ -23,36 +23,13 @@ export default function Profile() {
   // Helper function to format date for display (DD/MM/YYYY)
   const formatDateForDisplay = (dateString) => {
     if (!dateString) return 'Not set';
-    
-    try {
-      const date = new Date(dateString);
-      // Check if date is valid
-      if (isNaN(date.getTime())) return dateString;
-      
-      const day = date.getDate().toString().padStart(2, '0');
-      const month = (date.getMonth() + 1).toString().padStart(2, '0');
-      const year = date.getFullYear();
-      
-      return `${day}/${month}/${year}`;
-    } catch (error) {
-      console.error('Error formatting date:', error);
-      return dateString;
-    }
+    const [year, month, day] = dateString.split('-');
+    return `${day}/${month}/${year}`;
   };
 
   // Helper function to format date for input (YYYY-MM-DD)
   const formatDateForInput = (dateString) => {
-    if (!dateString) return '';
-    
-    try {
-      const date = new Date(dateString);
-      if (isNaN(date.getTime())) return '';
-      
-      return date.toISOString().split('T')[0];
-    } catch (error) {
-      console.error('Error formatting date for input:', error);
-      return '';
-    }
+    return typeof dateString === 'string' ? dateString.slice(0, 10) : '';
   };
 
   // Fetch profile data when component mounts
@@ -324,13 +301,13 @@ export default function Profile() {
               style={{ display: 'none' }}
               onChange={handleAvatarChange}
             />
-            <h3 className="mb-0 mt-3">{profile.name || 'Your Name'}</h3>
+            <h3 className="profile-name">{profile.name || 'Your Name'}</h3>
             <div className="text-muted" style={{ fontSize: '0.95em' }}>Click avatar to change</div>
           </div>
 
           <hr />
 
-          <h5 className="mb-3 text-warning">Personal Information</h5>
+          <h5 className="profile-section-header">Personal Information</h5>
           <div className="row g-3 mb-4">
             {['name', 'phone_number', 'gender', 'date_of_birth'].map((field) => (
               <div className="col-md-6" key={field}>
@@ -340,7 +317,7 @@ export default function Profile() {
             ))}
           </div>
 
-          <h5 className="mb-3 text-warning">Health & Fitness</h5>
+          <h5 className="profile-section-header">Health & Fitness</h5>
           <div className="row g-3 mb-4">
             {['weight', 'height', 'daily_calorie_goal', 'dietary_preference', 'allergies'].map((field) => (
               <div className="col-md-6" key={field}>

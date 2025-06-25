@@ -32,14 +32,50 @@ export default function Onboarding() {
     setError("");
   };
 
-  const handleSubmit = e => {
+  const handleSubmit = async e => {
     e.preventDefault();
+
     if (!form.phone || !form.name || !form.gender || !form.weight || !form.height || !form.dob || !form.dietary_preference || !form.calorie_goal) {
       setError("Please fill in all required fields.");
       return;
     }
-    alert("Onboarding complete!");
-    navigate("/chatbot");
+
+    // Prepare payload
+    const payload = {
+      phone: form.phone,
+      name: form.name,
+      gender: form.gender,
+      weight: form.weight,
+      height: form.height,
+      date_of_birth: form.dob, // Convert to expected backend key
+      allergies: form.allergies,
+      dietary_preference: form.dietary_preference,
+      calorie_goal: form.calorie_goal,
+    };
+
+    try {
+      const response = await fetch("http://localhost:3000/onboarding", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        credentials: "include",
+        body: JSON.stringify(payload)
+      });
+
+      if (!response.ok) {
+        const errorData = await response.json();
+        setError(errorData.message || "Failed to submit onboarding data.");
+        return;
+      }
+
+      alert("Onboarding complete!");
+      navigate("/chatbot");
+
+    } catch (err) {
+      console.error("Onboarding submission error:", err);
+      setError("Something went wrong. Please try again.");
+    }
   };
 
   return (
