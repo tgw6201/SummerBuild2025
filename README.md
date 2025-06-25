@@ -139,3 +139,6 @@ Step 1: Obtain API key from https://aistudio.google.com/app/apikey and put it in
 Step 2: CD into middleware directory\
 Step 3: Run .\venv\Scripts\activate\
 Step 4: Run the command, "python lang.py"
+
+##Video submission Link:
+https://vimeo.com/1096330491/bf8c1326f4?share=copy
