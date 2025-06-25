@@ -284,7 +284,7 @@ def save_latest_response(sessionid):
             recipe_data["recipe_ingredients"] = ", ".join(ingredients_list)
 
         # Extract instructions
-        instructions_match = re.search(r"Instructions:\s*([\s\S]*?)(?:\nCalories|\nServing|\n\d+\.|$)", latest_recipe)
+        instructions_match = re.search(r"Instructions:\s*([\s\S]*?)(?=\n(?:Calories|Serving|$))", latest_recipe)
         if instructions_match:
             instructions_text = instructions_match.group(1).strip()
             # Clean up numbered steps if present
