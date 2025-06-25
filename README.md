@@ -88,7 +88,7 @@
 - **Frontend:** React / Vite (or optionally Next.js)
 - **Backend:** Node.js / Express
 - **Database:** PostgreSQL
-- **AI Integration:** OpenAI / Langchain / Custom NLP models
+- **AI Integration:** GeminiAI/ Langchain / Custom NLP models
 
 ---
 
@@ -121,7 +121,7 @@ calorie-chat/\
 5. npm install
 6. npm install uuid (for generating session id for users)
 7. npm install cookie parser
-8. pip install gradio google-generativeai python-dotenv numpy
+8. pip install fastapi uvicorn langchain langchain-google-genai requests python-dotenv
 
 ## Starting the client side
 
@@ -133,8 +133,9 @@ Step 2: Run the command, "npm run dev"
 Step 1: CD into the server directory\
 Step 2: Run the command, "nodemon index"
 
-## Testing the Gemini Chat bot
+## Starting the Gemini Chat bot to be ready to receive queries
 
-Step 1: CD into middleware directory\
-Step 2: Run .\venv\Scripts\activate
-Step 3: Using a web browser, enter http://127.0.0.1:7860/
+Step 1: Obtain API key from https://aistudio.google.com/app/apikey and put it into .env file in Summerbuild 2025 base directory as GOOGLE_API_KEY = YOUR API KEY
+Step 2: CD into middleware directory\
+Step 3: Run .\venv\Scripts\activate
+Step 4: Run the command, "python lang.py"
