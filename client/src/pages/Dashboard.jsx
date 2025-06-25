@@ -14,6 +14,25 @@ const Dashboard = () => {
   const [favoriteDishes, setFavoriteDishes] = useState([]);
   const [consumedMeals, setConsumedMeals] = useState([]);
 
+  const imageBank = [
+    "https://img.freepik.com/free-photo/top-view-table-full-delicious-food-composition_23-2149141352.jpg?semt=ais_items_boosted&w=740",
+    "https://media.istockphoto.com/id/1423092276/photo/business-lunch-in-cafe-tasty-food-on-table-pizza-with-greenery-mozzarella-cheese-bacon-fried.jpg?s=612x612&w=0&k=20&c=GWJKMUd3CsMEd3U9EydhNKZAMzK6LOYzvqJtNGqwmVY=",
+    "https://thumbs.dreamstime.com/b/table-full-delicious-european-food-plates-top-view-fries-soup-salad-burgers-pasta-sauces-festive-dinner-big-table-265814662.jpg",
+    "https://img.freepik.com/free-photo/delicious-food-table-view_23-2149139520.jpg",
+    "https://media.istockphoto.com/id/1400584543/photo/unrecognizable-friends-and-family-sharing-food-at-dinning-room.jpg?s=612x612&w=0&k=20&c=lqNa9FQfX5saQeqdf7n5R46IZu43MjsenBzDl9EIPEQ=",
+    "https://www.shutterstock.com/image-photo/summer-food-table-scene-over-260nw-2316297723.jpg",
+    "https://thumbs.dreamstime.com/b/middle-eastern-traditional-dinner-authentic-arab-cuisine-meze-party-food-top-view-flat-lay-overhead-middle-eastern-traditional-108753264.jpg",
+    "https://thumbs.dreamstime.com/b/assorted-lebanese-food-assorted-lebanese-food-top-view-128959883.jpg",
+    "https://media.istockphoto.com/id/696864806/photo/grilled-steak-with-grilled-vegetables-beer-and-wine-on-a-dark-wooden-table-top-view.jpg?s=612x612&w=0&k=20&c=3UpTNozF8PoUyfv2685lIL00Ec53PscOPMZec6xw2rU=",
+    "https://img.freepik.com/free-photo/flat-lay-table-full-delicious-food-arrangement_23-2149141378.jpg?semt=ais_items_boosted&w=740"
+  ];
+
+  const getImageForMeal = (mid) => {
+    if (!mid) return fallbackImage;
+    const index = mid % imageBank.length;
+    return imageBank[index];
+  };
+
   const createChart = (weeklyCalories, calorieGoal) => {
     const weekDays = [
       "Monday",
@@ -278,7 +297,7 @@ const Dashboard = () => {
                 favoriteDishes.map((item, index) => (
                   <div className="card" key={item.mid}>
                     <img
-                      src={item.image_url || fallbackImage}
+                      src={getImageForMeal(item.mid)}
                       alt={item.mname}
                       className="card-img-top"
                       onError={(e) => {
@@ -335,7 +354,7 @@ const Dashboard = () => {
                     consumedMeals.map((item, index) => (
                       <div className="card" key={`${item.cmid}-${index}`}>
                         <img
-                          src={item.image_url || fallbackImage}
+                          src={getImageForMeal(item.mid)}
                           alt={item.mname}
                           className="card-img-top"
                           onError={(e) => {
