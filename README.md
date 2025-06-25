@@ -135,7 +135,7 @@ Step 2: Run the command, "nodemon index"
 
 ## Starting the Gemini Chat bot to be ready to receive queries
 
-Step 1: Obtain API key from https://aistudio.google.com/app/apikey and put it into .env file in Summerbuild 2025 base directory as GOOGLE_API_KEY = YOUR API KEY
+Step 1: Obtain API key from https://aistudio.google.com/app/apikey and put it into .env file in Summerbuild 2025 base directory as GOOGLE_API_KEY = YOUR API KEY\
 Step 2: CD into middleware directory\
-Step 3: Run .\venv\Scripts\activate
+Step 3: Run .\venv\Scripts\activate\
 Step 4: Run the command, "python lang.py"
