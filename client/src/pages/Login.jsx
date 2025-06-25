@@ -38,7 +38,35 @@ export default function Login() {
   return (
     <main className="form-signin text-center">
       <form onSubmit={handleSubmit}>
-        <h1 className="title">RennyBot.co</h1>
+        <div className="title-bubble-wrapper">
+          <h1 className="title">
+            RennyBot.co
+            <span className="bubble-layer">
+              {[...Array(40)].map((_, i) => {
+                const left = Math.random() * 100;
+                const top = Math.random() * 90;
+                const size = 4 + Math.random() * 6;
+                const delay = Math.random() * 5; 
+                const duration = 3 + Math.random() * 5; 
+
+                return (
+                  <span
+                    key={i}
+                    className="bubble-inside"
+                    style={{
+                      left: `${left}%`,
+                      top: `${top}%`,
+                      width: `${size}px`,
+                      height: `${size}px`,
+                      animationDelay: `${delay}s`,
+                      animationDuration: `${duration}s`,
+                    }}
+                  />
+                );
+              })}
+            </span>
+          </h1>
+        </div>
         <h1 className="h3 mb-3 fw-normal">Welcome back</h1>
 
         <div className="form-floating">
@@ -70,7 +98,9 @@ export default function Login() {
         </button>
 
         <p>
-          <Link to="/signup" className="signup-link">Don't have an account yet? Sign up!</Link>
+          <Link to="/signup" className="signup-link">
+            Don't have an account yet? Sign up!
+          </Link>
         </p>
       </form>
     </main>

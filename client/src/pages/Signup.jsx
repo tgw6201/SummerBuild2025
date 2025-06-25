@@ -1,23 +1,23 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
-import '../css/Signup.css';
+import "../css/Signup.css";
 
 export default function Signup() {
   const [form, setForm] = useState({
-    email: '',
-    password: '',
-    confirmPassword: ''
+    email: "",
+    password: "",
+    confirmPassword: "",
   });
-  const [error, setError] = useState('');
+  const [error, setError] = useState("");
   const navigate = useNavigate();
 
-  const handleChange = e => {
+  const handleChange = (e) => {
     setForm({ ...form, [e.target.name]: e.target.value });
-    setError('');
+    setError("");
   };
 
-  const handleSubmit = async(e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
     if (form.password !== form.confirmPassword) {
       setError("Passwords do not match.");
@@ -30,7 +30,7 @@ export default function Signup() {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ userid: form.email, password: form.password }),
-        credentials: "include"
+        credentials: "include",
       });
       if (!response.ok) {
         const errorData = await response.json();
@@ -40,7 +40,7 @@ export default function Signup() {
       const data = await response.json();
       // Assuming the response contains user data or a success message
       console.log("Sign up successful:", data);
-      // Navigate to onboarding page after successful sign up 
+      // Navigate to onboarding page after successful sign up
     } catch (err) {
       console.error("Sign up error:", err);
       setError("Something went wrong. Please try again.");
@@ -52,7 +52,33 @@ export default function Signup() {
   return (
     <main className="form-signin text-center">
       <form onSubmit={handleSubmit}>
-        <h1 className="title">RennyBot.co</h1>
+        <h1 className="title">
+          RennyBot.co
+          <span className="bubble-layer">
+            {[...Array(40)].map((_, i) => {
+              const left = Math.random() * 100;
+              const top = Math.random() * 90;
+              const size = 4 + Math.random() * 6;
+              const delay = Math.random() * 5;
+              const duration = 3 + Math.random() * 5;
+
+              return (
+                <span
+                  key={i}
+                  className="bubble-inside"
+                  style={{
+                    left: `${left}%`,
+                    top: `${top}%`,
+                    width: `${size}px`,
+                    height: `${size}px`,
+                    animationDelay: `${delay}s`,
+                    animationDuration: `${duration}s`,
+                  }}
+                />
+              );
+            })}
+          </span>
+        </h1>
         <h1 className="h3 mb-3 fw-normal">Create your account</h1>
 
         <div className="form-floating">
@@ -81,7 +107,7 @@ export default function Signup() {
             onChange={handleChange}
             required
           />
-          <label htmlFor="floatingPassword">Password</label> 
+          <label htmlFor="floatingPassword">Password</label>
         </div>
 
         <div className="form-floating">
@@ -98,13 +124,17 @@ export default function Signup() {
           <label htmlFor="floatingConfirmPassword">Confirm Password</label>
         </div>
 
-        {error && <div style={{ color: "#e66a17", marginBottom: "1em" }}>{error}</div>}
+        {error && (
+          <div style={{ color: "#e66a17", marginBottom: "1em" }}>{error}</div>
+        )}
 
         <button className="btn btn-primary w-100 py-2" type="submit">
           Sign up
         </button>
         <p>
-          <Link to="/login" className="signup-link">Already have an account? Log in!</Link>
+          <Link to="/login" className="signup-link">
+            Already have an account? Log in!
+          </Link>
         </p>
       </form>
     </main>
