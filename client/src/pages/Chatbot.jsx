@@ -134,82 +134,10 @@ export default function Chatbot() {
   };
 
   /* Suggested messages for user convenience */
-  const suggestions = ["Suggest recipe", "Log meal", "Track Calories", "Help"];
+  const suggestions = ["Suggest recipe", "Log meal"];
 
   return (
     <div className="app-container">
-      {" "}
-      {/* top-level flex container */}
-      <aside className="history-sidebar">
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            alignItems: "center",
-            fontWeight: 600,
-            margin: "0.5rem 0 1rem 0",
-            fontSize: "1.1rem",
-            padding: "0 1rem",
-          }}
-        >
-          <span>Conversations</span>
-          <button
-            className="icon-button"
-            onClick={() => {
-              const newId = Date.now();
-              const newConversation = {
-                id: newId,
-                title: `Chat ${conversations.length + 1}`,
-                messages: [
-                  {
-                    id: newId + 1,
-                    sender: "bot",
-                    text: "Hi! How can I assist you today?",
-                  },
-                ],
-              };
-              setConversations([newConversation, ...conversations]);
-              setActiveConversationId(newId);
-            }}
-            title="Start new conversation"
-          >
-            <svg
-              xmlns="http://www.w3.org/2000/svg"
-              width="20"
-              height="20"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth="2"
-              strokeLinecap="round"
-              strokeLinejoin="round"
-            >
-              <line x1="12" y1="5" x2="12" y2="19" />
-              <line x1="5" y1="12" x2="19" y2="12" />
-            </svg>
-          </button>
-        </div>
-        <ul className="history-list">
-          {conversations.map((conv) => (
-            <li
-              key={conv.id}
-              className={`history-item${
-                conv.id === activeConversationId ? " active" : ""
-              }`}
-              onClick={() => setActiveConversationId(conv.id)}
-            >
-              <div className="history-title">{conv.title}</div>
-              <div className="history-preview">
-                {conv.messages &&
-                conv.messages.length > 0 &&
-                conv.messages[conv.messages.length - 1]?.text
-                  ? conv.messages[conv.messages.length - 1].text.slice(0, 30)
-                  : ""}
-              </div>
-            </li>
-          ))}
-        </ul>
-      </aside>
       <div className="chat-container">
         <h3 className="chat-header">RennyBot</h3>
 
