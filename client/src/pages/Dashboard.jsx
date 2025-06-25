@@ -5,6 +5,8 @@ import "../css/Dashboard.css";
 const Dashboard = () => {
   const barRef = useRef(null);
   const chartInstanceRef = useRef(null);
+  const fallbackImage =
+    "https://img.freepik.com/free-photo/top-view-table-full-delicious-food-composition_23-2149141352.jpg?semt=ais_items_boosted&w=740";
 
   const [loading, setLoading] = useState(true);
   const [totalCalories, setTotalCalories] = useState(0);
@@ -272,34 +274,53 @@ const Dashboard = () => {
           <div className="section favourite-dishes">
             <h2>Favourite Dishes</h2>
             <div className="horizontal-cards">
-              {favoriteDishes.map((item) => (
-                <div className="card" key={item.mid}>
-                  <div className="card-body">
-                    <h5 className="card-title">{item.mname}</h5>
-                  </div>
-                  <div className="card-footer">
-                    <div className="btn-group">
-                      <button
-                        className="btn"
-                        onClick={() => handleRemoveFavorite(item)}
-                      >
-                        Remove
-                      </button>
-                      <button
-                        className="btn btn-outline"
-                        onClick={() => handleEditFavorite(item)}
-                      >
-                        Edit
-                      </button>
+              {favoriteDishes.length > 0 ? (
+                favoriteDishes.map((item, index) => (
+                  <div className="card" key={item.mid}>
+                    <img
+                      src={item.image_url || fallbackImage}
+                      alt={item.mname}
+                      className="card-img-top"
+                      onError={(e) => {
+                        e.target.onerror = null;
+                        e.target.src =
+                          "https://via.placeholder.com/300x180?text=No+Image";
+                      }}
+                    />
+                    <div className="card-body">
+                      <h5 className="card-title">{item.mname}</h5>
                     </div>
-                    <div className="btn-group right-group">
-                      <button className="btn" onClick={() => handleTrack(item)}>
-                        Track
-                      </button>
+                    <div className="card-footer">
+                      <div className="btn-group">
+                        <button
+                          className="btn"
+                          onClick={() => handleRemoveFavorite(item)}
+                        >
+                          Remove
+                        </button>
+                        <button
+                          className="btn btn-outline"
+                          onClick={() => handleEditFavorite(item)}
+                        >
+                          Edit
+                        </button>
+                      </div>
+                      <div className="btn-group right-group">
+                        <button
+                          className="btn"
+                          onClick={() => handleTrack(item)}
+                        >
+                          Track
+                        </button>
+                      </div>
                     </div>
                   </div>
+                ))
+              ) : (
+                <div className="empty-state">
+                  No favourite dishes yet. Start saving some!
                 </div>
-              ))}
+              )}
             </div>
           </div>
 
@@ -310,27 +331,43 @@ const Dashboard = () => {
               <div className="section">
                 <h2>Food Consumed Today</h2>
                 <div className="horizontal-cards">
-                  {consumedMeals.map((item, index) => (
-                    <div className="card" key={`${item.cmid}-${index}`}>
-                      <div className="card-body">
-                        <h5 className="card-title">{item.mname}</h5>
-                        <p className="card-calories">{item.calories} kcal</p>
-                      </div>
-                      <div className="card-footer">
-                        <div
-                          className="btn-group"
-                          style={{ marginLeft: "auto" }}
-                        >
-                          <button
-                            className="btn btn-outline"
-                            onClick={() => handleRemoveConsume(item)}
+                  {consumedMeals.length > 0 ? (
+                    consumedMeals.map((item, index) => (
+                      <div className="card" key={`${item.cmid}-${index}`}>
+                        <img
+                          src={item.image_url || fallbackImage}
+                          alt={item.mname}
+                          className="card-img-top"
+                          onError={(e) => {
+                            e.target.onerror = null;
+                            e.target.src =
+                              "https://via.placeholder.com/300x180?text=No+Image";
+                          }}
+                        />
+                        <div className="card-body">
+                          <h5 className="card-title">{item.mname}</h5>
+                          <p className="card-calories">{item.calories} kcal</p>
+                        </div>
+                        <div className="card-footer">
+                          <div
+                            className="btn-group"
+                            style={{ marginLeft: "auto" }}
                           >
-                            Remove
-                          </button>
+                            <button
+                              className="btn btn-outline"
+                              onClick={() => handleRemoveConsume(item)}
+                            >
+                              Remove
+                            </button>
+                          </div>
                         </div>
                       </div>
+                    ))
+                  ) : (
+                    <div className="empty-state">
+                      No records found yet. Get your tracking started!
                     </div>
-                  ))}
+                  )}
                 </div>
               </div>
             </div>
